@@ -5,38 +5,64 @@ import {
   FormLabel,
   Input,
   InputGroup,
-  HStack,
   InputRightElement,
   Stack,
   Button,
   Heading,
   Text,
-  useColorModeValue,
   Link,
   Checkbox,
 } from "@chakra-ui/react";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import useShowToast from "../hooks/useShowToast";
+
 
 const SignupPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [fullName, setFullName] = useState("");
+  const [businessName, setBusinessName] = useState("");
+  const [brandName, setBrandName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [cPassword, setCPassword] = useState("");
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [isBusinessAccount, setIsBusinessAccount] = useState(false);
   const showToast = useShowToast();
-  
+  const navigate = useNavigate();
 
-  const handleSubmit = () => {
+  // Signup User
+  const handleSubmit = async() => {
+    if (!email || !password) {
+      showToast('Error', "email and password field is required", "error");
+      return;
+    }
     if (cPassword !== password) {
       showToast('Error', "Password doesn't match", "error");
       return;
+    };
+    
+    try {
+      const res = await fetch('/api/users/signup', {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({fullName, businessName, brandName, email, password, isBusinessAccount})
+      });
+
+      const data = await res.json();
+      if (data.error) {
+        showToast('Error', data.error, "error");
+        return;
+      }
+      
+      showToast('Success', data.message, "success");
+      navigate('/login');
+
+    } catch (error) {
+      showToast('Error', error.message, "error");
+      console.log(error);      
     }
-    console.log({fullName, email, password, cPassword, isAdmin});
   }
 
   return (
@@ -57,14 +83,24 @@ const SignupPage = () => {
 
         <Box p={8}>
           <Stack spacing={4} width={"400px"}>
-            <FormControl id="name" isRequired>
+            {!isBusinessAccount  && <FormControl id="name">
               <FormLabel>Full Name</FormLabel>
-              <Input type="text" value={fullName} onChange={e => setFullName(e.target.value)}/>
-            </FormControl>
+              <Input type="text" value={fullName} onChange={e => setFullName(e.target.value)} placeholder="Enter your fullname"/>
+            </FormControl>}
+
+            {isBusinessAccount  && <FormControl id="businessname">
+              <FormLabel>Business Name</FormLabel>
+              <Input type="text" value={businessName} onChange={e => setBusinessName(e.target.value)} placeholder="Enter your business name"/>
+            </FormControl>}
+
+            {isBusinessAccount  && <FormControl id="brandname">
+              <FormLabel>Brand Name</FormLabel>
+              <Input type="text" value={brandName} onChange={e => setBrandName(e.target.value)} placeholder="Enter your brand name"/>
+            </FormControl>}
 
             <FormControl id="email" isRequired>
               <FormLabel>Email address</FormLabel>
-              <Input type="email" value={email} onChange={e => setEmail(e.target.value)}/>
+              <Input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="example@gmail.com"/>
             </FormControl>
             
             <FormControl id="password" isRequired>
@@ -94,7 +130,7 @@ const SignupPage = () => {
                     onClick={() =>
                       setShowConfirmPassword((showConfirmPassword) => !showConfirmPassword)
                     }
-                  >
+                    >
                     {showConfirmPassword ? <ViewIcon /> : <ViewOffIcon />}
                   </Button>
                 </InputRightElement>
@@ -102,7 +138,7 @@ const SignupPage = () => {
             </FormControl>
 
             <FormControl>
-              <Checkbox value={isAdmin} onChange={e => setIsAdmin(e.target.checked)}>Business Account</Checkbox>
+              <Checkbox isChecked={isBusinessAccount} onChange={e => setIsBusinessAccount(e.target.checked)}>Create a Business Account</Checkbox>
             </FormControl>
 
             <Stack spacing={10} pt={2}>

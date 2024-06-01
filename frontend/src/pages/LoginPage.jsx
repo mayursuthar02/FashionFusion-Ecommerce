@@ -15,20 +15,48 @@ import {
   Link,
   Checkbox,
 } from "@chakra-ui/react";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import useShowToast from "../hooks/useShowToast";
+import { useRecoilState } from "recoil";
+import userAtom from "../atoms/userAtom";
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const showToast = useShowToast();
-  
+  const navigate = useNavigate();
+  const [,setUser] = useRecoilState(userAtom);
 
-  const handleSubmit = () => {
-    console.log({email, password});
+  const handleSubmit = async() => {
+    if (!email || !password) {
+      showToast('Error', "email and password field is required", "error");
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/users/login', {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({email, password})
+      });
+
+      const data = await res.json();
+      if (data.error) {
+        showToast('Error', data.error, "error");
+        return;
+      }
+      showToast('Success', "Login successfully.", "success");
+      localStorage.setItem('user-details', JSON.stringify(data));
+      setUser(data);
+      navigate('/');
+
+    } catch (error) {
+      showToast('Error', error.message, "error");
+      console.log(error);      
+    }
   }
 
   return (
@@ -52,7 +80,7 @@ const LoginPage = () => {
 
             <FormControl id="email" isRequired>
               <FormLabel>Email address</FormLabel>
-              <Input type="email" value={email} onChange={e => setEmail(e.target.value)}/>
+              <Input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="example@gmail.com"/>
             </FormControl>
             
             <FormControl id="password" isRequired>

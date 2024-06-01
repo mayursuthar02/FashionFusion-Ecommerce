@@ -3,6 +3,8 @@ import HomePage from '../pages/HomePage';
 import LoginPage from '../pages/LoginPage';
 import SignupPage from '../pages/SignupPage';
 import WishlistPage from '../pages/WishlistPage';
+import DashboardPage from '../pages/DashboardPage';
+import ProfilePage from '../pages/ProfilePage';
 
 const Routers = () => {
   return (
@@ -11,6 +13,8 @@ const Routers = () => {
         <Route path='/login' element={<LoginPage/>}/>
         <Route path='/signup' element={<SignupPage/>}/>
         <Route path='/wishlist' element={<WishlistPage/>}/>
+        <Route path='/dashboard' element={<DashboardPage/>}/>
+        {/* <Route path='profile' element={<ProfilePage/>}/> */}
     </Routes>
   )
 }
