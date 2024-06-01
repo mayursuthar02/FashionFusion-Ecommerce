@@ -50,8 +50,8 @@ const Header = () => {
           </MenuButton>
           <MenuList>
             <Flex flexDirection={'column'} px={5} py={3} gap={3}>
-              {user && user.isBusinessAccount && <Link as={RouterLink} to={'/dashboard'}  _hover={{ color: 'blue.500' }}>Dashboard</Link>}
-              {user && <Link as={RouterLink}  _hover={{ color: 'blue.500' }}>My Profile</Link>}
+              {user && user.isBusinessAccount && <Link as={RouterLink} to={`/dashboard/${user.businessName}`}  _hover={{ color: 'blue.500' }}>Dashboard</Link>}
+              {user && <Link as={RouterLink} to={'/dashboard/profile'}  _hover={{ color: 'blue.500' }}>My Profile</Link>}
               {user && <Link as={RouterLink}  _hover={{ color: 'blue.500' }}>My Order</Link>}
               {!user && <Link as={RouterLink} to={'/login'}>
                 <Button w={'full'} colorScheme='blue'>Login</Button>

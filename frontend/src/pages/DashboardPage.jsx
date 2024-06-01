@@ -1,19 +1,17 @@
 import { Avatar, Box, Divider, Flex, Link, Text } from "@chakra-ui/react"
 import { useRecoilValue } from "recoil"
 import userAtom from "../atoms/userAtom"
-import { Outlet, Route, Link as RouterLink, Routes } from "react-router-dom";
+import { NavLink, Outlet, Route, Link as RouterLink, Routes } from "react-router-dom";
 import { RxDashboard } from "react-icons/rx";
 import { LuUser2 } from "react-icons/lu";
 import { BsHandbag } from "react-icons/bs";
 import { LuShoppingCart } from "react-icons/lu";
 import { BiMessageDetail } from "react-icons/bi";
-import ProfilePage from "./ProfilePage";
-import DashboardProductPage from "./DashboardProductPage";
 
 const DashboardPage = () => {
     const user = useRecoilValue(userAtom);
     const dashBoardLink = [
-        { title: "Dashboard", link: "", icon: <RxDashboard/> },
+        { title: "Dashboard", link: `${user.businessName}`, icon: <RxDashboard/> },
         { title: "Profile", link: `profile`, icon: <LuUser2/> },
         { title: "Products", link: "products", icon: <BsHandbag/> },
         { title: "Orders", link: "orders", icon: <LuShoppingCart/> },
@@ -31,21 +29,35 @@ const DashboardPage = () => {
             
             <Flex flexDir={'column'} gap={2}>
                 {dashBoardLink.map((el,i) =>(
-                    <Link key={i} as={RouterLink} to={el.link} _hover={{bgColor: 'blue.50', color:"blue.500"}} px={4} py={2} borderRadius={'md'}>
-                        <Flex alignItems={'center'} gap={2}>
-                            {el.icon}
-                            {el.title}
-                        </Flex>
-                    </Link>
+                    <NavLink 
+                    key={i} 
+                    to={el.link}   
+                    _hover={{bgColor: 'blue.50', color:"blue.500"}} 
+                    px={4} 
+                    py={2} 
+                    borderRadius={'md'}>
+                        {({ isActive }) => (
+                            <Box
+                                px={4}
+                                py={2}
+                                borderRadius={'md'}
+                                bg={isActive ? 'blue.50' : 'transparent'}
+                                color={isActive ? 'blue.500' : 'inherit'}
+                                _hover={{ bg: 'blue.50', color: 'blue.500' }}
+                            >
+                                <Flex alignItems={'center'} gap={2}>
+                                    {el.icon}
+                                    {el.title}
+                                </Flex>
+                            </Box>
+                        )}
+                    </NavLink>
                 ))}
             </Flex>
         </Box>
 
         <Box py={5} px={5} boxShadow={'lg'} borderRadius={'lg'}>
-            <Routes>
-                <Route path="profile" element={<ProfilePage/>}/>
-                <Route path="products" element={<DashboardProductPage/>}/>
-            </Routes>
+            <Outlet/>
         </Box>
     </Flex>
   )

@@ -5,6 +5,7 @@ const SearchModel = ({isOpen, onClose}) => {
     <Modal
         isOpen={isOpen}
         onClose={onClose}
+        motionPreset='slideInBottom'
       >
         <ModalOverlay />
         <ModalContent>
