@@ -19,8 +19,8 @@ const DashboardPage = () => {
     ]
     
   return (
-    <Flex minH={'100vh'} display={'grid'} gridTemplateColumns={'.26fr 1fr'} gap={5} p={5}>
-        <Box py={5} px={5} boxShadow={'lg'} borderRadius={'lg'}>
+    <Flex minH={'100vh'} display={'grid'} gridTemplateColumns={'.26fr 1fr'} gap={5} p={2}>
+        <Box py={5} px={5} border={'1px solid'} borderColor={'gray.200'} borderRadius={'lg'}>
             <Flex alignItems={'center'} h={'fit-content'} px={5} gap={5}>
                 <Avatar src={user?.profilePic ? user?.profilePic : ""} size={'lg'}/>
                 <Text size={'md'} fontWeight={'500'} >{user?.businessName ? user?.businessName : user?.fullName}</Text>
@@ -56,7 +56,7 @@ const DashboardPage = () => {
             </Flex>
         </Box>
 
-        <Box py={5} px={5} boxShadow={'lg'} borderRadius={'lg'}>
+        <Box py={5} px={5} border={'1px solid'} borderColor={'gray.200'} borderRadius={'lg'}>
             <Outlet/>
         </Box>
     </Flex>

@@ -7,14 +7,14 @@ import { mode } from '@chakra-ui/theme-tools';
 import { BrowserRouter } from 'react-router-dom';
 import { RecoilRoot } from 'recoil'
 
-const styles = {
-  global:(props) => ({
-    body:{
-      color:mode('gray.800','White')(props),
-      bg:mode('gray.100', '#121212')(props),
-    }
-  })
-};
+// const styles = {
+//   global:(props) => ({
+//     body:{
+//       color:mode('gray.800','White')(props),
+//       bg:mode('gray.100', '#121212')(props),
+//     }
+//   })
+// };
 
 const config = {
   initialColorMode: "light",
