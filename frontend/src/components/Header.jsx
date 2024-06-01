@@ -1,17 +1,41 @@
 import {Badge, Box, Button, Divider, Flex, IconButton, Menu, MenuButton, Link, MenuList, useDisclosure} from '@chakra-ui/react';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { HiOutlineSearch } from "react-icons/hi";
 import { PiHeartStraight } from "react-icons/pi";
 import { LuUser2 } from "react-icons/lu";
 import { HiOutlineShoppingBag } from "react-icons/hi2";
 import userAtom from '../atoms/userAtom';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState } from 'recoil';
 import Logo from './Logo';
 import SearchModel from './SearchModel';
+import useShowToast from '../hooks/useShowToast';
 
 const Header = () => {
-  const user = useRecoilValue(userAtom);
+  const [user,setUser] = useRecoilState(userAtom);
   const { isOpen, onOpen, onClose } = useDisclosure()
+  const showToast = useShowToast();
+  const navigate = useNavigate();
+  
+  const handleLogout = async() => {
+    try {
+      const res = await fetch('/api/users/logout', {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+      });
+
+      const data = await res.json();
+      if (data.error) {
+        showToast('Error', data.error, "error");
+        return;
+      }
+      showToast('Success', "Logged out", "success");
+      localStorage.removeItem('user-details');
+      setUser(null);
+      navigate('/login');
+    } catch (error) {
+      
+    }
+  }
   
   return (
     <Flex py={'20px'} px={'50px'} alignItems={'center'} justifyContent={'space-between'}>
@@ -57,7 +81,7 @@ const Header = () => {
                 <Button w={'full'} colorScheme='blue'>Login</Button>
               </Link>}
               {user && <Divider mb={2}/>}
-              {user && <Button w={'full'} colorScheme='gray'>Logout</Button>}
+              {user && <Button w={'full'} colorScheme='gray' onClick={handleLogout}>Logout</Button>}
             </Flex>
           </MenuList>
         </Menu>

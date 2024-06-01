@@ -75,6 +75,16 @@ const loginUser = async(req,res) => {
     }
 };
 
+const logoutUser = async(req,res) => {
+    try {
+        res.cookie("token", "", { maxAge: 1 });
+        res.status(200).json({message: "User logged out."});
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).json({error: "Error in logout user "+error.message});
+    }
+} 
+
 const UpdateUserProfile = async(req,res) => {
     try {
         const {fullName, businessName, brandName, email, address, phone} = req.body;
@@ -112,4 +122,4 @@ const UpdateUserProfile = async(req,res) => {
     }
 }
 
-export {SignupUser, loginUser, UpdateUserProfile};
+export {SignupUser, loginUser,logoutUser, UpdateUserProfile};

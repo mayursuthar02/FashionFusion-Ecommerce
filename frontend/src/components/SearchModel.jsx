@@ -11,7 +11,7 @@ const SearchModel = ({isOpen, onClose}) => {
         <ModalContent>
           <ModalHeader>Search your product</ModalHeader>
 
-          <ModalCloseButton />
+          <ModalCloseButton _hover={{bgColor: "blue.50"}}/>
           
           <ModalBody pb={6}>
             <FormControl>
