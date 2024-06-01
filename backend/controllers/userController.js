@@ -3,12 +3,13 @@ const router = express.Router();
 import bcryptjs from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import UserModel from '../models/UserModel.js';
+import {v2 as cloudinary} from 'cloudinary';
 
 
 const SignupUser = async(req,res) => {
     try {
         const {fullName, businessName, brandName, email, password, isBusinessAccount} = req.body;
-
+        
         const user = await UserModel.findOne({email});
         if (user) {
             return res.status(409).json({error: "User already exists"});
@@ -69,8 +70,46 @@ const loginUser = async(req,res) => {
         });
 
     } catch (error) {
+        console.log(error.message);
+        res.status(500).json({error: "Error in login user "+error.message});
+    }
+};
+
+const UpdateUserProfile = async(req,res) => {
+    try {
+        const {fullName, businessName, brandName, email, address, phone} = req.body;
+        let {profilePic} = req.body;
+        const userId = req.user._id;
         
+        const user = await UserModel.findById(userId);
+        if(!user) return res.status(400).json({error: "User not found"});
+
+        if (profilePic) {
+            if (user.profilePic) {
+                await cloudinary.uploader.destroy(user.profilePic.split("/").pop().split(".")[0]);
+            }
+            const uploadedResponse = await cloudinary.uploader.upload(profilePic);
+            profilePic = uploadedResponse.secure_url;
+        }
+
+        // Update User
+        user.fullName = fullName || user.fullName;
+        user.businessName = businessName || user.businessName;
+        user.brandName = brandName || user.brandName;
+        user.email = email || user.email;
+        user.profilePic = profilePic || user.profilePic;
+        user.address = address || user.address;
+        user.phone = phone || user.phone;
+
+        await user.save();
+
+        // Password should be null in response
+        user.password = null;
+        res.status(200).json(user);
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).json({error: "Error in update user "+error.message});
     }
 }
 
-export {SignupUser, loginUser};
+export {SignupUser, loginUser, UpdateUserProfile};
