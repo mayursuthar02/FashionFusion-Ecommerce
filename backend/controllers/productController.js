@@ -79,9 +79,25 @@ const updateProduct = async(req,res) => {
         res.status(200).json(product);
     } catch (error) {
         console.log(error.message);
-        res.status(500).json({error: "Error in get vender products "+error.message});
+        res.status(500).json({error: "Error in get update product "+error.message});
     }
 }
 
 
-export {createProduct,getVenderProducts,updateProduct};
+const getProductDetails = async(req,res) => {
+    try {
+        const {id} = req.params;
+        
+        const product = await productModel.findById(id);
+        if (!product) {
+            return res.status(400).json({error: "Product not found."});
+        }
+        res.status(200).json(product);
+        
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).json({error: "Error in get product "+error.message});
+    }
+}
+
+export {createProduct, getVenderProducts, updateProduct, getProductDetails};
