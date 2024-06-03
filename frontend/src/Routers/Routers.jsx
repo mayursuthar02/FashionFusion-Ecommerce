@@ -9,6 +9,7 @@ import DashboardProductPage from '../pages/DashboardProductPage';
 import Dashboard from '../pages/Dashboard';
 import DashboardOrders from '../pages/DashboardOrders';
 import DashboardReviews from '../pages/DashboardReviews';
+import ProductDetails from '../pages/ProductDetails';
 
 const Routers = () => {
   return (
@@ -17,6 +18,7 @@ const Routers = () => {
         <Route path='/login' element={<LoginPage/>}/>
         <Route path='/signup' element={<SignupPage/>}/>
         <Route path='/wishlist' element={<WishlistPage/>}/>
+        <Route path='/:category/:category/:name/:productId' element={<ProductDetails/>}/>
 
         <Route path='/dashboard/*' element={<DashboardPage/>}>
           <Route path=":name" element={<Dashboard/>}/>

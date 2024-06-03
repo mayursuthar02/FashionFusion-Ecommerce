@@ -6,6 +6,7 @@ import { ChakraProvider, extendTheme } from '@chakra-ui/react'
 import { mode } from '@chakra-ui/theme-tools';
 import { BrowserRouter } from 'react-router-dom';
 import { RecoilRoot } from 'recoil'
+import {PrimeReactProvider} from 'primereact/api'
 
 // const styles = {
 //   global:(props) => ({
@@ -27,9 +28,11 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <RecoilRoot>
       <ChakraProvider theme={theme}>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
+        <PrimeReactProvider>
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
+        </PrimeReactProvider>
       </ChakraProvider>
     </RecoilRoot>
   </React.StrictMode>,

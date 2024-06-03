@@ -38,7 +38,7 @@ const Header = () => {
   }
   
   return (
-    <Flex py={'20px'} px={'50px'} alignItems={'center'} justifyContent={'space-between'}>
+    <Flex py={'20px'} px={'50px'} alignItems={'center'} justifyContent={'space-between'} zIndex={999}>
       <Link as={RouterLink} to={'/'}>
         <Logo/>
       </Link>
@@ -72,7 +72,7 @@ const Header = () => {
           <MenuButton  bgColor={'white'} _hover={{bgColor: 'blue.50'}} borderRadius={'full'}>
             {<IconButton aria-label='User' icon={<LuUser2 size={'1.5rem'}/>} bgColor={'transparent'}/>}
           </MenuButton>
-          <MenuList>
+          <MenuList zIndex={10}>
             <Flex flexDirection={'column'} px={5} py={3} gap={3}>
               {user && user.isBusinessAccount && <Link as={RouterLink} to={`/dashboard/${user.businessName}`}  _hover={{ color: 'blue.500' }}>Dashboard</Link>}
               {user && <Link as={RouterLink} to={'/dashboard/profile'}  _hover={{ color: 'blue.500' }}>My Profile</Link>}

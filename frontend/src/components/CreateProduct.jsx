@@ -7,14 +7,16 @@ import { IoIosCloseCircle } from "react-icons/io";
 import useShowToast from "../hooks/useShowToast";
 import useUploadImage from "../hooks/useUploadImage";
 import { SmallCloseIcon } from "@chakra-ui/icons";
-import { categories, menSubCategories } from "../helpers/categories";
-import { useRecoilValue } from 'recoil';
+import { beautySubCategories, categories, kidsSubCategories, menSubCategories, wommenSubCategories } from "../helpers/categories";
+import { useRecoilState, useRecoilValue } from 'recoil';
 import userAtom from '../atoms/userAtom';
+import FetchVenderProductsData from "../helpers/FetchVenderProductsData";
 
 const CreateProduct = ({isOpen,onClose}) => {
     const user = useRecoilValue(userAtom);
     const fileRef = useRef();
     const showToast = useShowToast();
+    const fetchVenderProducts = FetchVenderProductsData();
     const [isUploading, setIsUploading] = useState(false);
     const [loading, setLoading] = useState(false);
     const [sizeInput, setSizeInput] = useState("");
@@ -34,23 +36,48 @@ const CreateProduct = ({isOpen,onClose}) => {
     
     // Upload Product Images
     const handleUploadProductImages = async (e) => {
+      // const file = e.target.files[0];
+      const files = Array.from(e.target.files);
+      const newImages = [];
+      
+      if (images.length > 9) {
+        showToast("Error", "You can use up to 9 images", "error");
+        return;
+      }
+      
       setIsUploading(true);
       setLoading(true);
-      const file = e.target.files[0];
+
       try {
-        if (images.length >= 9) {
-          showToast("Error", "You can use up to 9 images", "error");
-          setIsUploading(false);
-          return;
+        for (const file of files) {
+          const uploadImageCloudinary = await useUploadImage(file);
+          newImages.push(uploadImageCloudinary.url);
         }
-        const uploadImageCloudinary = await useUploadImage(file);
-        setImages([...images, uploadImageCloudinary.url]);
+    
+        setImages([...images, ...newImages]);
       } catch (error) {
         console.error("Error uploading image:", error);
+        showToast("Error", "Failed to upload one or more images", "error");
       } finally {
-        setIsUploading(false);
+        setIsUploading(false); 
         setLoading(false);
       }
+
+
+      // try {
+      //   if (images.length >= 9) {
+      //     showToast("Error", "You can use up to 9 images", "error");
+      //     setIsUploading(false);
+      //     return;
+      //   }
+      //   const uploadImageCloudinary = await useUploadImage(file);
+      //   setImages([...images, uploadImageCloudinary.url]);
+      // } catch (error) {
+      //   console.error("Error uploading image:", error);
+      // } finally {
+      //   setIsUploading(false);
+      //   setLoading(false);
+      // }
     };
     // Delete uploaded images
     const handleDeleteImage = (img) => {
@@ -74,6 +101,7 @@ const CreateProduct = ({isOpen,onClose}) => {
     // Hnadle Submit
     const handleSubmit = async() => {
       // console.log({name, brandName, category, subCategory, sizes, color, material, stock, price, discount, description, images});
+  
       setLoading(true);
       try {
         const res = await fetch('/api/products/create', {
@@ -82,7 +110,7 @@ const CreateProduct = ({isOpen,onClose}) => {
           body: JSON.stringify({name, brandName, category, subCategory, sizes, color, material, stock, price, discount, description, images})
         });
         const data = await res.json();
-        if (name == "" || brandName == "" || category == "" || subCategory == "" || sizes == "" || color == "" || material == "" || stock == 0 || price ==0 || description == "" || images == "") {
+        if (name == "" || brandName == "" || category == "" || subCategory == "" || sizes == "" || color == "" || material == "" || price == 0 || description == "" || images == "") {
           showToast("Error", "Fields is require", "error");
           return;  
         }
@@ -93,6 +121,8 @@ const CreateProduct = ({isOpen,onClose}) => {
         }
         showToast("Success", "Product created", "success");
         onClose();
+        fetchVenderProducts();
+        // Reset
         setName("");
         setCategory("");
         setSubCategory("");
@@ -150,6 +180,15 @@ const CreateProduct = ({isOpen,onClose}) => {
                     {category === "men" && menSubCategories.map((category,i) => (
                       <option key={i} value={category.value}>{category.title}</option>
                     ))}
+                    {category === "women" && wommenSubCategories.map((category,i) => (
+                      <option key={i} value={category.value}>{category.title}</option>
+                    ))}
+                    {category === "kids" && kidsSubCategories.map((category,i) => (
+                      <option key={i} value={category.value}>{category.title}</option>
+                    ))}
+                    {category === "beauty" && beautySubCategories.map((category,i) => (
+                      <option key={i} value={category.value}>{category.title}</option>
+                    ))}
                   </Select>
                 </FormControl>
               </HStack>
@@ -172,14 +211,14 @@ const CreateProduct = ({isOpen,onClose}) => {
                 
                 <FormControl>
                   <FormLabel fontSize={'14px'} color={'#888'} fontWeight={'400'}>Color</FormLabel>
-                  <Input type="text" borderRadius={'md'} placeholder="ex. blue, red, green" value={color} onChange={e => setColor(e.target.value)}/>
+                  <Input type="text" borderRadius={'md'} placeholder="ex. blue, red, green" value={color} onChange={e => setColor(e.target.value.toLowerCase())}/>
                 </FormControl>
               </HStack> 
 
               <HStack gap={4} mb={5}>
                 <FormControl>
                   <FormLabel fontSize={'14px'} color={'#888'} fontWeight={'400'}>Material</FormLabel>
-                  <Input type="text" borderRadius={'md'} placeholder="ex. cotton" value={material} onChange={e => setMaterial(e.target.value)}/>
+                  <Input type="text" borderRadius={'md'} placeholder="ex. cotton" value={material} onChange={e => setMaterial(e.target.value.toLowerCase())}/>
                 </FormControl>
 
                 <FormControl>
@@ -238,7 +277,7 @@ const CreateProduct = ({isOpen,onClose}) => {
                     }
                     <Button width={'100px'} height={'100px'} border={'1px solid'} bg={'transparent'} borderColor={'gray.200'} display={'flex'} alignItems={'center'} justifyContent={'center'} borderRadius={'md'} cursor={'pointer'} _hover={{bgColor: 'gray.50'}} onClick={() => fileRef.current.click()} isLoading={isUploading}>
                         <LuUploadCloud fontSize={'25px'} color="gray" opacity={.7}/>
-                        <Input type="file" ref={fileRef} hidden onChange={handleUploadProductImages}/>
+                        <Input type="file" ref={fileRef} hidden onChange={handleUploadProductImages} multiple/>
                     </Button>
                 </Box>
 
