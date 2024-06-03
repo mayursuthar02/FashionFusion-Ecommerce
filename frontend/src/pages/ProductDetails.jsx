@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { Box, Button, Divider, Flex, IconButton, Image, Link, Text } from '@chakra-ui/react';
+import { Avatar, Box, Button, Divider, Flex, IconButton, Image, Link, Text, useDisclosure } from '@chakra-ui/react';
 import { Link as RouterLink, useParams } from 'react-router-dom';
+
 import useShowToast from '../hooks/useShowToast';
+
 import { IoShareSocialSharp } from "react-icons/io5";
 import { FaStar } from "react-icons/fa6";
 import { MdKeyboardArrowDown, MdOutlineKeyboardArrowUp } from "react-icons/md";
@@ -11,6 +13,9 @@ import { MdForwardToInbox } from "react-icons/md";
 import { LiaShippingFastSolid } from "react-icons/lia";
 import { FaRegHeart } from "react-icons/fa6";
 import { TbMessage2 } from "react-icons/tb";
+
+import { formatDistanceToNow } from 'date-fns'
+
 import { Splide, SplideSlide } from '@splidejs/react-splide';
 import '@splidejs/splide/dist/css/splide.min.css';
 // Image Import
@@ -22,29 +27,56 @@ import img5 from '../assets/Logo Payment Method/5.png'
 import img6 from '../assets/Logo Payment Method/6.png'
 import img7 from '../assets/Logo Payment Method/7.png'
 import img8 from '../assets/Logo Payment Method/8.png'
+import WriteReview from '../components/WriteReview';
 
 const paymentImg = [img1, img2, img3, img4, img5, img6, img7, img8];
 
 const ProductDetails = () => {
   const {productId,category,subCategory,name} = useParams();
-  const showToast = useShowToast();
+  const [reviews, setReviews] = useState([]);
   const [product, setProduct] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [callBackFunction, setCallBackFunction] = useState(false);
+  const [seeReviews, setSeeReviews] = useState(2);
   let splideRef = null;
+  const showToast = useShowToast();
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
     const getProductDetails = async() => {
-      const res = await fetch(`/api/products/get-product-details/${productId}`);
-      const data = await res.json();
-      if (data.error) {
-        showToast("Error",data.error,"error");
-        return;
+      try {
+        const res = await fetch(`/api/products/get-product-details/${productId}`);
+        const data = await res.json();
+        if (data.error) {
+          showToast("Error",data.error,"error");
+          return;
+        }
+        setProduct(data);
+      } catch (error) {
+        console.log(error);
       }
-      setProduct(data);
     };
     
     getProductDetails();
-  },[productId]);
+  },[productId, reviews]);
+  
+  useEffect(()=> {
+    const getAllProductReviews = async() => {
+      try {
+        const res = await fetch(`/api/reviews/by-product/${productId}`);
+        const data = await res.json();
+        if (data.error) {
+          showToast("Error",data.error,"error");
+          return;
+        }
+        setReviews(data);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    getAllProductReviews();
+  },[callBackFunction]);
   
   const handleUp = () => {
     if (splideRef) {
@@ -217,12 +249,12 @@ const ProductDetails = () => {
 
           <Divider borderColor={'gray.300'} mb={6}/>
 
-          <Text color={'gray.500'} fontSize={'15px'} mb={2}>DESCRIPTION</Text>
+          <Text color={'gray.500'} fontSize={'15px'} mb={2} fontWeight={'500'}>DESCRIPTION</Text>
           <Text color={'gray.600'} fontSize={'13px'} mb={6}>{product.description}</Text>
 
           <Divider borderColor={'gray.300'} mb={6}/>
 
-          <Text fontSize={'15px'} fontWeight={'500'} mb={5}>ADDITIONAL INFORMATION</Text>
+          <Text fontSize={'15px'} fontWeight={'600'} mb={5}>ADDITIONAL INFORMATION</Text>
           
           <Flex alignItems={'center'} gap={1} mb={2}>
                 <Text fontSize={'15px'} fontWeight={'500'}>Color:</Text>
@@ -241,24 +273,52 @@ const ProductDetails = () => {
           
           <Divider borderColor={'gray.300'} my={6}/>
           
-          <Flex alignItems={'center'} justifyContent={'space-between'}>
-            <Text>REVIEWS</Text>
-            <Button color={'gray.500'} display={'flex'} alignItems={'center'} gap={2} fontWeight={'500'} fontSize={'15px'}>
-              <TbMessage2/>
-              Write a review
-            </Button>
-          </Flex>
+          <Box>
+            <Text fontSize={'15px'} fontWeight={'600'}>REVIEWS</Text>
+            <Flex alignItems={'center'} justifyContent={'space-between'}>
+              <Text fontSize={'15px'} color={'gray.500'}>{reviews.length} Reviews</Text>
+              <Button color={'gray.500'} display={'flex'} alignItems={'center'} gap={2} fontWeight={'500'} fontSize={'15px'} onClick={onOpen}>
+                <TbMessage2/>
+                Write a review
+              </Button>
+            </Flex>
 
-          {product.reviews.length !== 0 ? (
-            <Box>gfgg</Box>
-          ):(
-            <Text color={'gray.500'} fontSize={'15px'}>0 reviews</Text>
-          )}
-          
+            {reviews.length > 0 && (
+              reviews.slice(0,seeReviews).map((review) => (
+                <Box key={review.id} p={4} mb={4}>
+                  <Flex alignItems={'center'} justifyContent={'space-between'}>
+                    <Flex align={'center'} gap={2}>
+                      <Avatar src={review.userId.profilePic} size={'sm'}/>
+                      <Text fontSize={'15px'} fontWeight={'600'}>{review.userId.fullName ? review.userId.fullName : review.userId.businessName}</Text>
+                    </Flex>
+
+                    <Flex alignItems={'center'} gap={4}>
+                      <Text fontSize={'12px'} color={'gray.500'}>{formatDistanceToNow(new Date(review.createdAt))} ago</Text>
+                      <Flex fontSize={'12px'} gap={1}>
+                      {[1, 2, 3, 4, 5].map((starValue) => (
+                          <FaStar
+                            key={starValue}
+                            color={starValue <= review.rating ? "orange" : "#748298"}
+                          />
+                      ))}
+                      </Flex>
+                    </Flex>
+                  </Flex>
+
+                  <Text color={'gray.500'} fontSize={'15px'} mt={2}>{review.text}</Text>
+                </Box>
+              ))
+            )}
+
+            {reviews.length > seeReviews && <Link color={'gray.500'} fontSize={'15px'} _hover={{color: "blue.500", textDecoration: 'underline'}} onClick={() => setSeeReviews(10)}>see reviews</Link>}
+            {reviews.length < seeReviews && reviews.length > 0 && <Link color={'gray.500'} fontSize={'15px'} _hover={{color: "blue.500", textDecoration: 'underline'}} onClick={() => setSeeReviews(2)}>see less</Link>}
+          </Box>
           <Divider borderColor={'gray.300'} my={6}/>
           
         </Box>
       </Box>
+
+      <WriteReview isOpen={isOpen} onClose={onClose} productId={product._id} setCallBackFunction={setCallBackFunction}/>
     </>
   )
 }
