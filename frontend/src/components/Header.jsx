@@ -44,12 +44,12 @@ const Header = () => {
       </Link>
 
       <Flex alignItems={'center'} gap={5}>
-        <Link as={RouterLink} to={'/'} _hover={{ color: 'blue.500' }}>Home</Link>
-        <Link as={RouterLink} to={'/'} _hover={{ color: 'blue.500' }}>Men</Link>
-        <Link as={RouterLink} to={'/'} _hover={{ color: 'blue.500' }}>Women</Link>
-        <Link as={RouterLink} to={'/'} _hover={{ color: 'blue.500' }}>Kids</Link>
-        <Link as={RouterLink} to={'/'} _hover={{ color: 'blue.500' }}>Beauty</Link>
-        <Link as={RouterLink} to={'/'} _hover={{ color: 'blue.500' }}>Accessories</Link>
+        <Link as={RouterLink} to={`/`} _hover={{ color: 'blue.500' }}>Home</Link>
+        <Link as={RouterLink} to={`/${"men"}`} _hover={{ color: 'blue.500' }}>Men</Link>
+        <Link as={RouterLink} to={`/${"women"}`} _hover={{ color: 'blue.500' }}>Women</Link>
+        <Link as={RouterLink} to={`/${"kids"}`} _hover={{ color: 'blue.500' }}>Kids</Link>
+        <Link as={RouterLink} to={`/${"beauty"}`} _hover={{ color: 'blue.500' }}>Beauty</Link>
+        <Link as={RouterLink} to={`/${"accessories"}`} _hover={{ color: 'blue.500' }}>Accessories</Link>
       </Flex>
 
       <Flex fontSize={'large'} alignItems={'center'} gap={2}>

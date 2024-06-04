@@ -117,9 +117,28 @@ const getProductByName = async(req,res) => {
     }
 };
 
+
+const getFilterProperties = async(req,res) => {
+    try {
+        const sizes = await productModel.distinct("sizes").sort({sizes: 1});
+        const colors = await productModel.distinct("color").sort({color: 1});
+        const brandName = await productModel.distinct("brandName").sort({brandName: 1});
+
+        if (!sizes || !colors || !brandName) {
+            return res.status(400).json({error: "Not found"});
+        }
+        
+        res.status(200).json({sizes, colors, brandName});
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).json({error: "Error in get filter properties "+error.message});
+    }
+}
+
+
 const getCategoryProduct = async (req, res) => {
     try {
-      const { category, subCategory, sizes, colors } = req.body;
+      const { category, subCategory, sizes, colors, minPrice, maxPrice, brandNames} = req.body;
   
       // Build the query based on provided criteria
       let query = {};
@@ -134,13 +153,18 @@ const getCategoryProduct = async (req, res) => {
       if (sizes && sizes.length > 0) {
         query.sizes = { $in: sizes };
       }
+      
+      // Check if brandNames array is provided and use $in operator for efficient brandName matching
+      if (brandNames && brandNames.length > 0) {
+        query.brandName = { $in: brandNames };
+      }
 
       // Check if color array is provided and use $in operator for efficient color matching
       if (colors && colors.length > 0) {
         query.color = { $in: colors };
       }
       
-      // Price range filtering (optional)
+    //   Price range filtering (optional)
       if (minPrice && maxPrice) {
         query.price = { $gte: minPrice, $lte: maxPrice }; // Price between min and max (inclusive)
       }
@@ -159,4 +183,4 @@ const getCategoryProduct = async (req, res) => {
   };
   
 
-export {createProduct, getVenderProducts, updateProduct, getProductDetails, getProductByName, getCategoryProduct};
+export {createProduct, getVenderProducts, updateProduct, getProductDetails, getProductByName, getFilterProperties, getCategoryProduct};

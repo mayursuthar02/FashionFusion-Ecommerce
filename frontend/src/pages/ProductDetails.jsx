@@ -40,6 +40,9 @@ const ProductDetails = () => {
   const [callBackFunction, setCallBackFunction] = useState(false);
   const [seeReviews, setSeeReviews] = useState(2);
   const [loading, setLoading] = useState(false);
+  // Input 
+  const [size, setSize] = useState('Select size');
+  
   let splideRef = null;
   const showToast = useShowToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -65,7 +68,7 @@ const ProductDetails = () => {
     };
   
     getProductDetails();
-  }, [productId, reviews]);
+  }, [productId]);
 
   useEffect(() => {
     const getProductsByName = async () => {
@@ -132,7 +135,7 @@ const ProductDetails = () => {
       <Box bg={'gray.100'} px={'50px'} py={5}>
         <Flex alignItems={'center'} justifyContent={'space-between'}>
           <Flex align={'center'} gap={1} fontSize={'15px'} color={'gray.500'}>
-            <Link as={RouterLink} >{category}</Link>
+            <Link as={RouterLink} to={`/${category}`}>{category}</Link>
             <span>/</span>
             <Link as={RouterLink} >{subCategory}</Link>
             <span>/</span>
@@ -154,7 +157,7 @@ const ProductDetails = () => {
                 <FaStar key={i}/>
               ))}
             </Flex>
-            <Text color={'gray.500'} fontSize={'15px'}>{product.reviews.length} reviews</Text>
+            <Text color={'gray.500'} fontSize={'15px'}>{reviews.length} reviews</Text>
           </Flex>
 
           <Flex color={'gray.500'} fontSize={'15px'} alignItems={'center'} gap={1}>
@@ -221,11 +224,11 @@ const ProductDetails = () => {
 
           <Flex alignItems={'center'} gap={1} mb={2}>
                 <Text fontSize={'15px'} fontWeight={'400'} color={'gray.500'}>Sizes:</Text>
-                <Text fontSize={'15px'} fontWeight={'500'}>S</Text>
+                <Text fontSize={'15px'} fontWeight={'500'}>{size}</Text>
           </Flex>
           <Flex alignItems={'center'} gap={2} mb={3}>
-            {product.sizes.map((size,i)=> (
-              <Button key={i} borderRadius={'md'} color={'gray.700'} fontWeight={'500'} w={'45px'} h={'40px'} alignItems={'center'} justifyContent={'center'} cursor={'pointer'}>{size}</Button>
+            {product.sizes.map((mapSize,i)=> (
+              <Button key={i} borderRadius={'md'} color={'gray.700'} fontWeight={'500'} w={'45px'} h={'40px'} alignItems={'center'} justifyContent={'center'} cursor={'pointer'} onClick={() => setSize(mapSize)}>{mapSize}</Button>
             ))}
           </Flex>
           <Flex alignItems={'center'} gap={1} mb={6} fontSize={'13px'} fontWeight={'400'} color={'gray.500'}>
