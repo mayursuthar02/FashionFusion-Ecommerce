@@ -15,10 +15,18 @@ const DashboardProductPage = () => {
   const showToast = useShowToast();
   const fetchVenderProducts = FetchVenderProductsData();
   const loadingList = new Array(8).fill(null);
+  const [loading, setLoading] = useState(false);
 
 
   useEffect(()=>{
-    fetchVenderProducts();
+    setLoading(true);
+    try {
+      fetchVenderProducts();
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setLoading(false);
+    }
   },[showToast]);
 
 
@@ -38,7 +46,7 @@ const DashboardProductPage = () => {
       <Divider borderColor={'#e5e5e5'} my={5}/>
 
       {/* Loading skeleton */}
-      {products.length == 0 && (
+      {loading && (
         <Box display={'grid'} gridTemplateColumns={'repeat(4, 1fr)'} gap={5} my={5}>
           {loadingList.map((_,i) => (
             <Box>
@@ -52,7 +60,7 @@ const DashboardProductPage = () => {
       )}
 
       {/* Show proudct */}
-      {products.length > 0 ? (
+      {products.length > 0 && !loading ? (
         <Box display={'grid'} gridTemplateColumns={'repeat(4, 1fr)'} gap={5} my={5}>
           {products.map((product) => (
             <DashboardProductCard key={product._id} product={product} />

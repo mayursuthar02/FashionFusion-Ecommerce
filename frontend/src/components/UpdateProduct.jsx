@@ -280,7 +280,7 @@ import FetchVenderProductsData from "../helpers/FetchVenderProductsData";
                   </Box>
   
                   <Text fontSize={'14px'} color={'#888'} fontWeight={'400'} mb={2}>Description</Text>
-                  <Textarea borderRadius={'md'} value={description} onChange={e => setDescription(e.target.value)}/>
+                  <Textarea borderRadius={'md'} height={'340px'} value={description} onChange={e => setDescription(e.target.value)}/>
               </Box>
           </ModalBody>
   

@@ -98,6 +98,65 @@ const getProductDetails = async(req,res) => {
         console.log(error.message);
         res.status(500).json({error: "Error in get product "+error.message});
     }
-}
+};
 
-export {createProduct, getVenderProducts, updateProduct, getProductDetails};
+const getProductByName = async(req,res) => {
+    try {
+        const {name} = req.params;
+        
+        const product = await productModel.find({name});
+        if (!product) {
+            return res.status(400).json({error: "Product not found."});
+        }
+        
+        res.status(200).json(product);
+
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).json({error: "Error in get product "+error.message});
+    }
+};
+
+const getCategoryProduct = async (req, res) => {
+    try {
+      const { category, subCategory, sizes, colors } = req.body;
+  
+      // Build the query based on provided criteria
+      let query = {};
+      if (category) {
+        query.category = category;
+      }
+      if (subCategory) {
+        query.subCategory = subCategory;
+      }
+  
+      // Check if sizes array is provided and use $in operator for efficient size matching
+      if (sizes && sizes.length > 0) {
+        query.sizes = { $in: sizes };
+      }
+
+      // Check if color array is provided and use $in operator for efficient color matching
+      if (colors && colors.length > 0) {
+        query.color = { $in: colors };
+      }
+      
+      // Price range filtering (optional)
+      if (minPrice && maxPrice) {
+        query.price = { $gte: minPrice, $lte: maxPrice }; // Price between min and max (inclusive)
+      }
+  
+      const products = await productModel.find(query);
+  
+      if (!products) {
+        return res.status(400).json({ error: "Product not found." });
+      }
+  
+      res.status(200).json(products);
+    } catch (error) {
+      console.log(error.message);
+      res.status(500).json({ error: "Error in get product " + error.message });
+    }
+  };
+  
+
+export {createProduct, getVenderProducts, updateProduct, getProductDetails, getProductByName, getCategoryProduct};

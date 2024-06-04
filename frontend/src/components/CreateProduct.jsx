@@ -156,7 +156,7 @@ const CreateProduct = ({isOpen,onClose}) => {
             <Box px={5}>
               <FormControl mb={5}>
                 <FormLabel fontSize={'14px'} color={'#888'} fontWeight={'400'}>Product Name</FormLabel>
-                <Input type="text" borderRadius={'md'} value={name} onChange={e => setName(e.target.value)}/>
+                <Input type="text" borderRadius={'md'} value={name} onChange={e => setName(e.target.value.trim())}/>
               </FormControl>
 
               <FormControl mb={5}>
@@ -197,7 +197,7 @@ const CreateProduct = ({isOpen,onClose}) => {
                 <Box w={'full'}>
                   <FormControl mb={2}>
                     <FormLabel fontSize={'14px'} color={'#888'} fontWeight={'400'}>Size</FormLabel>
-                    <Input type="text" borderRadius={'md'} placeholder="ex.  xs, s, m, l, xl" value={sizeInput} onChange={e => setSizeInput(e.target.value)} onKeyPress={handleSizeInputKeyPress}/>
+                    <Input type="text" borderRadius={'md'} placeholder="ex.  xs, s or 32, 34 etc." value={sizeInput} onChange={e => setSizeInput(e.target.value)} onKeyPress={handleSizeInputKeyPress}/>
                   </FormControl>
                   <Flex alignItems={'center'} gap={2} flexWrap={'wrap'}>
                     {sizes.length > 0 && sizes.map((size,i) => (
@@ -282,7 +282,7 @@ const CreateProduct = ({isOpen,onClose}) => {
                 </Box>
 
                 <Text fontSize={'14px'} color={'#888'} fontWeight={'400'} mb={2}>Description</Text>
-                <Textarea borderRadius={'md'} value={description} onChange={e => setDescription(e.target.value)}/>
+                <Textarea borderRadius={'md'} height={'340px'} value={description} onChange={e => setDescription(e.target.value)}/>
             </Box>
         </ModalBody>
 

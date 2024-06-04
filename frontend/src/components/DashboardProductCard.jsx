@@ -82,7 +82,7 @@ const DashboardProductCard = ({ product}) => {
         </Box>
         {/* Details */}
         <Box mt={1} px={2}>
-          <Text fontWeight={"600"} fontSize={"17px"} mb={1}>
+          <Text fontWeight={"600"} fontSize={"17px"} mb={1} mt={2}>
             {product.brandName}
           </Text>
           <Text lineHeight={"20px"} fontSize={"14px"} color={"gray.500"}>

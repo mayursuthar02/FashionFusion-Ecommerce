@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Avatar, Box, Button, Divider, Flex, IconButton, Image, Link, Text, useDisclosure } from '@chakra-ui/react';
+import { Avatar, Box, Button, Divider, Flex, IconButton, Image, Link, Text, filter, useDisclosure } from '@chakra-ui/react';
 import { Link as RouterLink, useParams } from 'react-router-dom';
 
 import useShowToast from '../hooks/useShowToast';
@@ -35,64 +35,95 @@ const ProductDetails = () => {
   const {productId,category,subCategory,name} = useParams();
   const [reviews, setReviews] = useState([]);
   const [product, setProduct] = useState(null);
+  const [similerProducts, setSimilerProducts] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [callBackFunction, setCallBackFunction] = useState(false);
   const [seeReviews, setSeeReviews] = useState(2);
+  const [loading, setLoading] = useState(false);
   let splideRef = null;
   const showToast = useShowToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
-    const getProductDetails = async() => {
+    const getProductDetails = async () => {
+      setLoading(true);
       try {
         const res = await fetch(`/api/products/get-product-details/${productId}`);
         const data = await res.json();
         if (data.error) {
-          showToast("Error",data.error,"error");
+          showToast("Error", data.error, "error");
           return;
         }
         setProduct(data);
       } catch (error) {
         console.log(error);
+      } finally {
+        setTimeout(() => {
+          setLoading(false);
+        }, 200);
       }
     };
-    
-    getProductDetails();
-  },[productId, reviews]);
   
-  useEffect(()=> {
-    const getAllProductReviews = async() => {
+    getProductDetails();
+  }, [productId, reviews]);
+
+  useEffect(() => {
+    const getProductsByName = async () => {
+      if (!product) return; // Ensure product is loaded first
+      try {
+        const res = await fetch(`/api/products/get-product/${product.name}`);
+        const data = await res.json();
+        if (data.error) {
+          showToast("Error", data.error, "error");
+          return;
+        }
+        const filterProduct = data.filter((d) => d._id !== product._id);
+        setSimilerProducts(filterProduct);
+        console.log(filterProduct);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+  
+    getProductsByName();
+  }, [product]);
+  
+  useEffect(() => {
+    const getAllProductReviews = async () => {
       try {
         const res = await fetch(`/api/reviews/by-product/${productId}`);
         const data = await res.json();
         if (data.error) {
-          showToast("Error",data.error,"error");
+          showToast("Error", data.error, "error");
           return;
         }
         setReviews(data);
       } catch (error) {
         console.log(error);
       }
-    }
-
+    };
+  
     getAllProductReviews();
-  },[callBackFunction]);
+  }, [productId, callBackFunction]);
+    
   
   const handleUp = () => {
     if (splideRef) {
       splideRef.go('<');
     }
   };
-
+  
   const handleDown = () => {
     if (splideRef) {
       splideRef.go('>');
     }
   };
   
-  if (!product) {
+  if (!product || loading) {
     return (
-      <p>Product not found</p>
+      <p>
+        
+      </p>
     )
   }
   
@@ -119,11 +150,9 @@ const ProductDetails = () => {
         <Flex alignItems={'center'} justifyContent={'space-between'}>
           <Flex alignItems={'center'} gap={2} fontSize={'15px'}>
             <Flex alignItems={'center'} color={'orange'} gap={1}>
-              <FaStar/>
-              <FaStar/>
-              <FaStar/>
-              <FaStar/>
-              <FaStar/>
+              {[1,2,3,4,5].map((_,i) => (
+                <FaStar key={i}/>
+              ))}
             </Flex>
             <Text color={'gray.500'} fontSize={'15px'}>{product.reviews.length} reviews</Text>
           </Flex>
@@ -173,16 +202,21 @@ const ProductDetails = () => {
     
         {/* Details */}
         <Box py={10}>
-          <Text fontSize={'30px'} fontWeight={'500'} mb={2}>{product.name}</Text>
+          <Text fontSize={'35px'} fontWeight={'500'} mb={2}>{product.name}</Text>
 
           <Flex alignItems={'center'} gap={1} mb={2}>
                 <Text fontSize={'15px'} fontWeight={'400'} color={'gray.500'}>Color:</Text>
                 <Text fontSize={'15px'} fontWeight={'500'}>{product.color}</Text>
           </Flex>
-          <Flex mb={5}>
-            <Box width={'70px'} height={'70px'} overflow={'hidden'}>
-              <Image src={product.images[0]} w={'full'} h={'full'} objectFit={'cover'} borderRadius={'md'} cursor={'pointer'}/>
-            </Box>
+          <Flex mb={5} gap={3}>
+            <Link as={RouterLink} width={'70px'} height={'70px'} overflow={'hidden'} to={`/${product.category}/${product.subCategory}/${product.name.split(" ").join("-")}/${product._id}`} _hover={{opacity: .8}}>
+              <Image src={product?.images[0]} w={'full'} h={'full'} objectFit={'cover'} borderRadius={'md'}/>
+            </Link>
+            {similerProducts.length > 0 && similerProducts.map((p)=> (
+              <Link key={p._id} as={RouterLink} width={'70px'} height={'70px'} overflow={'hidden'} to={`/${p.category}/${p.subCategory}/${p.name.split(" ").join("-")}/${p._id}`} _hover={{opacity: .8}}>
+                <Image src={p.images[0]} w={'full'} h={'full'} objectFit={'cover'} borderRadius={'md'}/>
+              </Link>
+            ))}
           </Flex>
 
           <Flex alignItems={'center'} gap={1} mb={2}>
@@ -258,7 +292,12 @@ const ProductDetails = () => {
           
           <Flex alignItems={'center'} gap={1} mb={2}>
                 <Text fontSize={'15px'} fontWeight={'500'}>Color:</Text>
-                <Text fontSize={'15px'} fontWeight={'400'} color={'gray.500'}>{product.color}</Text>
+                <Flex align={'center'}>
+                  <Text fontSize={'15px'} fontWeight={'400'} color={'gray.500'}>{product.color}</Text>
+                  {similerProducts.map((p) => (
+                    <Text key={p._id} fontSize={'15px'} fontWeight={'400'} color={'gray.500'}>, {p.color}</Text>
+                  ))}
+                </Flex>
           </Flex>
           
           <Flex alignItems={'center'} gap={1} mb={2}>
@@ -311,7 +350,7 @@ const ProductDetails = () => {
             )}
 
             {reviews.length > seeReviews && <Link color={'gray.500'} fontSize={'15px'} _hover={{color: "blue.500", textDecoration: 'underline'}} onClick={() => setSeeReviews(10)}>see reviews</Link>}
-            {reviews.length < seeReviews && reviews.length > 0 && <Link color={'gray.500'} fontSize={'15px'} _hover={{color: "blue.500", textDecoration: 'underline'}} onClick={() => setSeeReviews(2)}>see less</Link>}
+            {reviews.length < seeReviews && reviews.length > 2 && <Link color={'gray.500'} fontSize={'15px'} _hover={{color: "blue.500", textDecoration: 'underline'}} onClick={() => setSeeReviews(2)}>see less</Link>}
           </Box>
           <Divider borderColor={'gray.300'} my={6}/>
           
