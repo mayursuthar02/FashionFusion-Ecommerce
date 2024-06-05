@@ -1,4 +1,4 @@
-import {Badge, Box, Button, Divider, Flex, IconButton, Menu, MenuButton, Link, MenuList, useDisclosure} from '@chakra-ui/react';
+import {Badge, Box, Button, Divider, Flex, IconButton, Menu, MenuButton, Link, MenuList, useDisclosure, MenuItem, Avatar, Text} from '@chakra-ui/react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { HiOutlineSearch } from "react-icons/hi";
 import { PiHeartStraight } from "react-icons/pi";
@@ -9,10 +9,13 @@ import { useRecoilState } from 'recoil';
 import Logo from './Logo';
 import SearchModel from './SearchModel';
 import useShowToast from '../hooks/useShowToast';
+import { useState } from 'react';
+import { beautySubCategories, kidsSubCategories, menSubCategories, wommenSubCategories } from "../helpers/categories";
 
 const Header = () => {
   const [user,setUser] = useRecoilState(userAtom);
   const { isOpen, onOpen, onClose } = useDisclosure()
+  const [isOpens, setIsOpens] = useState({});
   const showToast = useShowToast();
   const navigate = useNavigate();
   
@@ -36,20 +39,75 @@ const Header = () => {
       
     }
   }
+
+  const handleMouseEnter = (menu) => {
+    setIsOpens((prev) => ({ ...prev, [menu]: true }));
+  };
+
+  const handleMouseLeave = (menu) => {
+    setIsOpens((prev) => ({ ...prev, [menu]: false }));
+  };
+
+  const menuItems = [
+    { label: 'Men', path: '/men' },
+    { label: 'Women', path: '/women' },
+    { label: 'Kids', path: '/kids' },
+    { label: 'Beauty', path: '/beauty' },
+    { label: 'Accessories', path: '/accessories' }
+  ];
   
   return (
-    <Flex py={'20px'} px={'50px'} alignItems={'center'} justifyContent={'space-between'} zIndex={999}>
+    <Flex py={'15px'} px={'50px'} alignItems={'center'} justifyContent={'space-between'} zIndex={999} borderBottom={'1px solid'} borderColor={'gray.200'}>
       <Link as={RouterLink} to={'/'}>
         <Logo/>
       </Link>
 
       <Flex alignItems={'center'} gap={5}>
         <Link as={RouterLink} to={`/`} _hover={{ color: 'blue.500' }}>Home</Link>
-        <Link as={RouterLink} to={`/${"men"}`} _hover={{ color: 'blue.500' }}>Men</Link>
-        <Link as={RouterLink} to={`/${"women"}`} _hover={{ color: 'blue.500' }}>Women</Link>
-        <Link as={RouterLink} to={`/${"kids"}`} _hover={{ color: 'blue.500' }}>Kids</Link>
-        <Link as={RouterLink} to={`/${"beauty"}`} _hover={{ color: 'blue.500' }}>Beauty</Link>
-        <Link as={RouterLink} to={`/${"accessories"}`} _hover={{ color: 'blue.500' }}>Accessories</Link>
+        {menuItems.map((item) => (
+          <Menu isOpen={isOpens[item.label.toLowerCase()]} key={item.label}>
+          <MenuButton
+            as={RouterLink}
+            to={item.path}
+            _hover={{ color: 'blue.500' }}
+            onMouseEnter={() => handleMouseEnter(item.label.toLowerCase())}
+            onMouseLeave={() => handleMouseLeave(item.label.toLowerCase())}
+            onClick={() => handleMouseLeave(item.label.toLowerCase())}
+          >
+            <RouterLink to={item.path}>{item.label}</RouterLink>
+          </MenuButton>
+              <MenuList onMouseEnter={() => handleMouseEnter(item.label.toLowerCase())} onMouseLeave={() => handleMouseLeave(item.label.toLowerCase())}>
+                {item.label == 'Men' &&
+                  menSubCategories.map((category) => (
+                    <MenuItem key={category}>
+                      <Link as={RouterLink} to={`/${item.label.toLowerCase()}/${category.value}`} _hover={{ color: 'blue.500'}} w={'200px'} onClick={() => handleMouseLeave(item.label.toLowerCase())}>{category.title}</Link>
+                    </MenuItem>
+                  ))
+                }
+                {item.label == 'Women' &&
+                  wommenSubCategories.map((category) => (
+                    <MenuItem key={category}>
+                      <Link as={RouterLink} to={`/${item.label.toLowerCase()}/${category.value}`} _hover={{ color: 'blue.500' }} w={'200px'} onClick={() => handleMouseLeave(item.label.toLowerCase())}>{category.title}</Link>
+                    </MenuItem>
+                  ))
+                }
+                {item.label == 'Kids' &&
+                  kidsSubCategories.map((category) => (
+                    <MenuItem key={category}>
+                      <Link as={RouterLink} to={`/${item.label.toLowerCase()}/${category.value}`} _hover={{ color: 'blue.500' }} w={'200px'} onClick={() => handleMouseLeave(item.label.toLowerCase())}>{category.title}</Link>
+                    </MenuItem>
+                  ))
+                }
+                {item.label == 'Beauty' &&
+                  beautySubCategories.map((category) => (
+                    <MenuItem key={category}>
+                      <Link as={RouterLink} to={`/${item.label.toLowerCase()}/${category.value}`} _hover={{ color: 'blue.500' }} w={'200px'} onClick={() => handleMouseLeave(item.label.toLowerCase())}>{category.title}</Link>
+                    </MenuItem>
+                  ))
+                }
+              </MenuList>
+          </Menu>
+        ))}
       </Flex>
 
       <Flex fontSize={'large'} alignItems={'center'} gap={2}>
@@ -74,6 +132,11 @@ const Header = () => {
           </MenuButton>
           <MenuList zIndex={10}>
             <Flex flexDirection={'column'} px={5} py={3} gap={3}>
+              {user && <Flex align={'center'} gap={2}>
+                <Avatar src={user.profilePic}/>
+                <Text>{user.fullName ? user.fullName : user.businessName}</Text>
+              </Flex>}
+              {user && <Divider mt={2}/>}
               {user && user.isBusinessAccount && <Link as={RouterLink} to={`/dashboard/${user.businessName}`}  _hover={{ color: 'blue.500' }}>Dashboard</Link>}
               {user && <Link as={RouterLink} to={'/dashboard/profile'}  _hover={{ color: 'blue.500' }}>My Profile</Link>}
               {user && <Link as={RouterLink}  _hover={{ color: 'blue.500' }}>My Order</Link>}
@@ -85,6 +148,7 @@ const Header = () => {
             </Flex>
           </MenuList>
         </Menu>
+        
       </Flex>
 
       <SearchModel isOpen={isOpen} onClose={onClose}/>

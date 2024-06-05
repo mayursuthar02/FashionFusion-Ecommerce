@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Avatar, Box, Button, Divider, Flex, IconButton, Image, Link, Text, filter, useDisclosure } from '@chakra-ui/react';
+import { Avatar, Box, Button, Divider, Flex, IconButton, Image, Link, Skeleton, Text, filter, useDisclosure } from '@chakra-ui/react';
 import { Link as RouterLink, useParams } from 'react-router-dom';
 
 import useShowToast from '../hooks/useShowToast';
@@ -46,6 +46,10 @@ const ProductDetails = () => {
   let splideRef = null;
   const showToast = useShowToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  useEffect(() => {
+    window.scrollTo(0, 0); // Scroll to the top when component mounts or updates
+  }, []);
 
   useEffect(() => {
     const getProductDetails = async () => {
@@ -124,9 +128,75 @@ const ProductDetails = () => {
   
   if (!product || loading) {
     return (
-      <p>
-        
-      </p>
+      <>
+        <Box bg={'gray.100'} px={'50px'} py={5}>
+          <Flex align={'center'} justifyContent={'space-between'}>
+            <Skeleton h={5} w={'400px'} borderRadius={'10px'}/>
+            <Skeleton h={5} w={'60px'} borderRadius={'10px'}/>
+          </Flex>
+          <Flex align={'center'} justifyContent={'center'} my={4}>
+            <Skeleton h={9} w={'300px'} borderRadius={'10px'}/>
+          </Flex>
+          <Flex align={'center'} justifyContent={'space-between'}>
+            <Skeleton h={5} w={'200px'} borderRadius={'10px'}/>
+            <Skeleton h={5} w={'70px'} borderRadius={'10px'}/>
+          </Flex>
+        </Box>
+
+        <Box display={'grid'} gridTemplateColumns={'1fr 1fr'} gap={1} minH={'100vh'} px={'50px'}>
+          <Flex mt={10} gap={5} px={10}>
+            <Flex flexDir={'column'} gap={3}>
+              {[1,2,3,4].map((_,i) =>(
+                <Skeleton width={'110px'} height={'150px'} borderRadius={'md'}/>
+              ))}
+            </Flex>
+
+            <Skeleton width={'510px'} height={'700px'} borderRadius={'md'}/>
+          </Flex>
+          
+          <Box py={'50px'}>
+            <Skeleton h={8}/>
+            <Skeleton h={4} w={'100px'} mt={5}/>
+            <Flex align={'center'} mt={3} gap={2}>
+              <Skeleton h={'70px'} w={'70px'} borderRadius={'md'}/>
+            </Flex>
+            
+            <Skeleton h={4} w={'100px'} mt={5}/>
+
+            <Flex align={'center'} mt={3} gap={2}>
+              {[1,2,3,4,5].map((_,i) => (
+                <Skeleton key={i} h={'40px'} w={'45px'} borderRadius={'md'}/>
+              ))}
+            </Flex>
+
+            <Skeleton h={3} w={'80px'} mt={5}/>
+
+            <Flex align={'center'} gap={3} mt={'60px'}>
+              <Skeleton w={'250px'} h={'45px'} borderRadius={'md'}/>
+              <Skeleton w={'190px'} h={'45px'} borderRadius={'md'}/>
+              <Skeleton w={'190px'} h={'45px'} borderRadius={'md'}/>
+            </Flex>
+            <Flex align={'center'} gap={3} mt={'60px'}>
+              {[1,2,3].map((_,i) => (
+                <Skeleton key={i} w={'200px'} h={'45px'} borderRadius={'md'}/>
+              ))}
+            </Flex>
+            
+            <Skeleton w={'250px'} mt={5} h={6} borderRadius={'md'}/>
+
+            <Box display={'grid'} gridTemplateColumns={'repeat(8,1fr)'} mt={5} gap={2}>
+              {[1,2,3,4,5,6,7,8].map((_,i) => (
+                <Skeleton key={i} h={'60px'} borderRadius={'md'}/>
+              ))}
+            </Box>
+
+            <Skeleton w={'100px'} mt={10} h={6} borderRadius={'md'}/>
+
+            <Skeleton mt={5} h={'100px'} borderRadius={'md'}/>
+            
+          </Box>
+        </Box>
+      </>
     )
   }
   
@@ -137,7 +207,7 @@ const ProductDetails = () => {
           <Flex align={'center'} gap={1} fontSize={'15px'} color={'gray.500'}>
             <Link as={RouterLink} to={`/${category}`}>{category}</Link>
             <span>/</span>
-            <Link as={RouterLink} >{subCategory}</Link>
+            <Link as={RouterLink} to={`/${category}/${subCategory}`} >{subCategory}</Link>
             <span>/</span>
             <Link as={RouterLink} color={'gray.900'}>{name}</Link>
           </Flex>

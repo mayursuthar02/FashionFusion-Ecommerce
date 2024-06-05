@@ -169,7 +169,7 @@ const getCategoryProduct = async (req, res) => {
         query.price = { $gte: minPrice, $lte: maxPrice }; // Price between min and max (inclusive)
       }
   
-      const products = await productModel.find(query);
+      const products = await productModel.find(query).sort({createdAt: -1});
   
       if (!products) {
         return res.status(400).json({ error: "Product not found." });

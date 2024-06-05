@@ -9,7 +9,7 @@ import useShowToast from "../hooks/useShowToast";
 import ProductCard from "../components/ProductCard";
 
 const ProductsPage = () => {
-    const {category} = useParams();
+    let {category, subCategory} = useParams();
     const showToast = useShowToast();
     const { isOpen, onToggle } = useDisclosure();
     const [filterProperties, setFilterProperties] = useState({ brandNames: [],sizes : [], colors: [] });
@@ -21,7 +21,11 @@ const ProductsPage = () => {
     const [sizes, setSizes] = useState([]);
     const [brandNames, setBrandNames] = useState([]);
     const [colors, setColors] = useState([]);
-    
+        
+    useEffect(() => {
+        window.scrollTo(0, 0); // Scroll to the top when component mounts or updates
+    }, []);
+
     // Fetch filter properties
     useEffect(()=> {
         const fetchFilterProperties = async() => {
@@ -44,7 +48,7 @@ const ProductsPage = () => {
                 const res = await fetch('/api/products/get-category-product', {
                     method: "POST",
                     headers: {"Content-Type":"application/json"},
-                    body: JSON.stringify({category, sizes, minPrice: priceRange[0], maxPrice: priceRange[1], brandNames, colors})
+                    body: JSON.stringify({category, subCategory, sizes, minPrice: priceRange[0], maxPrice: priceRange[1], brandNames, colors})
                 });
                 const data = await res.json();
                 setProducts(data);
@@ -56,16 +60,18 @@ const ProductsPage = () => {
         };
 
         fetchProduct();
-    }, [category, sizes, priceRange, brandNames, colors]);
+    }, [category, sizes, priceRange, brandNames, colors, subCategory]);
 
   return (
     <>
     <Box bg={'gray.100'} px={'50px'} py={5}>
         <Flex alignItems={'center'} justifyContent={'space-between'}>
           <Flex align={'center'} gap={1} fontSize={'15px'} color={'gray.500'}>
-            <Link as={RouterLink} >Home</Link>
+            <Link to={'/'} as={RouterLink} >Home</Link>
             <span>/</span>
-            <Link as={RouterLink} color={'gray.900'} textTransform={'capitalize'}>{category}</Link>
+            <Link to={`/${category}`} as={RouterLink} color={'gray.900'} textTransform={'capitalize'}>{category}</Link>
+            {subCategory && <span>/</span> }
+            {subCategory && <Link to={`/${category}/${subCategory}`} as={RouterLink} color={'gray.900'} textTransform={'capitalize'}>{subCategory}</Link>}
           </Flex>
           
           <Flex alignItems={'center'} gap={1} color={'gray.500'} fontSize={'15px'}>

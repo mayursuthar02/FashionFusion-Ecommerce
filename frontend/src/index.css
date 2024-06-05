@@ -7,7 +7,10 @@
 
 html {
   scroll-behavior: smooth;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
 }
+
 
 .filterBox::-webkit-scrollbar {
   display: none;
