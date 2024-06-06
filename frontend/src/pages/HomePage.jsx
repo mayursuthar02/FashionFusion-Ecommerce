@@ -1,6 +1,6 @@
 import { useRecoilValue } from "recoil"
 import userAtom from "../atoms/userAtom"
-import {Box, Button, Divider, Flex, Grid, GridItem, Image, Img, Input, Link, Text} from '@chakra-ui/react';
+import {Box, Button, Divider, Flex, Grid, GridItem, Image, Input, Link, Text} from '@chakra-ui/react';
 import { FaFacebook } from "react-icons/fa";
 import { FaTwitter } from "react-icons/fa";
 import { RiInstagramFill } from "react-icons/ri";
@@ -14,9 +14,39 @@ import img2 from '../assets/2.jpg';
 import img3 from '../assets/3.webp';
 import img4 from '../assets/4.webp';
 import img5 from '../assets/5.webp';
+// import img6 from '../assets/img3.jpg';
+import { useEffect, useState } from "react";
+import useShowToast from '../hooks/useShowToast';
+import ProductCard from "../components/ProductCard";
 
 const HomePage = () => {
   const user = useRecoilValue(userAtom);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const showToast = useShowToast();
+  
+  // Fetch All Products
+  useEffect(()=>{
+    const fetchAllProducts = async() => {
+      setLoading(true);
+      try {
+        const res = await fetch('/api/products/get-all-product');
+        const data = await res.json();
+        if (data.error) {
+          showToast("Error", data.error, "error");
+          return;
+        }
+        setProducts(data);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAllProducts();
+  },[]);
+
   return (
     <>
       <Grid 
@@ -82,14 +112,40 @@ const HomePage = () => {
        
       <Divider mb={10}/>
 
-      <Link as={RouterLink} to={'/men/tshirt'} bg={'gray.200'} h={'750px'}>
+      <Link as={RouterLink} to={'/men/tshirt'} bg={'gray.200'} h={'750px'} >
         <Image src={img5} w={'full'} h={'full'} objectFit={'cover'}/>
       </Link>
 
-      <Divider my={10}/>
+      <Box px={'80px'} mt={10} mb={10}>
+        <Text mb={10} fontSize={'40px'} textAlign={'center'} fontWeight={'500'}>MEN</Text>
+        <Grid templateColumns={'repeat(5,1fr)'} gap={5} mb={10}>
+          {products
+          .filter((product) => product.category === 'men')
+          .slice(0,10)
+          .map((product) => (
+            <ProductCard product={product}/>
+          ))}
+        </Grid>
+        <Button as={RouterLink} to={`/men`} w={'full'} fontWeight={'500'} letterSpacing={2} py={6} borderRadius={'1px'}> SELL ALL</Button>
+      </Box>
+
+      <Box px={'80px'} mt={10} mb={10}>
+        <Text mb={10} fontSize={'40px'} textAlign={'center'} fontWeight={'500'}>WOMEN</Text>
+        <Grid templateColumns={'repeat(5,1fr)'} gap={5} mb={10}>
+          {products
+          .filter((product) => product.category === 'women' && product.subCategory === 'top')
+          .slice(0,10)
+          .map((product) => (
+            <ProductCard product={product}/>
+          ))}
+        </Grid>
+        <Button as={RouterLink} to={`/women/top`} w={'full'} fontWeight={'500'} letterSpacing={2} py={6} borderRadius={'1px'}> SELL ALL</Button>
+      </Box>
+
+
 
       {/* JOIN US LINE */}
-      <Flex color={'white'} bg={'black'} alignItems={'center'} justifyContent={'space-between'} px={'50px'} py={3}>
+      <Flex color={'white'} bg={'black'} alignItems={'center'} justifyContent={'space-between'} px={'50px'} py={3} mt={10}>
         <Text>BE IN TOUCH WITH US:</Text>
 
         <Flex gap={5}>

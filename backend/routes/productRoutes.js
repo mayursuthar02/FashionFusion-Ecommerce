@@ -1,5 +1,5 @@
 import express from 'express';
-import { createProduct, getCategoryProduct, getFilterProperties, getProductByName, getProductDetails, getVenderProducts, updateProduct } from '../controllers/productController.js';
+import { createProduct, getAllProduct, getFilterProducts, getFilterProperties, getProductByName, getProductDetails, getVenderProducts, updateProduct } from '../controllers/productController.js';
 import protectRoute from '../middleware/protectRoute.js'
 import verifyBusinessAccount from '../middleware/isBusinessAccount.js';
 const router = express.Router();
@@ -10,6 +10,7 @@ router.put('/update/:id', protectRoute, verifyBusinessAccount, updateProduct);
 router.get('/get-product-details/:id', getProductDetails);
 router.get('/get-product/:name', getProductByName);
 router.get('/filter-properties', getFilterProperties);
-router.post('/get-category-product', getCategoryProduct);
+router.post('/get-filter-product', getFilterProducts);
+router.get('/get-all-product', getAllProduct);
 
 export default router;

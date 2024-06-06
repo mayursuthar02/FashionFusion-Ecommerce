@@ -9,7 +9,7 @@ import { useRecoilState } from 'recoil';
 import Logo from './Logo';
 import SearchModel from './SearchModel';
 import useShowToast from '../hooks/useShowToast';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { beautySubCategories, kidsSubCategories, menSubCategories, wommenSubCategories } from "../helpers/categories";
 
 const Header = () => {
@@ -18,6 +18,26 @@ const Header = () => {
   const [isOpens, setIsOpens] = useState({});
   const showToast = useShowToast();
   const navigate = useNavigate();
+  const headerRef = useRef(null);
+
+  const stickyHeaderFunc = () => {
+    window.addEventListener("scroll", () => {
+      if (
+        document.body.scrollTop > 80 ||
+        document.documentElement.scrollTop > 80
+      ) {
+        headerRef.current.classList.add("sticky__header");
+      } else {
+        headerRef.current.classList.remove("sticky__header");
+      }
+    });
+  };
+
+  useEffect(() => {
+    stickyHeaderFunc();
+    return window.removeEventListener("scroll", stickyHeaderFunc);
+  });
+  
   
   const handleLogout = async() => {
     try {
@@ -57,7 +77,7 @@ const Header = () => {
   ];
   
   return (
-    <Flex py={'15px'} px={'50px'} alignItems={'center'} justifyContent={'space-between'} zIndex={999} borderBottom={'1px solid'} borderColor={'gray.200'}>
+    <Flex py={'15px'} px={'50px'} bg={'white'} alignItems={'center'} justifyContent={'space-between'} zIndex={999} borderBottom={'1px solid'} borderColor={'gray.200'}  ref={headerRef}>
       <Link as={RouterLink} to={'/'}>
         <Logo/>
       </Link>

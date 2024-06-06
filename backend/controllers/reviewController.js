@@ -3,11 +3,12 @@ import productModel from '../models/ProductModel.js';
 
 const createReview = async(req,res) => {
     try {
-        const {productId, rating, text} = req.body;
+        const {productId, rating, text, vendorId} = req.body;
         const userId = req.user._id;
         
         const newReview = new ReviewModel({
             userId,
+            vendorId,
             productId,
             rating,
             text
@@ -48,4 +49,28 @@ const getProductReview = async(req,res) => {
     }
 }
 
-export {createReview, getProductReview};
+const getVenderProductReviews = async(req, res) => {
+    try {
+        const vendorId = req.user._id;
+        const reviews = await ReviewModel.find({vendorId})
+        .sort({createdAt: -1})
+        .populate({path: 'userId', select: "_id fullName businessName profilePic"})
+        .populate({path: 'productId', select: "_id category subCategory name images"})
+        if (!reviews) {
+            return res.status(400).json({error: "Reviews not found."});
+        }
+
+        res.status(200).json(reviews);
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).json({error: "Error in get vender product reviews "+error.message});
+    }
+}
+
+
+
+export {
+    createReview, 
+    getProductReview,
+    getVenderProductReviews
+};

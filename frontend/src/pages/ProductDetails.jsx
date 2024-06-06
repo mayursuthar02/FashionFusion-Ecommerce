@@ -86,7 +86,6 @@ const ProductDetails = () => {
         }
         const filterProduct = data.filter((d) => d._id !== product._id);
         setSimilerProducts(filterProduct);
-        console.log(filterProduct);
       } catch (error) {
         console.log(error);
       }
@@ -306,6 +305,8 @@ const ProductDetails = () => {
             <Text>Size guide</Text>
           </Flex>
 
+          {product.stock <= 5 && product.stock > 0 && <Flex color={'red.500'} fontSize={'15px'} mb={6}>Only {product.stock} product left</Flex>}
+
           <Divider borderColor={'gray.300'}/>
 
           <Flex my={7} alignItems={'center'} gap={8}>
@@ -430,7 +431,7 @@ const ProductDetails = () => {
         </Box>
       </Box>
 
-      <WriteReview isOpen={isOpen} onClose={onClose} productId={product._id} setCallBackFunction={setCallBackFunction}/>
+      <WriteReview isOpen={isOpen} onClose={onClose} product={product} setCallBackFunction={setCallBackFunction}/>
     </>
   )
 }

@@ -1,4 +1,4 @@
-import { Box, Checkbox, Collapse, Flex, FormControl, Link, RangeSlider, RangeSliderFilledTrack, RangeSliderThumb, RangeSliderTrack, Skeleton, Text, filter, useDisclosure } from "@chakra-ui/react"
+import { Box, Button, Checkbox, Collapse, Flex, FormControl, Link, RangeSlider, RangeSliderFilledTrack, RangeSliderThumb, RangeSliderTrack, Skeleton, Text, filter, useDisclosure } from "@chakra-ui/react"
 import { Link as RouterLink, useParams } from "react-router-dom"
 import { IoShareSocialSharp, IoCloseOutline } from "react-icons/io5";
 import { PiSliders } from "react-icons/pi";
@@ -8,6 +8,9 @@ import { useEffect, useRef, useState } from "react";
 import useShowToast from "../hooks/useShowToast";
 import ProductCard from "../components/ProductCard";
 
+
+const PRODUCTS_PER_PAGE = 25;
+
 const ProductsPage = () => {
     let {category, subCategory} = useParams();
     const showToast = useShowToast();
@@ -16,6 +19,8 @@ const ProductsPage = () => {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(false);
     const loadingList = new Array(15).fill(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const totalPages = Math.ceil(products.length / PRODUCTS_PER_PAGE);
     // Filter value Input
     const [priceRange, setPriceRange] = useState([100, 7000]);
     const [sizes, setSizes] = useState([]);
@@ -42,10 +47,10 @@ const ProductsPage = () => {
     },[]);
 
     useEffect(()=> {
-        const fetchProduct = async () => {
+        const fetchProductAndFilter = async () => {
             setLoading(true);
             try {
-                const res = await fetch('/api/products/get-category-product', {
+                const res = await fetch('/api/products/get-filter-product', {
                     method: "POST",
                     headers: {"Content-Type":"application/json"},
                     body: JSON.stringify({category, subCategory, sizes, minPrice: priceRange[0], maxPrice: priceRange[1], brandNames, colors})
@@ -59,9 +64,19 @@ const ProductsPage = () => {
             }
         };
 
-        fetchProduct();
+        fetchProductAndFilter();
     }, [category, sizes, priceRange, brandNames, colors, subCategory]);
 
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+        window.scrollTo(0, 0);
+    };
+    
+    const paginatedProducts = products.slice(
+        (currentPage - 1) * PRODUCTS_PER_PAGE,
+        currentPage * PRODUCTS_PER_PAGE
+    );
+    
   return (
     <>
     <Box bg={'gray.100'} px={'50px'} py={5}>
@@ -192,8 +207,8 @@ const ProductsPage = () => {
 
     {products.length > 0 && !loading ? (
         <Box display={'grid'} gridTemplateColumns={'repeat(5,1fr)'} gap={10} px={'50px'} my={10}>
-            {products.length > 0 && (
-                products.map((product) => (
+            {paginatedProducts.length > 0 && (
+                paginatedProducts.map((product) => (
                     <ProductCard product={product}/>
                 ))
             )}
@@ -204,7 +219,21 @@ const ProductsPage = () => {
         </Flex>
     )}
 
-    
+    {products.length >= 25 && 
+    <Box mt={20} mb={10} display="flex" justifyContent="center">
+        {[...Array(totalPages)].map((_, index) => (
+          <Button
+          key={index + 1}
+          onClick={() => handlePageChange(index + 1)}
+          bg={currentPage === index + 1 ? 'blue.500' : 'gray.200'}
+          color={currentPage === index + 1 ? 'white' : 'black'}
+          mx={1}
+          _hover={{ bg: currentPage === index + 1 ? 'blue.600' : 'gray.100' }}
+          >
+            {index + 1}
+          </Button>
+        ))}
+    </Box>}
     </>
   )
 }

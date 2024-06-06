@@ -2,12 +2,16 @@ import { Box, Button, Flex, FormControl, FormLabel, Input, Modal, ModalBody, Mod
 import { useState } from "react";
 import { FaStar } from "react-icons/fa6";
 import useShowToast from "../hooks/useShowToast";
+import userAtom from '../atoms/userAtom';
+import {useRecoilValue} from 'recoil';
 
-const WriteReview = ({isOpen, onClose, productId, setCallBackFunction}) => {
+const WriteReview = ({isOpen, onClose, product, setCallBackFunction}) => {
+    const user = useRecoilValue(userAtom); 
     const [rating, setRating] = useState(0);
     const [text, setText] = useState("");
     const [loading, setLoading] = useState(false);
     const showToast = useShowToast();
+    
     
     const handleSubmit = async() => {
         if (text === "" || rating === 0) {
@@ -20,7 +24,7 @@ const WriteReview = ({isOpen, onClose, productId, setCallBackFunction}) => {
             const res = await fetch('/api/reviews/create', {
                 method: "POST",
                 headers: {"Content-Type":"application/json"},
-                body: JSON.stringify({productId, rating, text})
+                body: JSON.stringify({productId: product._id, rating, text, vendorId: product.vendorId })
             });
             const data = await res.json();
             if (data.error) {

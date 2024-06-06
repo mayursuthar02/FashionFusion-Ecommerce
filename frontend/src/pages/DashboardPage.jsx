@@ -11,11 +11,10 @@ import { BiMessageDetail } from "react-icons/bi";
 const DashboardPage = () => {
     const user = useRecoilValue(userAtom);
     const dashBoardLink = [
-        { title: "Dashboard", link: `${user.businessName}`, icon: <RxDashboard/> },
-        { title: "Profile", link: `profile`, icon: <LuUser2/> },
-        { title: "Products", link: "products", icon: <BsHandbag/> },
-        { title: "Orders", link: "orders", icon: <LuShoppingCart/> },
-        { title: "Reviews", link: "reviews", icon: <BiMessageDetail/> },
+        { title: "Dashboard", link: `${user.businessName}`, icon: <RxDashboard/>, isBusinessAcc: user.isBusinessAccount},
+        { title: "Products", link: "products", icon: <BsHandbag/>, isBusinessAcc: user.isBusinessAccount },
+        { title: "Orders", link: "orders", icon: <LuShoppingCart/> , isBusinessAcc: user.isBusinessAccount },
+        { title: "Reviews", link: "reviews", icon: <BiMessageDetail/>, isBusinessAcc: user.isBusinessAccount },
     ]
     
   return (
@@ -28,7 +27,30 @@ const DashboardPage = () => {
             <Divider borderColor={'#e5e5e5'} mt={5} mb={5}/>
             
             <Flex flexDir={'column'} gap={2}>
+                <NavLink  
+                to={'profile'}   
+                _hover={{bgColor: 'blue.50', color:"blue.500"}} 
+                px={4} 
+                py={2} 
+                borderRadius={'md'}>
+                    {({ isActive }) => (
+                        <Box
+                            px={4}
+                            py={2}
+                            borderRadius={'md'}
+                            bg={isActive ? 'blue.50' : 'transparent'}
+                            color={isActive ? 'blue.500' : 'inherit'}
+                            _hover={{ bg: 'blue.50', color: 'blue.500' }}
+                        >
+                            <Flex alignItems={'center'} gap={2}>
+                                <LuUser2/>
+                                Profile
+                            </Flex>
+                        </Box>
+                    )}
+                </NavLink>
                 {dashBoardLink.map((el,i) =>(
+                    el.isBusinessAcc && (
                     <NavLink 
                     key={i} 
                     to={el.link}   
@@ -52,6 +74,7 @@ const DashboardPage = () => {
                             </Box>
                         )}
                     </NavLink>
+                    )
                 ))}
             </Flex>
         </Box>

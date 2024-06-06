@@ -136,7 +136,7 @@ const getFilterProperties = async(req,res) => {
 }
 
 
-const getCategoryProduct = async (req, res) => {
+const getFilterProducts = async (req, res) => {
     try {
       const { category, subCategory, sizes, colors, minPrice, maxPrice, brandNames} = req.body;
   
@@ -180,7 +180,32 @@ const getCategoryProduct = async (req, res) => {
       console.log(error.message);
       res.status(500).json({ error: "Error in get product " + error.message });
     }
-  };
+};
+
+
+const getAllProduct = async (req, res) => {
+    try {
+
+        const products = await productModel.find().sort({createdAt: -1});
+        if (!products) {
+          return res.status(400).json({ error: "Products not found." });
+        }
+    
+        res.status(200).json(products);
+      } catch (error) {
+        console.log(error.message);
+        res.status(500).json({ error: "Error in get all products " + error.message });
+      }
+};
   
 
-export {createProduct, getVenderProducts, updateProduct, getProductDetails, getProductByName, getFilterProperties, getCategoryProduct};
+export {
+    createProduct, 
+    getVenderProducts, 
+    updateProduct, 
+    getProductDetails, 
+    getProductByName, 
+    getFilterProperties, 
+    getFilterProducts, 
+    getAllProduct
+};

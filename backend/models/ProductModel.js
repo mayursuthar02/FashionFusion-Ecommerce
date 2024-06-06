@@ -51,9 +51,8 @@ const ProductSchema = new mongoose.Schema({
         default: [],
     },
     vendorId: {
-        type: [mongoose.Schema.Types.ObjectId],
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
-        default: [],
     },
     discount: {
         type: Number,
