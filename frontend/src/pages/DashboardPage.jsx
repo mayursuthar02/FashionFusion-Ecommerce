@@ -7,6 +7,7 @@ import { LuUser2 } from "react-icons/lu";
 import { BsHandbag } from "react-icons/bs";
 import { LuShoppingCart } from "react-icons/lu";
 import { BiMessageDetail } from "react-icons/bi";
+import { useEffect } from "react";
 
 const DashboardPage = () => {
     const user = useRecoilValue(userAtom);
@@ -16,13 +17,17 @@ const DashboardPage = () => {
         { title: "Orders", link: "orders", icon: <LuShoppingCart/> , isBusinessAcc: user.isBusinessAccount },
         { title: "Reviews", link: "reviews", icon: <BiMessageDetail/>, isBusinessAcc: user.isBusinessAccount },
     ]
+
+    useEffect(() => {
+        window.scrollTo(0, 0); // Scroll to the top when component mounts or updates
+    }, []);
     
   return (
     <Flex minH={'100vh'} display={'grid'} gridTemplateColumns={'.26fr 1fr'} gap={5} p={2}>
         <Box py={5} px={5} border={'1px solid'} borderColor={'gray.200'} borderRadius={'lg'}>
             <Flex alignItems={'center'} h={'fit-content'} px={5} gap={5}>
                 <Avatar src={user?.profilePic ? user?.profilePic : ""} size={'lg'}/>
-                <Text size={'md'} fontWeight={'500'} >{user?.businessName ? user?.businessName : user?.fullName}</Text>
+                <Text fontSize={'20px'} fontWeight={'500'} >{user?.businessName ? user?.businessName : user?.fullName}</Text>
             </Flex>
             <Divider borderColor={'#e5e5e5'} mt={5} mb={5}/>
             

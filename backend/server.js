@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import userRoutes from './routes/userRoutes.js'; 
 import productRoutes from './routes/productRoutes.js';
 import reviewRoutes from './routes/reviewRoutes.js';
+import cartRoutes from './routes/cartRoutes.js';
 import connectDB from './db/connectDB.js';
 import {v2 as cloudinary} from 'cloudinary';
 
@@ -33,6 +34,7 @@ app.use(cookieParser());
 app.use('/api/users', userRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/reviews', reviewRoutes);
+app.use('/api/carts', cartRoutes);
 
 
 // Server Listen

@@ -37,6 +37,11 @@ const UserSchema = new mongoose.Schema({
     phone: {
         type: String,
         default: "",
+    },
+    wishlist : {
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: "Product",
+        default: []
     }
 }, {
     timestamps: true

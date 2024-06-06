@@ -67,6 +67,7 @@ const loginUser = async(req,res) => {
             profilePic: user.profilePic,
             address: user.address,
             phone: user.phone,
+            wishlist: user.wishlist,
         });
 
     } catch (error) {

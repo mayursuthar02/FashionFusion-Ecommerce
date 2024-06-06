@@ -8,35 +8,38 @@ import { format } from 'date-fns';
 const DashboardReviews = () => {
   const [reviews, setReviews] = useState([]);
   const [averageRating, setAverageRating] = useState(null);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [reviewToDelete, setReviewToDelete] = useState(null);
   const showToast = useShowToast();
   
-  useEffect(()=>{
-    const fetchReviews = async() => {
-      try {
-        const res = await fetch('/api/reviews/get-vender-product-reviews');       
-        const data = await res.json();
-        if (data.error) {
-          showToast("Error", data.error, "error");
-          return;
-        }
-        setReviews(data);
-
-        if (data.length > 0) {
-          // Calculate the sum of ratings
-          const sumOfRatings = data.reduce((sum, review) => sum + review.rating, 0);
-          // Calculate the average rating
-          const avgRating = sumOfRatings / data.length;
-          // Set the average rating, rounded to one decimal place
-          setAverageRating(avgRating.toFixed(1));
-        } else {
-          setAverageRating('0.0');
-        }
-
-
-      } catch (error) {
-        console.log(error);
+  const fetchReviews = async() => {
+    try {
+      const res = await fetch('/api/reviews/get-vender-product-reviews');       
+      const data = await res.json();
+      if (data.error) {
+        showToast("Error", data.error, "error");
+        return;
       }
-    };
+      setReviews(data);
+
+      if (data.length > 0) {
+        // Calculate the sum of ratings
+        const sumOfRatings = data.reduce((sum, review) => sum + review.rating, 0);
+        // Calculate the average rating
+        const avgRating = sumOfRatings / data.length;
+        // Set the average rating, rounded to one decimal place
+        setAverageRating(avgRating.toFixed(1));
+      } else {
+        setAverageRating('0.0');
+      }
+
+
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(()=>{
     fetchReviews();
   },[]);
 
@@ -57,6 +60,29 @@ const DashboardReviews = () => {
     { avgStar: avg2Star, peoples: $2Star.length, color: '#35c1f2'},
     { avgStar: avg1Star, peoples: $1Star.length, color: '#f47e1e'},
   ];
+
+  const handleDeleteReview = async(reviewId, productId) => {
+    setDeleteLoading(true);
+    try {
+      const res = await fetch('/api/reviews/delete', {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({reviewId, productId})
+      });
+      const data = await res.json();
+      if (data.error) {
+        showToast("Error", data.error, "error");
+        return;
+      };
+      showToast("Success", "Review deleted", "success");
+      fetchReviews();
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setDeleteLoading(false);
+      setReviewToDelete(null);
+    }
+  }
   
   return (
     <Box p={2} px={5}>
@@ -97,8 +123,8 @@ const DashboardReviews = () => {
           {avgPerStar.map((rating,i)=> (
             <Flex align={'start'} key={i} gap={2}>
               <FaStar color='#d5d5d5' fontSize={'11px'}/>
-              <Text fontSize={'15px'} fontWeight={'500'}>{5 - i}</Text>
-              <Box w={'150px'} h={'7px'} borderRadius={'50px'} position={'relative'}>
+              <Text fontSize={'15px'} fontWeight={'500'} transform={'translateY(-4px)'}>{5 - i}</Text>
+              <Box w={'150px'} h={'7px'} borderRadius={'50px'} position={'relative'} transform={'translateY(-2px)'}>
                 <Flex align={'center'} w={'150px'} gap={2} position={'absolute'} top={0} left={0}>
                   <Box w={`${rating.avgStar}%`} h={'7px'} bg={rating.color} borderRadius={'50px'} transition="width 1s ease-in-out"></Box>
                   <Text fontSize={'12px'} fontWeight={'500'}>{rating.peoples}</Text>
@@ -108,7 +134,7 @@ const DashboardReviews = () => {
           ))}
         </Stat>
       </Grid>
-
+          
       
       <Grid templateColumns={'1fr'} gap={5}>
         
@@ -143,7 +169,21 @@ const DashboardReviews = () => {
               <Badge mt={5}>{review.productId.category}</Badge>
             </Box>
             
-            <Button display={'flex'} alignItems={'center'} gap={2} border={'1px solid'} borderColor={'gray.200'} _hover={{bgColor: "gray.100"}} bgColor={'white'}>
+            <Button 
+              display={'flex'} 
+              alignItems={'center'} 
+              gap={2} 
+              border={'1px solid'} 
+              borderColor={'gray.200'} 
+              _hover={{bgColor: "gray.100"}} 
+              bgColor={'white'} 
+              isLoading={deleteLoading && reviewToDelete === review._id} 
+              loadingText={"Deleting"}
+              onClick={() => {
+                setReviewToDelete(review._id);
+                handleDeleteReview(review._id, review.productId._id);
+              }}
+            >
                 <MdDelete/>
                 Delete
             </Button>
@@ -152,6 +192,11 @@ const DashboardReviews = () => {
         
       </Grid>
 
+      {reviews?.length === 0 && (
+        <Flex align={'center'} justify={'center'} h={'50vh'}>
+          <Text color={'gray.500'} fontSize={'30px'}>0 Reviews</Text>
+        </Flex>
+      )}    
     </Box>
   )
 }
