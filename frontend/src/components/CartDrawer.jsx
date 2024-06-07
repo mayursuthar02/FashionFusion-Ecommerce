@@ -20,6 +20,7 @@ import useShowToast from "../hooks/useShowToast";
 import { useRecoilState } from "recoil";
 import cartAtom from "../atoms/cartAtom";
 import FetchCartItems from "../helpers/FetchCartItems";
+import {loadStripe} from '@stripe/stripe-js';
 
 const CartDrawer = ({ isOpenCart, onCloseCart }) => {
   const [cartItems, setCartItems] = useRecoilState(cartAtom);
@@ -76,8 +77,8 @@ const CartDrawer = ({ isOpenCart, onCloseCart }) => {
     setCartItems(updatedItemsQty);
     updateQty(cartId, newQty);
   };
-
-
+  
+  
   // - Qty
   const decreaseQty = async (cartId, qty) => {
     let newQty = qty - 1;
@@ -148,8 +149,41 @@ const CartDrawer = ({ isOpenCart, onCloseCart }) => {
       totalQuantity
     };
   };
-
   const { colors, sizes, totalPrice, totalDiscount, totalQuantity } = processCartItems(cartItems);
+
+
+  const handleStripePayment = async() => {
+    const publishableKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
+    const stripe = await loadStripe(publishableKey);
+
+    try {
+      const res = await fetch('/api/payments/stripe/checkout', {
+        method: 'POST',
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({products: cartItems})
+      });
+      const session = await res.json();
+      if (session.error) {
+        showToast("Error", session.error, "error");
+        console.log(session.error);
+        return;
+      };
+      
+      const result = stripe.redirectToCheckout({
+        sessionId: session.id
+      });
+      if (result.error) {
+        showToast("Error", result.error, "error");
+        console.log(result.error);
+        alert(result.error);
+      }
+      setCartItems([]);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  
+
   return (
     <>
       <Drawer
@@ -179,6 +213,7 @@ const CartDrawer = ({ isOpenCart, onCloseCart }) => {
               </Box>
             </>
           )}
+
           <DrawerBody>
             <Box mt={2} position={'relative'} h={'50vh'}>
               {cartItems.map((item) => (
@@ -333,7 +368,7 @@ const CartDrawer = ({ isOpenCart, onCloseCart }) => {
                     Total
                   </Text>
                   <Text fontSize={"18px"} fontWeight={"600"}>
-                    Rs. {totalPrice}
+                    Rs. {totalPrice.toFixed(2)}
                   </Text>
                 </Flex>
               </Box>
@@ -348,6 +383,7 @@ const CartDrawer = ({ isOpenCart, onCloseCart }) => {
                 _hover={{ bgColor: "#111" }}
                 fontWeight={"400"}
                 letterSpacing={2}
+                onClick={handleStripePayment}
               >
                 CHECK OUT
               </Button>
