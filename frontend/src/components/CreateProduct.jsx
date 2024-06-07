@@ -101,7 +101,10 @@ const CreateProduct = ({isOpen,onClose}) => {
     // Hnadle Submit
     const handleSubmit = async() => {
       // console.log({name, brandName, category, subCategory, sizes, color, material, stock, price, discount, description, images});
-  
+      if (name == "" || brandName == "" || category == "" || subCategory == "" || sizes == "" || color == "" || material == "" || price == 0 || description == "" || images == "") {
+        showToast("Error", "Fields is require", "error");
+        return;  
+      }
       setLoading(true);
       try {
         const res = await fetch('/api/products/create', {
@@ -110,10 +113,6 @@ const CreateProduct = ({isOpen,onClose}) => {
           body: JSON.stringify({name, brandName, category, subCategory, sizes, color, material, stock, price, discount, description, images})
         });
         const data = await res.json();
-        if (name == "" || brandName == "" || category == "" || subCategory == "" || sizes == "" || color == "" || material == "" || price == 0 || description == "" || images == "") {
-          showToast("Error", "Fields is require", "error");
-          return;  
-        }
         
         if (data.error) {
           showToast("Error", data.error, "error");

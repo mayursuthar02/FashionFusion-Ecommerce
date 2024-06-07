@@ -5,16 +5,20 @@ import { PiHeartStraight } from "react-icons/pi";
 import { LuUser2 } from "react-icons/lu";
 import { HiOutlineShoppingBag } from "react-icons/hi2";
 import userAtom from '../atoms/userAtom';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import Logo from './Logo';
 import SearchModel from './SearchModel';
 import useShowToast from '../hooks/useShowToast';
 import { useEffect, useRef, useState } from 'react';
 import { beautySubCategories, kidsSubCategories, menSubCategories, wommenSubCategories } from "../helpers/categories";
+import CartDrawer from './CartDrawer';
+import cartAtom from '../atoms/cartAtom';
 
 const Header = () => {
   const [user,setUser] = useRecoilState(userAtom);
-  const { isOpen, onOpen, onClose } = useDisclosure()
+  const cartItems = useRecoilValue(cartAtom);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen: isOpenCart, onOpen: onOpenCart, onClose: onCloseCart } = useDisclosure();
   const [isOpens, setIsOpens] = useState({});
   const showToast = useShowToast();
   const navigate = useNavigate();
@@ -99,28 +103,28 @@ const Header = () => {
               <MenuList onMouseEnter={() => handleMouseEnter(item.label.toLowerCase())} onMouseLeave={() => handleMouseLeave(item.label.toLowerCase())}>
                 {item.label == 'Men' &&
                   menSubCategories.map((category) => (
-                    <MenuItem key={category}>
+                    <MenuItem key={category.value}>
                       <Link as={RouterLink} to={`/${item.label.toLowerCase()}/${category.value}`} _hover={{ color: 'blue.500'}} w={'200px'} onClick={() => handleMouseLeave(item.label.toLowerCase())}>{category.title}</Link>
                     </MenuItem>
                   ))
                 }
                 {item.label == 'Women' &&
                   wommenSubCategories.map((category) => (
-                    <MenuItem key={category}>
+                    <MenuItem key={category.value}>
                       <Link as={RouterLink} to={`/${item.label.toLowerCase()}/${category.value}`} _hover={{ color: 'blue.500' }} w={'200px'} onClick={() => handleMouseLeave(item.label.toLowerCase())}>{category.title}</Link>
                     </MenuItem>
                   ))
                 }
                 {item.label == 'Kids' &&
                   kidsSubCategories.map((category) => (
-                    <MenuItem key={category}>
+                    <MenuItem key={category.value}>
                       <Link as={RouterLink} to={`/${item.label.toLowerCase()}/${category.value}`} _hover={{ color: 'blue.500' }} w={'200px'} onClick={() => handleMouseLeave(item.label.toLowerCase())}>{category.title}</Link>
                     </MenuItem>
                   ))
                 }
                 {item.label == 'Beauty' &&
                   beautySubCategories.map((category) => (
-                    <MenuItem key={category}>
+                    <MenuItem key={category.value}>
                       <Link as={RouterLink} to={`/${item.label.toLowerCase()}/${category.value}`} _hover={{ color: 'blue.500' }} w={'200px'} onClick={() => handleMouseLeave(item.label.toLowerCase())}>{category.title}</Link>
                     </MenuItem>
                   ))
@@ -139,9 +143,10 @@ const Header = () => {
           <IconButton aria-label='Fvourite' icon={<PiHeartStraight size={'1.5rem'}/>} bgColor={"white"} _hover={{bgColor: "blue.50"}} borderRadius={'full'}/>
         </Link>
 
-        {user && <Link as={RouterLink}>
+        {user && 
+        <Link as={RouterLink} onClick={onOpenCart}>
           <Box position={'relative'}>
-            <Badge variant='solid' bgColor={'blue.500'} position={'absolute'} bottom={1} right={1} fontSize={'10px'} zIndex={1}>0</Badge>
+            <Badge variant='solid' bgColor={'blue.500'} position={'absolute'} bottom={1} right={1} fontSize={'10px'} zIndex={1}>{cartItems.length}</Badge>
             <IconButton aria-label='Cart' icon={<HiOutlineShoppingBag size={'1.5rem'}/>} bgColor={"white"} _hover={{bgColor: "blue.50"}} borderRadius={'full'}/>
           </Box>
         </Link>}
@@ -170,8 +175,11 @@ const Header = () => {
         </Menu>
         
       </Flex>
+      
+      <CartDrawer isOpenCart={isOpenCart} onCloseCart={onCloseCart}/>
 
       <SearchModel isOpen={isOpen} onClose={onClose}/>
+
 
     </Flex>
   )

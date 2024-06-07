@@ -49,7 +49,7 @@ const DashboardProductPage = () => {
       {loading && (
         <Box display={'grid'} gridTemplateColumns={'repeat(4, 1fr)'} gap={5} my={5}>
           {loadingList.map((_,i) => (
-            <Box>
+            <Box key={i}>
               <Skeleton height={'370px'} borderRadius={'md'}/>
               <Skeleton height={'19px'} mt={2} borderRadius={'md'}/>
               <Skeleton height={'19px'} mt={2} borderRadius={'md'}/>

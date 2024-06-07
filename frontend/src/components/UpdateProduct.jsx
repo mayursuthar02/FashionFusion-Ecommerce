@@ -99,6 +99,10 @@ import FetchVenderProductsData from "../helpers/FetchVenderProductsData";
       
       // Hnadle Submit
       const handleSubmit = async() => {    
+        if (name == "" || brandName == "" || category == "" || subCategory == "" || sizes == "" || color == "" || material == "" || price == 0 || description == "" || images == "") {
+          showToast("Error", "Fields is require", "error");
+          return;  
+        }
         setLoading(true);
         try {
           const res = await fetch(`/api/products/update/${product._id}`, {
@@ -107,10 +111,6 @@ import FetchVenderProductsData from "../helpers/FetchVenderProductsData";
             body: JSON.stringify({name, brandName, category, subCategory, sizes, color, material, stock, price, discount, description, images})
           });
           const data = await res.json();
-          if (name == "" || brandName == "" || category == "" || subCategory == "" || sizes == "" || color == "" || material == "" || price == 0 || description == "" || images == "") {
-            showToast("Error", "Fields is require", "error");
-            return;  
-          }
           
           if (data.error) {
             showToast("Error", data.error, "error");
@@ -199,8 +199,8 @@ import FetchVenderProductsData from "../helpers/FetchVenderProductsData";
                     </FormControl>
                     <Flex alignItems={'center'} gap={2} flexWrap={'wrap'}>
                       {sizes.length > 0 && sizes.map((size,i) => (
-                        <Flex alignItems={'center'} gap={1} bgColor={'blue.500'} color={'white'} py={'5px'} px={2} borderRadius={'4px'}>
-                          <Text key={i} fontSize={'12px'}>{size}</Text>
+                        <Flex key={i} alignItems={'center'} gap={1} bgColor={'blue.500'} color={'white'} py={'5px'} px={2} borderRadius={'4px'}>
+                          <Text fontSize={'12px'}>{size}</Text>
                           <IoIosCloseCircle color="white" cursor={'pointer'} onClick={() => handleInputSizeDelete(size)}/>
                         </Flex>
                       ))}

@@ -6,7 +6,7 @@ const addToCart = async(req,res) => {
         const {productId, size} = req.body;
         const userId = req.user._id;
 
-        const existsCart = await cartModel.findOne({productId});
+        const existsCart = await cartModel.findOne({ productId, userId, size });
         
         if (existsCart) {
             existsCart.quantity = existsCart.quantity + 1;

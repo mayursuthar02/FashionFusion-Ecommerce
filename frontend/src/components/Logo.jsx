@@ -4,7 +4,7 @@ const Logo = () => {
       width="216.84000396728516"
       height="18.72177043345751"
       viewBox="0 0 369.54838709677415 31.90647454666212"
-      class="looka-1j8o68f"
+      className="looka-1j8o68f"
     >
       <defs id="SvgjsDefs1211"></defs>
       <g

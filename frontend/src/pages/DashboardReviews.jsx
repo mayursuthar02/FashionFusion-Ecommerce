@@ -139,7 +139,7 @@ const DashboardReviews = () => {
       <Grid templateColumns={'1fr'} gap={5}>
         
         {reviews.map((review) => (
-          <Flex align={'start'} justifyContent={'space-around'} borderTop={'1px solid'} borderColor={'#e5e5e5'} py={8}>
+          <Flex key={review._id} align={'start'} justifyContent={'space-around'} borderTop={'1px solid'} borderColor={'#e5e5e5'} py={8}>
             <Flex align={'center'} gap={3}>
               <Avatar src={review.userId.profilePic} borderRadius={'4px'}/>
               <Text fontSize={'20px'} fontWeight={'500'}>{review.userId.fullName ? review.userId.fullName : review.userId.businessName}</Text>

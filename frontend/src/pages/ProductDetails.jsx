@@ -28,6 +28,7 @@ import img6 from '../assets/Logo Payment Method/6.png'
 import img7 from '../assets/Logo Payment Method/7.png'
 import img8 from '../assets/Logo Payment Method/8.png'
 import WriteReview from '../components/WriteReview';
+import FetchCartItems from '../helpers/FetchCartItems';
 
 const paymentImg = [img1, img2, img3, img4, img5, img6, img7, img8];
 
@@ -40,17 +41,21 @@ const ProductDetails = () => {
   const [callBackFunction, setCallBackFunction] = useState(false);
   const [seeReviews, setSeeReviews] = useState(2);
   const [loading, setLoading] = useState(false);
+  const [addToCartLoading, setAddToCartLoading] = useState(false);
   // Input 
   const [size, setSize] = useState('Select size');
   
   let splideRef = null;
   const showToast = useShowToast();
+  const fetchCartItemsFunc = FetchCartItems();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
+  // Scroll top
   useEffect(() => {
     window.scrollTo(0, 0); // Scroll to the top when component mounts or updates
   }, []);
 
+  // Fetch product Details data
   useEffect(() => {
     const getProductDetails = async () => {
       setLoading(true);
@@ -74,6 +79,7 @@ const ProductDetails = () => {
     getProductDetails();
   }, [productId]);
 
+  // Fetch similer product by name
   useEffect(() => {
     const getProductsByName = async () => {
       if (!product) return; // Ensure product is loaded first
@@ -94,6 +100,7 @@ const ProductDetails = () => {
     getProductsByName();
   }, [product]);
   
+  // Fetch all reviews data
   useEffect(() => {
     const getAllProductReviews = async () => {
       try {
@@ -113,17 +120,51 @@ const ProductDetails = () => {
   }, [productId, callBackFunction]);
     
   
+  // For slider image
   const handleUp = () => {
     if (splideRef) {
       splideRef.go('<');
     }
   };
   
+  // For slider image
   const handleDown = () => {
     if (splideRef) {
       splideRef.go('>');
     }
   };
+
+  // Add to cart
+  const addToCartFunc = async() => {
+    if (size == 'Select size') {
+      showToast("Error", "Please select size", "error");
+      return;
+    }
+    if (!productId) {
+      showToast("Error", "Something wrong", "error");
+      return;
+    }
+
+    setAddToCartLoading(true);    
+    try {
+      const res = await fetch('/api/carts/add-to-cart', {
+        method: 'POST',
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({productId,size})
+      });
+      const data = await res.json();
+      if (data.error) {
+        showToast("Error", data.error, "error");
+        return;
+      }
+      showToast("Success", "Product add to cart", "success");
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setAddToCartLoading(false);
+      fetchCartItemsFunc();
+    }
+  }
   
   if (!product || loading) {
     return (
@@ -317,7 +358,7 @@ const ProductDetails = () => {
             </Flex>
 
             <Flex align={'center'} gap={2}>
-              <Button bg={'black'} _hover={{bg: '#333'}} borderRadius={'4px'} color={'white'} px={10} py={6} isDisabled={product.stock === 0 ? true : false}>ADD TO CART</Button>
+              <Button bg={'black'} _hover={{bg: '#333'}} borderRadius={'4px'} color={'white'} px={10} py={6} isDisabled={product.stock === 0 ? true : false} onClick={addToCartFunc} isLoading={addToCartLoading}>ADD TO CART</Button>
               <Button bg={'black'} _hover={{bg: '#333'}} borderRadius={'4px'} color={'white'} px={10} py={6} display={'flex'} alignItems={'center'} gap={3} letterSpacing={2}>
                 <FaRegHeart fontSize={'20px'}/>
                 WISHLIST

@@ -117,8 +117,8 @@ const ProductsPage = () => {
             <Box>
                 <Text fontSize={'17px'} fontWeight={'600'} mb={2} letterSpacing={1}>COLOR</Text>
                 <FormControl display={'flex'} flexDir={'column'} height={'260px'} overflowY={'auto'} px={2} className="filterBox">
-                    {filterProperties.colors.map(($color) => (
-                        <Flex position={'relative'}>
+                    {filterProperties.colors.map(($color,i) => (
+                        <Flex position={'relative'} key={i}>
                             <Box 
                                 w={'25px'} 
                                 h={'25px'} 
@@ -144,8 +144,9 @@ const ProductsPage = () => {
             <Box>
                 <Text fontSize={'17px'} fontWeight={'600'} mb={2} letterSpacing={1}>SIZE</Text>
                 <FormControl display={'grid'} gridTemplateColumns={'1fr 1fr'} height={'260px'} overflowY={'auto'} px={2} pr={20} className="filterBox">
-                    {filterProperties.sizes.map(($size) => (
+                    {filterProperties.sizes.map(($size,i) => (
                         <Checkbox 
+                            key={i}
                             my={1} 
                             onChange={(e)=> 
                                 e.target.checked ? 
@@ -160,8 +161,9 @@ const ProductsPage = () => {
             <Box>
                 <Text fontSize={'17px'} fontWeight={'600'} mb={2} letterSpacing={1}>BRAND</Text>
                 <FormControl display={'flex'} flexDir={'column'} height={'260px'} overflowY={'auto'} px={2} className="filterBox">
-                    {filterProperties.brandNames.map(($brandName) => (
+                    {filterProperties.brandNames.map(($brandName,i) => (
                         <Checkbox 
+                            key={i}
                             my={1} 
                             onChange={(e)=> 
                             e.target.checked ? 
@@ -195,7 +197,7 @@ const ProductsPage = () => {
     {loading && (
         <Box display={'grid'} gridTemplateColumns={'repeat(5,1fr)'} gap={10} px={'50px'} my={10}>
           {loadingList.map((_,i) => (
-            <Box>
+            <Box key={i}>
               <Skeleton height={'370px'} borderRadius={'md'}/>
               <Skeleton height={'19px'} width={'150px'} mt={2} borderRadius={'md'}/>
               <Skeleton height={'19px'} width={'120px'} mt={2} borderRadius={'md'}/>
@@ -209,7 +211,7 @@ const ProductsPage = () => {
         <Box display={'grid'} gridTemplateColumns={'repeat(5,1fr)'} gap={10} px={'50px'} my={10}>
             {paginatedProducts.length > 0 && (
                 paginatedProducts.map((product) => (
-                    <ProductCard product={product}/>
+                    <ProductCard key={product._id} product={product}/>
                 ))
             )}
         </Box>
