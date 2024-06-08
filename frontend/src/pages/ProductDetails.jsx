@@ -352,7 +352,7 @@ const ProductDetails = () => {
 
           <Flex my={7} alignItems={'center'} gap={8}>
             <Flex alignItems={'center'} gap={2}>
-              <Text fontSize={'25px'} fontWeight={'600'}>Rs. {Math.floor(product.price - (product.price * product.discount) / 100)}</Text>
+              <Text fontSize={'25px'} fontWeight={'600'}>Rs. {(product.price - (product.price * product.discount) / 100).toFixed(2)}</Text>
               <Text style={{ textDecoration: "line-through" }} fontSize={'15px'} color={'gray.500'}>Rs. {product.price}</Text>
               <Text color={"blue.500"} fontSize={"17px"}>({product.discount}% OFF)</Text>
             </Flex>

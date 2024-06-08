@@ -1,6 +1,7 @@
 import { Badge, Box, Button, Flex, Image, Link, Text, useDisclosure } from "@chakra-ui/react";
 import UpdateProduct from "./UpdateProduct";
 import { Link as RouterLink } from "react-router-dom";
+import { useState } from "react";
 
 const DashboardProductCard = ({ product}) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -27,6 +28,7 @@ const DashboardProductCard = ({ product}) => {
           _hover={{
             "> .image-hover": { opacity: 1 },
             "> .image-main": { opacity: 0 },
+            "> .showButton" : {right: 2}
           }}
         >
           <Image
@@ -72,8 +74,22 @@ const DashboardProductCard = ({ product}) => {
           )}
           <Button
             position={"absolute"}
+            top={10}
+            right={-20}
+            transition={'.3s ease'}
+            transitionDelay={'.1s'}
+            className="showButton"
+            size={'xs'}
+            // onClick={showEditModel}
+          >
+              DELETE
+          </Button>
+          <Button
+            position={"absolute"}
             top={2}
-            right={2}
+            right={-20}
+            transition={'.3s ease'}
+            className="showButton"
             size={'xs'}
             onClick={showEditModel}
           >

@@ -17,29 +17,32 @@ import {
 import { useEffect, useState } from "react";
 import { MdOutlineDeleteOutline } from "react-icons/md";
 import useShowToast from "../hooks/useShowToast";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import cartAtom from "../atoms/cartAtom";
 import FetchCartItems from "../helpers/FetchCartItems";
 import {loadStripe} from '@stripe/stripe-js';
+import userAtom from "../atoms/userAtom";
 
 const CartDrawer = ({ isOpenCart, onCloseCart }) => {
   const [cartItems, setCartItems] = useRecoilState(cartAtom);
+  const user = useRecoilValue(userAtom);
   const [qty, setQty] = useState(0);
   const [loading, setLoading] = useState(false);
   const [removeLoading, setRemoveLoading] = useState(false);
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
   const showToast = useShowToast();
 
   const fetchCartItemsFunc = FetchCartItems();
 
   // Fetch cart items
   useEffect(() => {
-    setLoading(false);
+    setLoading(true);
     try {
       fetchCartItemsFunc();
     } catch (error) {
       console.log(error);
     } finally {
-      setLoading(true);
+      setLoading(false);
     }
   }, []);
 
@@ -153,9 +156,14 @@ const CartDrawer = ({ isOpenCart, onCloseCart }) => {
 
 
   const handleStripePayment = async() => {
+    if (!user.address.line1 || !user.address.city || !user.address.pinCode || !user.address.state) {
+      showToast("Error", "Please add your address", "error");
+      return;   
+    }
+    
     const publishableKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
     const stripe = await loadStripe(publishableKey);
-
+    setCheckoutLoading(true);
     try {
       const res = await fetch('/api/payments/stripe/checkout', {
         method: 'POST',
@@ -168,6 +176,7 @@ const CartDrawer = ({ isOpenCart, onCloseCart }) => {
         console.log(session.error);
         return;
       };
+      console.log(session)
       
       const result = stripe.redirectToCheckout({
         sessionId: session.id
@@ -177,9 +186,11 @@ const CartDrawer = ({ isOpenCart, onCloseCart }) => {
         console.log(result.error);
         alert(result.error);
       }
-      setCartItems([]);
+      console.log(session)
     } catch (error) {
       console.log(error);
+    } finally {
+      setCheckoutLoading(false);
     }
   }
   
@@ -343,7 +354,7 @@ const CartDrawer = ({ isOpenCart, onCloseCart }) => {
                   <Text fontSize={"15px"} fontWeight={"500"}>
                     Color
                   </Text>
-                  <Text fontSize={"16px"} fontWeight={"600"} textTransform={'capitalize'}>
+                  <Text fontSize={"16px"} fontWeight={"500"} textTransform={'capitalize'}>
                     {colors.join(', ')}
                   </Text>
                 </Flex>
@@ -351,7 +362,7 @@ const CartDrawer = ({ isOpenCart, onCloseCart }) => {
                   <Text fontSize={"15px"} fontWeight={"500"}>
                     Size
                   </Text>
-                  <Text fontSize={"16px"} fontWeight={"600"}>
+                  <Text fontSize={"16px"} fontWeight={"500"}>
                     {sizes.join(', ')}
                   </Text>
                 </Flex>
@@ -359,7 +370,7 @@ const CartDrawer = ({ isOpenCart, onCloseCart }) => {
                   <Text fontSize={"15px"} fontWeight={"500"}>
                     Qty
                   </Text>
-                  <Text fontSize={"16px"} fontWeight={"600"}>
+                  <Text fontSize={"16px"} fontWeight={"500"}>
                     {totalQuantity}
                   </Text>
                 </Flex>
@@ -367,7 +378,7 @@ const CartDrawer = ({ isOpenCart, onCloseCart }) => {
                   <Text fontSize={"15px"} fontWeight={"500"}>
                     Total
                   </Text>
-                  <Text fontSize={"18px"} fontWeight={"600"}>
+                  <Text fontSize={"18px"} fontWeight={"500"}>
                     Rs. {totalPrice.toFixed(2)}
                   </Text>
                 </Flex>
@@ -384,6 +395,7 @@ const CartDrawer = ({ isOpenCart, onCloseCart }) => {
                 fontWeight={"400"}
                 letterSpacing={2}
                 onClick={handleStripePayment}
+                isLoading={checkoutLoading}
               >
                 CHECK OUT
               </Button>

@@ -12,6 +12,8 @@ import {
   Button,
   IconButton,
   Textarea,
+  Grid,
+  Flex,
 } from "@chakra-ui/react";
 import { SmallCloseIcon } from "@chakra-ui/icons";
 import { FiEdit } from "react-icons/fi";
@@ -26,7 +28,9 @@ const ProfilePage = () => {
   const [businessName, setBusinessName] = useState(user.businessName);
   const [brandName, setBrandName] = useState(user.brandName);
   const [email, setEmail] = useState(user.email);
-  const [address, setAddress] = useState(user.address);
+  const [address, setAddress] = useState({
+    line1: user.address.line1, line2: user.address.line2, city: user.address.city, pinCode: user.address.pinCode, state: user.address.state
+  });
   const [phone, setPhone] = useState(user.phone);
   const [loading, setLoading] = useState(false);
   const fileRef = useRef();
@@ -51,6 +55,7 @@ const ProfilePage = () => {
       localStorage.setItem('user-details', JSON.stringify(data));
       setUser(data);
       setLoading(false);
+      console.log(data);
     } catch (error) {
       showToast('Error', error.message, "error");
       console.log(error.message);
@@ -83,44 +88,73 @@ const ProfilePage = () => {
           </Stack>
         </FormControl>
 
-        <Box display={"grid"} gridTemplateColumns={"1fr 1fr"} gap={10} mt={10}>
+        <Box display={"grid"} gridTemplateColumns={"1fr 1fr 1fr"} gap={10} mt={10}>
           <Box>
-            <FormControl id="firstName">
+            <FormControl id="fullName">
               <FormLabel>Full Name</FormLabel>
               <Input type="text" value={fullName} onChange={e => setFullName(e.target.value)}/>
             </FormControl>
           </Box>
           <Box>
-            <FormControl id="lastName">
+            <FormControl id="businessName">
               <FormLabel>Business Name</FormLabel>
               <Input type="text" value={businessName} onChange={e => setBusinessName(e.target.value)} isDisabled={disable} />
             </FormControl>
           </Box>
           <Box>
-            <FormControl id="firstName">
+            <FormControl id="brandName">
               <FormLabel>Brand Name</FormLabel>
               <Input type="text" value={brandName} onChange={e => setBrandName(e.target.value)} isDisabled={disable}/>
             </FormControl>
           </Box>
           <Box>
-            <FormControl id="lastName">
+            <FormControl id="email">
               <FormLabel>Email</FormLabel>
               <Input type="text" value={email} onChange={e => setEmail(e.target.value)}/>
             </FormControl>
           </Box>
           <Box>
-            <FormControl id="lastName">
+            <FormControl id="phoneNumber">
               <FormLabel>Phone Number</FormLabel>
               <Input type="text" value={phone} onChange={e => setPhone(e.target.value)} placeholder="Ex. +91 9328077809"/>
             </FormControl>
           </Box>
+        </Box>
+
+        <Grid templateColumns={'1fr 1fr 1fr'} mt={10} gap={10}>
           <Box>
-            <FormControl id="lastName">
-              <FormLabel>Your Address</FormLabel>
-              <Textarea placeholder="Your address" value={address} onChange={e => setAddress(e.target.value)}/>
+            <FormControl id="line1">
+              <FormLabel>Address line 1</FormLabel>
+              <Input type="text" value={address.line1} onChange={e => setAddress(prev => ({...prev, line1: e.target.value}))} placeholder="Address line 1"/>
             </FormControl>
           </Box>
-        </Box>
+          <Box>
+            <FormControl id="line1">
+              <FormLabel>Address line 2</FormLabel>
+              <Input type="text" value={address.line2} onChange={e => setAddress(prev => ({...prev, line2: e.target.value}))} placeholder="Address line 1"/>
+            </FormControl>
+          </Box>
+          <Flex align={'center'} gap={5}>
+            <Box>
+              <FormControl id="city">
+                <FormLabel>City</FormLabel>
+                <Input type="text" value={address.city} onChange={e => setAddress(prev => ({...prev, city: e.target.value}))} placeholder="City"/>
+              </FormControl>
+            </Box>
+            <Box>
+              <FormControl id="state">
+                <FormLabel>State</FormLabel>
+                <Input type="text" value={address.state} onChange={e => setAddress(prev => ({...prev, state: e.target.value}))} placeholder="State"/>
+              </FormControl>
+            </Box>
+          </Flex>
+          <Box>
+            <FormControl id="pin">
+              <FormLabel>Pin Code</FormLabel>
+              <Input type="text" value={address.pinCode} onChange={e => setAddress(prev => ({...prev, pinCode: e.target.value}))} placeholder="Pin"/>
+            </FormControl>
+          </Box>
+        </Grid>
         
         <Button colorScheme="blue" fontWeight={'500'} display={'flex'} alignItems={'center'} gap={2} mt={10} isLoading={loading} loadingText="Updating" onClick={handleUpdate}>
           <FiEdit size={'18px'}/>

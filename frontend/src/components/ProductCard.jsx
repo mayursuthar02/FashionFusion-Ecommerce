@@ -1,5 +1,6 @@
 import { Badge, Box, Flex, Image, Link, Text } from "@chakra-ui/react";
 import { Link as RouterLink } from "react-router-dom";
+import { FaRegHeart } from "react-icons/fa";
 
 const ProductCard = ({ product }) => {
   return (
@@ -20,6 +21,7 @@ const ProductCard = ({ product }) => {
           _hover={{
             "> .image-hover": { opacity: 1 },
             "> .image-main": { opacity: 0 },
+            "> .showButton": { right: 2 },
           }}
         >
           <Image
@@ -63,6 +65,19 @@ const ProductCard = ({ product }) => {
               sold out
             </Badge>
           )}
+            <Box 
+            position={'absolute'} 
+            zIndex={1} 
+            right={-20} 
+            top={2} 
+            transition={'.3s ease'}
+            className="showButton"
+            color={'gray.500'} 
+            bg={'white'} 
+            p={2} 
+            borderRadius={'md'}>
+              <FaRegHeart/>
+            </Box>
         </Box>
         {/* Details */}
         <Box mt={1} px={2}>

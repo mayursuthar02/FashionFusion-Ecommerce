@@ -44,7 +44,7 @@ const getCartItems = async(req,res) => {
         
         const cartItems = await cartModel.find({userId})
         .sort({createdAt: -1})
-        .populate({path: 'productId', select: "_id category subCategory name images color discount price"})
+        .populate({path: 'productId', select: "_id category subCategory name images color discount price vendorId"})
         if(!cartItems) return res.status(404).json({error: "Cart items not found"});
         
         res.status(200).json(cartItems);
@@ -91,10 +91,28 @@ const DeleteCart = async(req,res) => {
     }
 }
 
+const DeleteUserCarts = async(req,res) => {
+    try {
+        const userId = req.user._id;
+
+        const deleteCarts = await cartModel.deleteMany({ userId: userId });
+
+        if (deleteCarts.deletedCount === 0) {
+          return res.status(404).json({ message: 'No cart items found for this user.' });
+        }
+    
+        res.status(200).json({ message: 'Cart cleared successfully.' });
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).json({error: "Error in delete user carts "+error.message});
+    }
+}
+
 
 export {
     addToCart,
     getCartItems,
     updateQuantity,
-    DeleteCart
+    DeleteCart,
+    DeleteUserCarts
 }
