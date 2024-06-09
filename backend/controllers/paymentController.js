@@ -41,6 +41,7 @@ const stripeCheckout = async (req, res) => {
               size: product.size,
               color: product.productId.color,
               discount: product.productId.discount,
+              brandName: product.productId.brandName,
             },
           },
           unit_amount: unitAmount,
@@ -97,6 +98,7 @@ const getLineItems = async(lineItems) => {
       const size = product.metadata.size;
       const color = product.metadata.color;
       const discount = product.metadata.discount;
+      const brandName = product.metadata.brandName;
 
       // Product Data
       const productData = {
@@ -109,6 +111,7 @@ const getLineItems = async(lineItems) => {
         size: size,
         color: color,
         discount: discount,
+        brandName: brandName,
       }
 
       // Push Data

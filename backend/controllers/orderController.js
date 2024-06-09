@@ -4,7 +4,7 @@ const getOrders = async(req,res) => {
     try {
         const userId = req.user._id;
 
-        const order = await OrderModel.find({userId});
+        const order = await OrderModel.find({userId}).sort({createdAt: -1});
 
         if (!order) {
             return res.status(404).json({error: "Order not found"});
