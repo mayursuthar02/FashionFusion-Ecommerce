@@ -13,6 +13,7 @@ import ProductDetails from '../pages/ProductDetails';
 import ProductsPage from '../pages/ProductsPage';
 import PaymentSuccess from '../pages/PaymentSuccess';
 import PaymentCancle from '../pages/PaymentCancle';
+import MyOrders from '../pages/MyOrders';
 
 const Routers = () => {
   return (
@@ -26,7 +27,7 @@ const Routers = () => {
         <Route path='/:category/:subCategory' element={<ProductsPage/>}/>
         <Route path='/order/success' element={<PaymentSuccess/>}/>
         <Route path='/order/cancelled' element={<PaymentCancle/>}/>
-
+        <Route path='/my-order' element={<MyOrders/>}/>
 
         <Route path='/dashboard/*' element={<DashboardPage/>}>
           <Route path=":name" element={<Dashboard/>}/>

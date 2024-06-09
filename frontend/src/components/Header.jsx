@@ -164,7 +164,7 @@ const Header = () => {
               {user && <Divider mt={2}/>}
               {user && user.isBusinessAccount && <Link as={RouterLink} to={`/dashboard/${user.businessName}`}  _hover={{ color: 'blue.500' }}>Dashboard</Link>}
               {user && <Link as={RouterLink} to={'/dashboard/profile'}  _hover={{ color: 'blue.500' }}>My Profile</Link>}
-              {user && <Link as={RouterLink}  _hover={{ color: 'blue.500' }}>My Order</Link>}
+              {user && <Link as={RouterLink} to={'/my-order'}  _hover={{ color: 'blue.500' }}>My Order</Link>}
               {!user && <Link as={RouterLink} to={'/login'}>
                 <Button w={'full'} colorScheme='blue'>Login</Button>
               </Link>}

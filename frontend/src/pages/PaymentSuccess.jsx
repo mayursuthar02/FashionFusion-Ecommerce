@@ -20,94 +20,94 @@ const PaymentSuccess = () => {
   const [loadingData, setLoadingData] = useState(false);
   const [orderData, setOrderData] = useState(null);
   
-  // Fetch order details
-  const fetchOrder = async(orderId) => {
-    try {
-      const res = await fetch(`/api/orders/${orderId}`);
-      const data = await res.json();
-      if (data.error) {
-        console.log(data.error);
-        return;
-      }
-      setOrderData(data);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoadingData(false);
-    }
-  }
+  // // Fetch order details
+  // const fetchOrder = async(orderId) => {
+  //   try {
+  //     const res = await fetch(`/api/orders/${orderId}`);
+  //     const data = await res.json();
+  //     if (data.error) {
+  //       console.log(data.error);
+  //       return;
+  //     }
+  //     setOrderData(data);
+  //   } catch (error) {
+  //     console.log(error);
+  //   } finally {
+  //     setLoadingData(false);
+  //   }
+  // }
 
-  // Delete cart items
-  const deleteCartItems = async() => {
-    try {
-      const res = await fetch('/api/carts/delete-user-carts', {
-        method: "DELETE",
-        headers: {"Content-Type":"application/json"},
-      });
-      const data = await res.json();
-      if (data.error) {
-        console.log(data.error);
-        return;
-      }
-      setCartItems([]);
-    } catch (error) {
-      console.log(error);
-    }
-  }
+  // // Delete cart items
+  // const deleteCartItems = async() => {
+  //   try {
+  //     const res = await fetch('/api/carts/delete-user-carts', {
+  //       method: "DELETE",
+  //       headers: {"Content-Type":"application/json"},
+  //     });
+  //     const data = await res.json();
+  //     if (data.error) {
+  //       console.log(data.error);
+  //       return;
+  //     }
+  //     setCartItems([]);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // }
 
-  // Create order
-  const createOrder = async()=> {
-    try {
-      const res = await fetch(`/api/orders/create-order`, {
-        method: "POST",
-        headers: {"Content-Type":"application/json"},
-        body: JSON.stringify({sessionId, products: cartItems})
-      });
-      const data = await res.json();
-      if (data.error) {
-        console.log(data.error);
-        return;
-      }
-      fetchOrder(data._id);
-      deleteCartItems();
-    } catch (error) {
-      console.log(error);
-    }
-  }
+  // // Create order
+  // const createOrder = async()=> {
+  //   try {
+  //     const res = await fetch(`/api/orders/create-order`, {
+  //       method: "POST",
+  //       headers: {"Content-Type":"application/json"},
+  //       body: JSON.stringify({sessionId, products: cartItems})
+  //     });
+  //     const data = await res.json();
+  //     if (data.error) {
+  //       console.log(data.error);
+  //       return;
+  //     }
+  //     fetchOrder(data._id);
+  //     deleteCartItems();
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // }
 
-  // Fetch cartitem Data
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoadingData(true);
-      try {
-        setLoading(true);
-        await fetchCartItemsFunc();
-        setLoading(false);
-      } catch (error) {
-        console.log(error);
-      }
-    }
-    fetchData();
-  }, []);
+  // // Fetch cartitem Data
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     setLoadingData(true);
+  //     try {
+  //       setLoading(true);
+  //       await fetchCartItemsFunc();
+  //       setLoading(false);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   }
+  //   fetchData();
+  // }, []);
 
-  // Call create order Func
-  useEffect(() => {
-    if (!loading) {
-      createOrder();
-    }
-  }, [loading]);
+  // // Call create order Func
+  // useEffect(() => {
+  //   if (!loading) {
+  //     createOrder();
+  //   }
+  // }, [loading]);
   
-  if (!orderData) {
-    return (
-      <Box minH={'90vh'} position={'relative'}>
-        <Box w={'full'} h={'90vh'} bgColor={'gray.100'}></Box>
-        <Spinner position={'absolute'} left={'48%'} top={'45%'} color='gray.500' size={'xl'}/>
-      </Box>
-    )
-  }
+  // if (!orderData) {
+  //   return (
+  //     <Box minH={'90vh'} position={'relative'}>
+  //       <Box w={'full'} h={'90vh'} bgColor={'gray.100'}></Box>
+  //       <Spinner position={'absolute'} left={'48%'} top={'45%'} color='gray.500' size={'xl'}/>
+  //     </Box>
+  //   )
+  // }
   return (
     <>
-      {loadingData && !orderData ? (
+      {/* {loadingData && !orderData ? (
         <Box minH={'90vh'} position={'relative'}>
           <Box w={'full'} h={'90vh'} bgColor={'black'} opacity={.5}></Box>
           <Spinner position={'absolute'} left={'48%'} top={'50%'} color='gray.300' size={'xl'}/>
@@ -174,7 +174,8 @@ const PaymentSuccess = () => {
             <Link as={RouterLink} to={'/'} display={'flex'} alignItems={'center'} justifyContent={'center'} bgColor={'blue.500'} _hover={{bgColor: 'blue.600'}} color={'white'} py={2} borderRadius={'md'} fontWeight={'500'} w={'full'} mt={6}>BACK HOME</Link>
           </Box>
         </Flex>
-      )}
+      )} */}
+      Success
     </>
   )
 }

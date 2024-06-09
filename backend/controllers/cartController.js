@@ -44,7 +44,7 @@ const getCartItems = async(req,res) => {
         
         const cartItems = await cartModel.find({userId})
         .sort({createdAt: -1})
-        .populate({path: 'productId', select: "_id category subCategory name images color discount price vendorId"})
+        .populate({path: 'productId', select: "_id category subCategory name images color discount price vendorId brandName"})
         if(!cartItems) return res.status(404).json({error: "Cart items not found"});
         
         res.status(200).json(cartItems);
