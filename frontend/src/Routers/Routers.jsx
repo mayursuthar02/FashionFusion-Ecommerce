@@ -14,6 +14,8 @@ import ProductsPage from '../pages/ProductsPage';
 import PaymentSuccess from '../pages/PaymentSuccess';
 import PaymentCancle from '../pages/PaymentCancle';
 import MyOrders from '../pages/MyOrders';
+import OrderDetailsPage from '../pages/OrderDetailsPage';
+import VendorOrderDetailsPage from '../pages/VendorOrderDetailsPage';
 
 const Routers = () => {
   return (
@@ -28,6 +30,8 @@ const Routers = () => {
         <Route path='/order/success' element={<PaymentSuccess/>}/>
         <Route path='/order/cancelled' element={<PaymentCancle/>}/>
         <Route path='/my-order' element={<MyOrders/>}/>
+        <Route path='/my-order/:orderId' element={<OrderDetailsPage/>}/>
+        <Route path='/dashboard/orders/:orderId' element={<VendorOrderDetailsPage/>}/>
 
         <Route path='/dashboard/*' element={<DashboardPage/>}>
           <Route path=":name" element={<Dashboard/>}/>

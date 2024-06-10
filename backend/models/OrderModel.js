@@ -12,8 +12,9 @@ const orderSchema = new mongoose.Schema(
       default: "",
     },
     userId: {
-      type: String,
-      default: "",
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      default: null,
     },
     paymentDetails: {
       paymentId: {
@@ -22,6 +23,14 @@ const orderSchema = new mongoose.Schema(
       },
       payment_method_type: [],
       payment_status: {
+        type: String,
+        default: "",
+      },
+      brand: {
+        type: String,
+        default: "",
+      },
+      last4Digit: {
         type: String,
         default: "",
       },

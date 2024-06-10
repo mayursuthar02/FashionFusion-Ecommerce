@@ -156,11 +156,6 @@ const CartDrawer = ({ isOpenCart, onCloseCart }) => {
 
 
   const handleStripePayment = async() => {
-    if (!user.address.line1 || !user.address.city || !user.address.pinCode || !user.address.state) {
-      showToast("Error", "Please add your address", "error");
-      return;   
-    }
-    
     const publishableKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
     const stripe = await loadStripe(publishableKey);
     setCheckoutLoading(true);

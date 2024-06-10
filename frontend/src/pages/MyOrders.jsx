@@ -1,15 +1,22 @@
 import { useEffect, useState } from "react"
 import useShowToast from "../hooks/useShowToast";
-import { Box, Button, Divider, Flex, Grid, Image, Link, Text } from "@chakra-ui/react";
+import { Box, Button, Divider, Flex, Grid, Image, Link, Spinner, Text } from "@chakra-ui/react";
+import { TiLocationArrow } from "react-icons/ti";
 import { Link as RouterLink } from "react-router-dom";
 import { format } from "date-fns";
 
 const MyOrders = () => {
     const showToast = useShowToast();
     const [orderData, setOrderData] = useState([]);
+    const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        window.scrollTo(0, 0); // Scroll to the top when component mounts or updates
+    }, []);
     
     useEffect(()=>{
         const fetchOrders = async() => {
+            setLoading(true);
             try {
                 const res = await fetch('/api/orders/get-orders');
                 const data = await res.json();
@@ -17,11 +24,12 @@ const MyOrders = () => {
                     showToast("Error", data.error, "error");
                     return;
                 }
-                console.log(data);
                 setOrderData(data);
             } catch (error) {
                 console.log(error);
                 showToast("Error", error, "error");
+            } finally {
+                setLoading(false);
             }
         };
         fetchOrders();
@@ -31,10 +39,23 @@ const MyOrders = () => {
     <>
     <Box p={10} bgColor={'gray.50'}>
         <Text fontSize={'20px'} fontWeight={'500'} mb={5}>MY ORDERS</Text>
+
+        {loading && (
+            <Flex align={'center'} justify={'center'} minH={'70vh'}>
+                <Spinner color="gray.500" size={'xl'}/>
+            </Flex>
+        )}
+
+        {orderData.length === 0 && !loading && (
+            <Flex align={'center'} justify={'center'} minH={'70vh'}>
+                <Text fontSize={'20px'} color={'gray.500'}>Start shopping to fill your order history!</Text>
+            </Flex>
+        )}
+        
         {orderData.length > 0 && (
-            <Grid templateColumns={'1fr 1fr'} gap={10}>
+            <Grid templateColumns={'1fr 1fr'} gap={10} maxH={'400vh'} overflowY={'scroll'} className="order-list">
                 {orderData.map((order) => (
-                    <Box key={order._id} bg={'white'} height={'fit-content'} boxShadow={'sm'} p={10} borderRadius={'md'}>
+                    <Box key={order._id} bg={'white'} height={'fit-content'} boxShadow={'sm'} p={7} borderRadius={'md'}>
                         <Flex align={'center'} justify={'space-between'}>
                             <Flex align={'center'} gap={5}>
                                 <Flex align={'center'} gap={2} fontSize={'16px'} fontWeight={'500'} bgColor={'gray.100'} py={2} px={4} borderRadius={'full'}>
@@ -50,15 +71,24 @@ const MyOrders = () => {
 
                             <Link as={RouterLink} target="_blank" to={order.receipt_url} bgColor={'gray.100'} py={2} px={4} borderRadius={'md'} cursor={'pointer'} _hover={{bg: 'gray.200'}}>Receipt</Link>
                         </Flex>
-                        <Flex my={3} gap={2} fontSize={'14px'} color={'gray.500'} ml={4}>Status: <Text color={'yellow.400'}>{order.status}</Text></Flex>
-                        <Text my={2} fontSize={'14px'} color={'gray.500'} ml={4}>Item : {order.productDetails.length}</Text>
+                        <Flex gap={2} fontSize={'14px'} color={'gray.500'} ml={4} mt={2}>
+                            Status: 
+                            {order.status === 'pending' && <Text color={'yellow.400'}>{order.status}</Text>}
+                            {order.status === 'received' && <Text color={'orange.500'}>{order.status}</Text>}
+                            {order.status === 'at depot' && <Text color={'orange'}>{order.status}</Text>}
+                            {order.status === 'in transit' && <Text color={'red'}>{order.status}</Text>}
+                            {order.status === 'out of delivery' && <Text color={'red.500'}>{order.status}</Text>}
+                            {order.status === 'delivered' && <Text color={'green.500'}>{order.status}</Text>}
+                        </Flex>
+
+                        <Text fontSize={'14px'} color={'gray.500'} ml={4} my={2}>Item : {order.productDetails.length}</Text>
 
                         <Divider borderColor={'gray.200'}/>
 
                         {order.productDetails.map((product) => (
                             <Flex justify={'space-between'} borderBottom={'1px solid '} borderColor={'gray.200'} py={5} gap={5}>
                                 <Box bg={'gray.200'} w={'80px'} height={'115px'} overflow={'hidden'} borderRadius={'md'}>
-                                    <Image src={product.image}/>
+                                    <Image src={product.image} w={'full'} h={'full'} objectFit={'cover'}/>
                                 </Box>
 
                                 <Flex flexDir={'column'} justify={'center'} gap={1} w={'400px'}>
@@ -72,7 +102,8 @@ const MyOrders = () => {
                                 </Flex>
                                 
                                 <Box>
-                                    <Text w={'100px'} fontWeight={'600'} fontSize={'15px'} textAlign={'right'}>Rs. {product.price.toFixed(2)}</Text>
+                                    <Text w={'100px'} fontWeight={'500'} fontSize={'13px'} color={'gray.500'} textAlign={'right'}>Rs. {product.price.toFixed(2)} x {product.quantity}</Text>
+                                    <Text w={'100px'} fontWeight={'600'} fontSize={'15px'} textAlign={'right'}>Rs. {(product.price * product.quantity).toFixed(2)}</Text>
                                     <Text w={'100px'} fontWeight={'500'} fontSize={'13px'} textAlign={'right'} color={'orange'}>{product.discount}%</Text>
                                 </Box>
                             </Flex>
@@ -84,6 +115,15 @@ const MyOrders = () => {
                                 <Text fontSize={'15px'} fontWeight={'500'}>Total Amount:</Text>
                                 <Text fontWeight={'600'} fontSize={'15px'}>Rs. {order.totalAmount.toFixed(2)}</Text>
                             </Flex>
+                        </Flex>
+
+                        <Divider borderColor={'gray.200'} my={5}/>
+
+                        <Flex display={'inline-block'}>
+                            <Link as={RouterLink} to={`/my-order/${order._id}`} display={'flex'} alignItems={'center'} justifyItems={'center'} gap={1} bgColor={'blue.500'} color={'white'} fontSize={'15px'} py={2} px={4} borderRadius={'md'} _hover={{bgColor: 'blue.600'}}>
+                                <TiLocationArrow fontSize={'17px'}/>
+                                <Text>Track Order</Text>
+                            </Link>
                         </Flex>
                     </Box>
                 ))}

@@ -1,6 +1,6 @@
 import { useRecoilValue } from "recoil"
 import userAtom from "../atoms/userAtom"
-import {Box, Button, Divider, Flex, Grid, GridItem, Image, Input, Link, Text} from '@chakra-ui/react';
+import {Box, Button, Divider, Flex, Grid, GridItem, Image, Input, Link, Skeleton, Text} from '@chakra-ui/react';
 import { FaFacebook } from "react-icons/fa";
 import { FaTwitter } from "react-icons/fa";
 import { RiInstagramFill } from "react-icons/ri";
@@ -24,6 +24,7 @@ const HomePage = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const showToast = useShowToast();
+  const loadingList = new Array(10).fill(null);
   
   // Fetch All Products
   useEffect(()=>{
@@ -119,7 +120,16 @@ const HomePage = () => {
       <Box px={'80px'} mt={10} mb={10}>
         <Text mb={10} fontSize={'40px'} textAlign={'center'} fontWeight={'500'}>MEN</Text>
         <Grid templateColumns={'repeat(5,1fr)'} gap={5} mb={10}>
-          {products
+          {loading && loadingList.map((_,i) => (
+            <Box key={i}>
+              <Skeleton height={'370px'} borderRadius={'md'}/>
+              <Skeleton height={'19px'} width={'150px'} mt={2} borderRadius={'md'}/>
+              <Skeleton height={'19px'} width={'120px'} mt={2} borderRadius={'md'}/>
+              <Skeleton height={'19px'} width={'200px'} mt={2} borderRadius={'md'}/>
+            </Box>
+          ))}
+          
+          {!loading && products
           .filter((product) => product.category === 'men')
           .slice(0,10)
           .map((product) => (
@@ -132,7 +142,17 @@ const HomePage = () => {
       <Box px={'80px'} mt={10} mb={10}>
         <Text mb={10} fontSize={'40px'} textAlign={'center'} fontWeight={'500'}>WOMEN</Text>
         <Grid templateColumns={'repeat(5,1fr)'} gap={5} mb={10}>
-          {products
+          {loading && loadingList.map((_,i) => (
+            <Box key={i}>
+              <Skeleton height={'370px'} borderRadius={'md'}/>
+              <Skeleton height={'19px'} width={'150px'} mt={2} borderRadius={'md'}/>
+              <Skeleton height={'19px'} width={'120px'} mt={2} borderRadius={'md'}/>
+              <Skeleton height={'19px'} width={'200px'} mt={2} borderRadius={'md'}/>
+            </Box>
+          ))}
+          
+          {!loading &&
+          products
           .filter((product) => product.category === 'women' && product.subCategory === 'top')
           .slice(0,10)
           .map((product) => (

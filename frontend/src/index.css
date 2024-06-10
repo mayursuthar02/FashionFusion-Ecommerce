@@ -12,7 +12,10 @@ html {
 }
 
 
-.filterBox::-webkit-scrollbar {
+
+
+.filterBox::-webkit-scrollbar,
+.order-list::-webkit-scrollbar {
   display: none;
 }
 

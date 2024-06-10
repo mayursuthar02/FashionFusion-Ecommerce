@@ -15,12 +15,6 @@ let session_id = '';
 const stripeCheckout = async (req, res) => {
   try {
     const { products } = req.body;
-
-    // Check address
-    const address = req.user.address;
-    if (!address.line1 || !address.city || !address.pinCode || !address.state) {
-      return res.status(400).json({ error: "Please add your address" });
-    }
     
     // Store Data
     const currency = "inr";
@@ -65,7 +59,7 @@ const stripeCheckout = async (req, res) => {
         userId : req.user._id.toString(),
       },
       line_items: lineItems,
-      success_url: `${process.env.FRONTEND_URL}/order/success`,
+      success_url: `${process.env.FRONTEND_URL}/order/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.FRONTEND_URL}/order/cancelled`,
       shipping_address_collection: {
         allowed_countries: ["IN"], // Allow only India for shipping
@@ -73,6 +67,10 @@ const stripeCheckout = async (req, res) => {
     });
 
     // Store session id 
+    if(!session.id) {
+      console.log("Error Session id not found");
+      return;   
+    }
     session_id += session.id;
 
 
@@ -157,8 +155,6 @@ const stripeWebhook = async (req, res) => {
           // Fetch product details from function create above
           const productDetails = await getLineItems(lineItems);
           
-          const paymentIntent = await stripe.paymentIntents.retrieve(session.payment_intent);
-
           // Store data for order create 
           const orderDetails = {
             productDetails : productDetails,
@@ -177,7 +173,7 @@ const stripeWebhook = async (req, res) => {
             }),
             totalAmount: session.amount_total / 100,
             sessionId : session_id,
-            billing_details : {}
+            billing_details : {},
           };
 
           // Create new Order
@@ -195,11 +191,24 @@ const stripeWebhook = async (req, res) => {
       try {
         // fetch receipt url from charge
         const receiptUrl = charge.receipt_url;
+        if (!receiptUrl) {
+          console.log("Error : Receipt url is null. ⛔");
+          }
+          
+          if (!session_id) {
+            console.log("Error : Session Id is null. ⛔");
+        }
         
         // Update the order || receipt and billing details
         const updateOrder = await OrderModel.findOne({sessionId: session_id});
+        if (!updateOrder) {
+          console.error('Order not found with sessionId:', session_id);
+          return res.status(404).json({ error: 'Order not found' });
+        }
         updateOrder.receipt_url = receiptUrl || updateOrder.receipt_url;
         updateOrder.billing_details = charge.billing_details || updateOrder.billing_details;
+        updateOrder.paymentDetails.brand = charge.payment_method_details.card.brand || updateOrder.paymentDetails.brand;
+        updateOrder.paymentDetails.last4Digit = charge.payment_method_details.card.last4 || updateOrder.paymentDetails.last4Digit;
         await updateOrder.save();
 
         // Recet session ID
