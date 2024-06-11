@@ -4,6 +4,7 @@ import { Box, Button, Divider, Flex, Grid, Image, Link, Spinner, Text } from "@c
 import { TiLocationArrow } from "react-icons/ti";
 import { Link as RouterLink } from "react-router-dom";
 import { format } from "date-fns";
+import { IoCheckbox } from "react-icons/io5";
 
 const MyOrders = () => {
     const showToast = useShowToast();
@@ -71,14 +72,15 @@ const MyOrders = () => {
 
                             <Link as={RouterLink} target="_blank" to={order.receipt_url} bgColor={'gray.100'} py={2} px={4} borderRadius={'md'} cursor={'pointer'} _hover={{bg: 'gray.200'}}>Receipt</Link>
                         </Flex>
-                        <Flex gap={2} fontSize={'14px'} color={'gray.500'} ml={4} mt={2}>
+                        <Flex gap={2} fontSize={'14px'} color={'gray.500'} ml={4} mt={2} align={'center'}>
                             Status: 
-                            {order.status === 'pending' && <Text color={'yellow.400'}>{order.status}</Text>}
-                            {order.status === 'received' && <Text color={'orange.500'}>{order.status}</Text>}
-                            {order.status === 'at depot' && <Text color={'orange'}>{order.status}</Text>}
-                            {order.status === 'in transit' && <Text color={'red'}>{order.status}</Text>}
-                            {order.status === 'out of delivery' && <Text color={'red.500'}>{order.status}</Text>}
-                            {order.status === 'delivered' && <Text color={'green.500'}>{order.status}</Text>}
+                            {order.status === 'pending' && <Text color={'yellow.400'} fontWeight={'600'}>{order.status}</Text>}
+                            {order.status === 'received' && <Text color={'orange.400'} fontWeight={'600'}>{order.status}</Text>}
+                            {order.status === 'at depot' && <Text color={'red.400'} fontWeight={'600'}>{order.status}</Text>}
+                            {order.status === 'in transit' && <Text color={'purple.400'} fontWeight={'600'}>{order.status}</Text>}
+                            {order.status === 'out of delivery' && <Text color={'blue.400'} fontWeight={'600'}>{order.status}</Text>}
+                            {order.status === 'delivered' && <Text color={'green.400'} fontWeight={'600'}>{order.status}</Text>}
+                            {order.status === 'delivered' && <Box color="green.500" fontSize={'15px'}><IoCheckbox/></Box>}
                         </Flex>
 
                         <Text fontSize={'14px'} color={'gray.500'} ml={4} my={2}>Item : {order.productDetails.length}</Text>
@@ -119,11 +121,15 @@ const MyOrders = () => {
 
                         <Divider borderColor={'gray.200'} my={5}/>
 
-                        <Flex display={'inline-block'}>
+                        <Flex align={'center'} gap={5}>
                             <Link as={RouterLink} to={`/my-order/${order._id}`} display={'flex'} alignItems={'center'} justifyItems={'center'} gap={1} bgColor={'blue.500'} color={'white'} fontSize={'15px'} py={2} px={4} borderRadius={'md'} _hover={{bgColor: 'blue.600'}}>
                                 <TiLocationArrow fontSize={'17px'}/>
                                 <Text>Track Order</Text>
                             </Link>
+                            {order.status === 'delivered' &&
+                            <Button display={'flex'} alignItems={'center'} justifyItems={'center'} gap={1} fontSize={'15px'} py={2} px={4} borderRadius={'md'}>
+                                <Text>Return</Text>
+                            </Button>}
                         </Flex>
                     </Box>
                 ))}

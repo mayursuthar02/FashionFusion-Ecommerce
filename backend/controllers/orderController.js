@@ -134,11 +134,34 @@ const getVenderOrderById = async(req,res) => {
     }
 }
 
+const updateStatus = async(req,res) => {
+    try {
+        const {orderId} = req.params;
+        const {status} = req.body;
+
+        const updateOrder = await OrderModel.findById(orderId);
+        if (!updateOrder) {
+            return res.status(404).json({error: "Order not found"});
+        }
+
+        updateOrder.status = status || updateOrder.status;
+        await updateOrder.save();
+
+        res.status(200).json(updateOrder);
+    } catch (error) {
+        console.log(error.message);
+        res
+          .status(500)
+          .json({ error: "Error in update order status " + error.message });
+    }
+}
+
 export { 
     getOrders,
     getOrdersById,
     getOrdersBySessionId,
     getVendorOrders,
-    getVenderOrderById
+    getVenderOrderById,
+    updateStatus
 };
 

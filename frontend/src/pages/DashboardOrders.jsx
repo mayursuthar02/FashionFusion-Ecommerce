@@ -10,6 +10,10 @@ const DashboardOrders = () => {
   const [ordersData, setOrdersData] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    window.scrollTo(0, 0); // Scroll to the top when component mounts or updates
+  }, []);
+
   useEffect(()=> {
     const fetchOrders = async() => {
       setLoading(true);
@@ -107,12 +111,12 @@ const DashboardOrders = () => {
                 </Flex>
                 <Flex gap={2} fontSize={'14px'} color={'gray.500'} ml={4} mt={2}>
                     Status: 
-                    {order.status === 'pending' && <Text color={'yellow.400'}>{order.status}</Text>}
-                    {order.status === 'received' && <Text color={'orange.500'}>{order.status}</Text>}
-                    {order.status === 'at depot' && <Text color={'orange'}>{order.status}</Text>}
-                    {order.status === 'in transit' && <Text color={'red'}>{order.status}</Text>}
-                    {order.status === 'out of delivery' && <Text color={'red.500'}>{order.status}</Text>}
-                    {order.status === 'delivered' && <Text color={'green.500'}>{order.status}</Text>}
+                    {order.status === 'pending' && <Text color={'yellow.400'} fontWeight={'500'}>{order.status}</Text>}
+                    {order.status === 'received' && <Text color={'orange.500'} fontWeight={'500'}>{order.status}</Text>}
+                    {order.status === 'at depot' && <Text color={'red.500'} fontWeight={'500'}>{order.status}</Text>}
+                    {order.status === 'in transit' && <Text color={'purple.500'} fontWeight={'500'}>{order.status}</Text>}
+                    {order.status === 'out of delivery' && <Text color={'blue.500'} fontWeight={'500'}>{order.status}</Text>}
+                    {order.status === 'delivered' && <Text color={'green.500'} fontWeight={'500'}>{order.status}</Text>}
                 </Flex>
 
                 <Text fontSize={'14px'} color={'gray.500'} ml={4} my={2}>Item : {order.productDetails.length}</Text>

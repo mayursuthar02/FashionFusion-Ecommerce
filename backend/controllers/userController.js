@@ -76,6 +76,7 @@ const loginUser = async(req,res) => {
     }
 };
 
+
 const logoutUser = async(req,res) => {
     try {
         res.cookie("token", "", { maxAge: 1 });
@@ -85,6 +86,7 @@ const logoutUser = async(req,res) => {
         res.status(500).json({error: "Error in logout user "+error.message});
     }
 } 
+
 
 const UpdateUserProfile = async(req,res) => {
     try {
@@ -123,4 +125,50 @@ const UpdateUserProfile = async(req,res) => {
     }
 }
 
-export {SignupUser, loginUser,logoutUser, UpdateUserProfile};
+
+const AddInWishlist = async(req,res) => {
+    try {
+        const {productId} = req.body;
+        const userId = req.user._id;
+
+        if (!productId) {
+            return res.status(404).json({error: "Product Id not found"})
+        }
+
+        if (!userId) {
+            return res.status(404).json({error: "User Id not found"});
+        }
+
+        const user = await UserModel.findById(userId);
+        if (!user) {
+            return res.status(404).json({error: "User not found"})
+        }
+
+        if (!user.wishlist.includes(productId)) {
+            user.wishlist.push(productId);
+        } else {
+            user.wishlist.pop(productId);
+        }
+
+        await user.save();
+
+        res.status(200).json({
+            _id: user._id,
+            fullName: user.fullName,
+            businessName: user.businessName,
+            brandName: user.brandName,
+            email: user.email,
+            isBusinessAccount: user.isBusinessAccount,
+            profilePic: user.profilePic,
+            address: user.address,
+            phone: user.phone,
+            wishlist: user.wishlist,
+        });
+        
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).json({error: "Error in add product in wishlist "+error.message});
+    }
+};
+
+export {SignupUser, loginUser,logoutUser, UpdateUserProfile, AddInWishlist};

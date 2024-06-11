@@ -7,9 +7,7 @@ import { format } from "date-fns";
 import { useRecoilValue } from "recoil";
 import userAtom from "../atoms/userAtom";
 
-
 const steps = [
-    { title: 'pending'},
     { title: 'received'},
     { title: 'at depot'},
     { title: 'in transit'},
@@ -26,20 +24,19 @@ const OrderDetailsPage = () => {
 
 // Mapping order status to step index
   const statusToIndex = {
-      'pending': 1,
-      'received': 2,
-      'at depot': 3,
-      'in transit': 4,
-      'out of delivery': 5,
-      'delivered': 6,
+      'pending': 0,
+      'received': 1,
+      'at depot': 2,
+      'in transit': 3,
+      'out of delivery': 4,
+      'delivered': 5,
   };
   
-  const stepIndex = statusToIndex[order?.status];
+  const stepIndex = statusToIndex[order?.status] || 0;
   
-  const { activeStep } = useSteps({
-    index: stepIndex,
-    count: steps.length,
-  });
+  useEffect(() => {
+        window.scrollTo(0, 0); // Scroll to the top when component mounts or updates
+  }, []);
 
   useEffect(() => {
     const fetchOrder = async () => {
@@ -61,7 +58,7 @@ const OrderDetailsPage = () => {
       }
     };
     fetchOrder();
-  }, []);
+  }, [orderId, showToast]);
 
   return (
     <>
@@ -109,14 +106,14 @@ const OrderDetailsPage = () => {
                 <Box>
                     <Text fontSize={'15px'} fontWeight={'600'} textTransform={'uppercase'} pb={4} borderBottom={'1px solid'} borderColor={'gray.200'}>Track Order</Text>
 
-                    <Stepper index={activeStep} colorScheme='blue' gap='0' mt={10} px={10}>
+                    <Stepper index={stepIndex} scolorScheme='blue' gap='0' mt={10} px={10}>
                         {steps.map((step, index) => (
                             <Step key={index}>
                                 <StepIndicator>
                                     <StepStatus complete={<StepIcon />} incomplete={<StepNumber />} active={<StepNumber />} />
                                     </StepIndicator>
                     
-                                    <Box flexShrink='0' fontSize={'15px'} ml={3}>
+                                    <Box flexShrink='0' fontSize={'15px'} ml={3} textTransform={'capitalize'}>
                                         <StepTitle>{step.title}</StepTitle>
                                     </Box>
                     

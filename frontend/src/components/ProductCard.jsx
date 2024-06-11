@@ -1,8 +1,40 @@
-import { Badge, Box, Flex, Image, Link, Text } from "@chakra-ui/react";
+import { Badge, Box, Button, Flex, Image, Link, Text } from "@chakra-ui/react";
 import { Link as RouterLink } from "react-router-dom";
 import { FaRegHeart } from "react-icons/fa";
+import { FaHeart } from "react-icons/fa6";
+import { useEffect, useState } from "react";
+import useAddWishlist from "../hooks/useAddWishlist";
+import {useRecoilValue} from 'recoil';
+import userAtom from '../atoms/userAtom';
 
 const ProductCard = ({ product }) => {
+  const [heartIcon, setHeartIcon] = useState(<FaRegHeart/>);
+  const [loading, setLoading] = useState(false);
+  const user = useRecoilValue(userAtom);
+  const addWishlist = useAddWishlist();
+
+  // Check if product add in whishlist or not and change icon
+  useEffect(()=>{
+    if (user.wishlist.includes(product._id)) {
+      setHeartIcon(<FaHeart/>);
+    }else {
+      setHeartIcon(<FaRegHeart/>);
+    }
+  },[user]);
+
+  const handleAddToWishlist = (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    
+    setLoading(true);
+    addWishlist(product._id);
+    
+    setTimeout(() => {
+      setLoading(false);
+    }, 500);
+  }
+  
+  
   return (
     <>
       <Link
@@ -65,7 +97,7 @@ const ProductCard = ({ product }) => {
               sold out
             </Badge>
           )}
-            <Box 
+            <Button 
             position={'absolute'} 
             zIndex={1} 
             right={-20} 
@@ -74,10 +106,14 @@ const ProductCard = ({ product }) => {
             className="showButton"
             color={'gray.500'} 
             bg={'white'} 
+            fontSize={'18px'}
             p={2} 
-            borderRadius={'md'}>
-              <FaRegHeart/>
-            </Box>
+            borderRadius={'full'}
+            isLoading={loading}
+            onClick={handleAddToWishlist}
+            >
+              {heartIcon}
+            </Button>
         </Box>
         {/* Details */}
         <Box mt={1} px={2}>

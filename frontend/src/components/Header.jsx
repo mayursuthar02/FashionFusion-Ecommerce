@@ -158,8 +158,8 @@ const Header = () => {
           <MenuList zIndex={10}>
             <Flex flexDirection={'column'} px={5} py={3} gap={3}>
               {user && <Flex align={'center'} gap={2}>
-                <Avatar src={user.profilePic}/>
-                <Text>{user.fullName ? user.fullName : user.businessName}</Text>
+                <Avatar src={user?.profilePic}/>
+                <Text>{user?.fullName ? user?.fullName : user?.businessName}</Text>
               </Flex>}
               {user && <Divider mt={2}/>}
               {user && user.isBusinessAccount && <Link as={RouterLink} to={`/dashboard/${user.businessName}`}  _hover={{ color: 'blue.500' }}>Dashboard</Link>}

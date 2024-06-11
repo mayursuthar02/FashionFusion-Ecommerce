@@ -1,15 +1,48 @@
-import { Badge, Box, Button, Flex, Image, Link, Text, useDisclosure } from "@chakra-ui/react";
+import { AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, Badge, Box, Button, Flex, Image, Link, Text, useDisclosure } from "@chakra-ui/react";
 import UpdateProduct from "./UpdateProduct";
 import { Link as RouterLink } from "react-router-dom";
 import { useState } from "react";
+import useShowToast from "../hooks/useShowToast";
+import FetchVenderProductsData from "../helpers/FetchVenderProductsData";
 
 const DashboardProductCard = ({ product}) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen: isOpenAlert, onOpen: onOpenAlert, onClose: onCloseAlert } = useDisclosure();
+  const [loading, setLoading] = useState(false);
+  const showToast = useShowToast();
+  const fetchVenderProducts = FetchVenderProductsData();
 
   const showEditModel = (e) => {
     e.stopPropagation();
     e.preventDefault();
     onOpen();
+  }
+
+  const showDeleteModel = (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    onOpenAlert();
+  }
+
+  const handleProductDelete = async(id) => {
+    setLoading(true);
+    try {
+      const res = await fetch(`/api/products/delete/${id}`, {
+        method: "DELETE"
+      });
+      const data = await res.json();
+      if (data.error) {
+        showToast("Error", data.error, "Error");
+        return;
+      }
+      showToast("Success", "Product deleted", "success");
+      fetchVenderProducts();
+    } catch (error) {
+      console.log(error);
+      showToast("Error", error, "Error");
+    } finally {
+      setLoading(false);
+    }
   }
   
   return (
@@ -28,7 +61,6 @@ const DashboardProductCard = ({ product}) => {
           _hover={{
             "> .image-hover": { opacity: 1 },
             "> .image-main": { opacity: 0 },
-            "> .showButton" : {right: 2}
           }}
         >
           <Image
@@ -75,19 +107,19 @@ const DashboardProductCard = ({ product}) => {
           <Button
             position={"absolute"}
             top={10}
-            right={-20}
+            right={2}
             transition={'.3s ease'}
             transitionDelay={'.1s'}
             className="showButton"
             size={'xs'}
-            // onClick={showEditModel}
+            onClick={(e)=> showDeleteModel(e)}
           >
               DELETE
           </Button>
           <Button
             position={"absolute"}
             top={2}
-            right={-20}
+            right={2}
             transition={'.3s ease'}
             className="showButton"
             size={'xs'}
@@ -124,6 +156,32 @@ const DashboardProductCard = ({ product}) => {
       </Link>
 
       <UpdateProduct product={product} isOpen={isOpen} onClose={onClose}/>
+
+      <AlertDialog
+        isOpen={isOpenAlert}
+        onClose={onCloseAlert}
+      >
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader fontSize='lg' fontWeight='bold'>
+              Delete Product
+            </AlertDialogHeader>
+
+            <AlertDialogBody>
+              Are you sure? You want to delete!
+            </AlertDialogBody>
+
+            <AlertDialogFooter>
+              <Button onClick={onCloseAlert}>
+                Cancel
+              </Button>
+              <Button colorScheme='red' onClick={()=> handleProductDelete(product._id)} ml={3} loadingText="Deleting" isLoading={loading}>
+                Delete
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
     </>
   );
 };

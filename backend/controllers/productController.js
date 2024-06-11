@@ -51,6 +51,7 @@ const getVenderProducts = async(req,res) => {
     }
 }
 
+
 const updateProduct = async(req,res) => {
     try {
         const {name, brandName, description, price, category, subCategory, sizes, color, material, images, stock, discount} = req.body;
@@ -84,6 +85,26 @@ const updateProduct = async(req,res) => {
 }
 
 
+const deleteProduct = async(req,res) => {
+    try {
+        const {id} = req.params;
+        if (!id) {
+            return res.status(404).json({error: "ProductId not found"});
+            }
+            
+        const deleteProduct = await productModel.findByIdAndDelete(id);
+        if (!deleteProduct) {
+            return res.status(404).json({error: "Product not found"});
+        }
+
+        res.status(200).json(deleteProduct);
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).json({error: "Error in get update product "+error.message});
+    }
+}
+
+
 const getProductDetails = async(req,res) => {
     try {
         const {id} = req.params;
@@ -99,6 +120,7 @@ const getProductDetails = async(req,res) => {
         res.status(500).json({error: "Error in get product "+error.message});
     }
 };
+
 
 const getProductByName = async(req,res) => {
     try {
@@ -203,6 +225,7 @@ export {
     createProduct, 
     getVenderProducts, 
     updateProduct, 
+    deleteProduct, 
     getProductDetails, 
     getProductByName, 
     getFilterProperties, 

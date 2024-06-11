@@ -3,6 +3,11 @@ import { Avatar, Box, Button, Divider, Flex, IconButton, Image, Link, Skeleton, 
 import { Link as RouterLink, useParams } from 'react-router-dom';
 
 import useShowToast from '../hooks/useShowToast';
+import useAddWishlist from '../hooks/useAddWishlist';
+import FetchCartItems from '../helpers/FetchCartItems';
+import WriteReview from '../components/WriteReview';
+import userAtom from '../atoms/userAtom';
+import { useRecoilValue } from 'recoil';
 
 import { IoShareSocialSharp } from "react-icons/io5";
 import { FaStar } from "react-icons/fa6";
@@ -12,12 +17,14 @@ import { MdOutlinePublishedWithChanges } from "react-icons/md";
 import { MdForwardToInbox } from "react-icons/md";
 import { LiaShippingFastSolid } from "react-icons/lia";
 import { FaRegHeart } from "react-icons/fa6";
+import { FaHeart } from "react-icons/fa6";
 import { TbMessage2 } from "react-icons/tb";
 
 import { formatDistanceToNow } from 'date-fns'
 
 import { Splide, SplideSlide } from '@splidejs/react-splide';
 import '@splidejs/splide/dist/css/splide.min.css';
+
 // Image Import
 import img1 from '../assets/Logo Payment Method/1.png'
 import img2 from '../assets/Logo Payment Method/2.png'
@@ -27,8 +34,6 @@ import img5 from '../assets/Logo Payment Method/5.png'
 import img6 from '../assets/Logo Payment Method/6.png'
 import img7 from '../assets/Logo Payment Method/7.png'
 import img8 from '../assets/Logo Payment Method/8.png'
-import WriteReview from '../components/WriteReview';
-import FetchCartItems from '../helpers/FetchCartItems';
 
 const paymentImg = [img1, img2, img3, img4, img5, img6, img7, img8];
 
@@ -42,6 +47,10 @@ const ProductDetails = () => {
   const [seeReviews, setSeeReviews] = useState(2);
   const [loading, setLoading] = useState(false);
   const [addToCartLoading, setAddToCartLoading] = useState(false);
+  const [addToWishlistLoading, setAddToWishlistLoading] = useState(false);
+  const [heartIcon, setHeartIcon] = useState(<FaRegHeart/>);
+  const user = useRecoilValue(userAtom);
+  const addWishlist = useAddWishlist();
   // Input 
   const [size, setSize] = useState('Select size');
   
@@ -54,6 +63,15 @@ const ProductDetails = () => {
   useEffect(() => {
     window.scrollTo(0, 0); // Scroll to the top when component mounts or updates
   }, []);
+
+  // Check if product add in whishlist or not and change icon
+  useEffect(()=>{
+    if (user.wishlist.includes(productId)) {
+      setHeartIcon(<FaHeart fontSize={'20px'}/>);
+    }else {
+      setHeartIcon(<FaRegHeart fontSize={'20px'}/>);
+    }
+  },[user]);
 
   // Fetch product Details data
   useEffect(() => {
@@ -164,6 +182,16 @@ const ProductDetails = () => {
       setAddToCartLoading(false);
       fetchCartItemsFunc();
     }
+  }
+
+  // Add to wishlist
+  const handleAddToWishlist = () => {
+    setAddToWishlistLoading(true);
+    addWishlist(productId);
+    
+    setTimeout(() => {
+      setAddToWishlistLoading(false);
+    }, 500);
   }
   
   if (!product || loading) {
@@ -358,9 +386,9 @@ const ProductDetails = () => {
             </Flex>
 
             <Flex align={'center'} gap={2}>
-              <Button bg={'black'} _hover={{bg: '#333'}} borderRadius={'4px'} color={'white'} px={10} py={6} isDisabled={product.stock === 0 ? true : false} onClick={addToCartFunc} isLoading={addToCartLoading}>ADD TO CART</Button>
-              <Button bg={'black'} _hover={{bg: '#333'}} borderRadius={'4px'} color={'white'} px={10} py={6} display={'flex'} alignItems={'center'} gap={3} letterSpacing={2}>
-                <FaRegHeart fontSize={'20px'}/>
+              <Button bg={'black'} _hover={{bg: '#333'}} borderRadius={'4px'} color={'white'} w={'150px'} h={'45px'} isDisabled={product.stock === 0 ? true : false} letterSpacing={1} onClick={addToCartFunc} isLoading={addToCartLoading} fontWeight={'600'}>ADD TO CART</Button>
+              <Button bg={'black'} _hover={{bg: '#333'}} borderRadius={'4px'} color={'white'} w={'150px'} h={'45px'} display={'flex'} alignItems={'center'} gap={2} letterSpacing={2} onClick={handleAddToWishlist} isLoading={addToWishlistLoading}>
+                {heartIcon}
                 WISHLIST
               </Button>
             </Flex>

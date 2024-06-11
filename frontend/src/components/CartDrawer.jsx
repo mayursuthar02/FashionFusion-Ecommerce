@@ -38,7 +38,9 @@ const CartDrawer = ({ isOpenCart, onCloseCart }) => {
   useEffect(() => {
     setLoading(true);
     try {
-      fetchCartItemsFunc();
+      if (user) {
+        fetchCartItemsFunc();
+      }
     } catch (error) {
       console.log(error);
     } finally {
