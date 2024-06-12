@@ -144,10 +144,11 @@ const AddInWishlist = async(req,res) => {
             return res.status(404).json({error: "User not found"})
         }
 
+        const wishlistIndex = user.wishlist.indexOf(productId);
         if (!user.wishlist.includes(productId)) {
             user.wishlist.push(productId);
         } else {
-            user.wishlist.pop(productId);
+            user.wishlist.splice(wishlistIndex, 1);
         }
 
         await user.save();
@@ -171,4 +172,20 @@ const AddInWishlist = async(req,res) => {
     }
 };
 
-export {SignupUser, loginUser,logoutUser, UpdateUserProfile, AddInWishlist};
+
+const getWishlistProduct = async(req,res) => {
+    try {
+        const userId = req.user._id;
+        if(!userId) return res.status(404).json({error: "User id not found"});
+        
+        const user = await UserModel.findById(userId).populate('wishlist');
+        if(!user) return res.status(404).json({error: "User not found"});
+    
+        res.status(200).json(user.wishlist);
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).json({error: "Error in get wishlist product "+error.message});
+    }
+}
+
+export {SignupUser, loginUser,logoutUser, UpdateUserProfile, AddInWishlist, getWishlistProduct};

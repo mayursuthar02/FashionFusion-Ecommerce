@@ -221,6 +221,56 @@ const getAllProduct = async (req, res) => {
 };
   
 
+const searchProductV1 = async(req,res) => {
+    try {
+        // const query = req.query.q;
+        const {query} = req.params;
+        
+        const regex = new RegExp(query, 'i');
+
+        const products = await productModel.find({
+            "$or" : [
+                {name: regex},
+                {category: regex},
+                {subCategory: regex},
+                {color: regex},
+                {brandName: regex},
+            ]
+        });
+
+        res.status(200).json(products);
+        
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).json({ error: "Error in search product " + error.message });
+    }
+}
+  
+
+const searchProductV2 = async(req,res) => {
+    try {
+        const query = req.query.q;        
+        const regex = new RegExp(query, 'i');
+
+        const products = await productModel.find({
+            "$or" : [
+                {name: regex},
+                {category: regex},
+                {subCategory: regex},
+                {color: regex},
+                {brandName: regex},
+            ]
+        });
+
+        res.status(200).json(products);
+        
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).json({ error: "Error in search product " + error.message });
+    }
+}
+
+
 export {
     createProduct, 
     getVenderProducts, 
@@ -230,5 +280,7 @@ export {
     getProductByName, 
     getFilterProperties, 
     getFilterProducts, 
-    getAllProduct
+    getAllProduct,
+    searchProductV1,
+    searchProductV2
 };

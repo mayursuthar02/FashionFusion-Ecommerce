@@ -15,6 +15,7 @@ html {
 
 
 .filterBox::-webkit-scrollbar,
+.scroll-hide::-webkit-scrollbar,
 .order-list::-webkit-scrollbar {
   display: none;
 }

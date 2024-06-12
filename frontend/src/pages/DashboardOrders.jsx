@@ -52,7 +52,7 @@ const DashboardOrders = () => {
   }, 0);
   
   return (
-    <Box p={2} px={5} minH={'100vh'}>
+    <Box minH={'100vh'}>
       <Text fontSize={'30px'} fontWeight={'500'} mb={5}>Orders</Text>
 
       <Grid templateColumns={'repeat(2,1fr)'} px={'50px'} gap={20} mb={5}>

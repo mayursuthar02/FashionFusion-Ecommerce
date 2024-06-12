@@ -1,10 +1,12 @@
+import { useEffect, useRef, useState } from "react";
 import { Box, Button, Checkbox, Collapse, Flex, FormControl, Link, RangeSlider, RangeSliderFilledTrack, RangeSliderThumb, RangeSliderTrack, Skeleton, Text, filter, useDisclosure } from "@chakra-ui/react"
 import { Link as RouterLink, useParams } from "react-router-dom"
+
 import { IoShareSocialSharp, IoCloseOutline } from "react-icons/io5";
 import { PiSliders } from "react-icons/pi";
 import { RxDashboard } from "react-icons/rx";
 import { MdKeyboardArrowDown } from "react-icons/md";
-import { useEffect, useRef, useState } from "react";
+
 import useShowToast from "../hooks/useShowToast";
 import ProductCard from "../components/ProductCard";
 
@@ -15,6 +17,7 @@ const ProductsPage = () => {
     let {category, subCategory} = useParams();
     const showToast = useShowToast();
     const { isOpen, onToggle } = useDisclosure();
+    
     const [filterProperties, setFilterProperties] = useState({ brandNames: [],sizes : [], colors: [] });
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -46,6 +49,7 @@ const ProductsPage = () => {
         fetchFilterProperties();
     },[]);
 
+    // Filter product
     useEffect(()=> {
         const fetchProductAndFilter = async () => {
             setLoading(true);
@@ -67,15 +71,18 @@ const ProductsPage = () => {
         fetchProductAndFilter();
     }, [category, sizes, priceRange, brandNames, colors, subCategory]);
 
+    // Handle Page change pagination
     const handlePageChange = (page) => {
         setCurrentPage(page);
         window.scrollTo(0, 0);
     };
-    
+
+    // Pagination
     const paginatedProducts = products.slice(
         (currentPage - 1) * PRODUCTS_PER_PAGE,
         currentPage * PRODUCTS_PER_PAGE
     );
+    
     
   return (
     <>
