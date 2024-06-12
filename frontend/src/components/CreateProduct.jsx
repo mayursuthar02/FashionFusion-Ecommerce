@@ -2,15 +2,17 @@ import {
   Box, Button, Flex, FormControl, FormLabel, HStack, Image, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, 
   ModalOverlay, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, Select, Text, Textarea } from "@chakra-ui/react";
 import { useRef, useState } from "react";
+
 import { LuUploadCloud } from "react-icons/lu";
 import { IoIosCloseCircle } from "react-icons/io";
-import useShowToast from "../hooks/useShowToast";
-import useUploadImage from "../hooks/useUploadImage";
 import { SmallCloseIcon } from "@chakra-ui/icons";
-import { beautySubCategories, categories, kidsSubCategories, menSubCategories, wommenSubCategories } from "../helpers/categories";
-import { useRecoilState, useRecoilValue } from 'recoil';
+
+import useShowToast from "../hooks/useShowToast";
 import userAtom from '../atoms/userAtom';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import useUploadImage from "../hooks/useUploadImage";
 import FetchVenderProductsData from "../helpers/FetchVenderProductsData";
+import { beautySubCategories, categories, kidsSubCategories, menSubCategories, wommenSubCategories } from "../helpers/categories";
 
 const CreateProduct = ({isOpen,onClose}) => {
     const user = useRecoilValue(userAtom);
@@ -36,7 +38,6 @@ const CreateProduct = ({isOpen,onClose}) => {
     
     // Upload Product Images
     const handleUploadProductImages = async (e) => {
-      // const file = e.target.files[0];
       const files = Array.from(e.target.files);
       const newImages = [];
       
@@ -62,23 +63,8 @@ const CreateProduct = ({isOpen,onClose}) => {
         setIsUploading(false); 
         setLoading(false);
       }
-
-
-      // try {
-      //   if (images.length >= 9) {
-      //     showToast("Error", "You can use up to 9 images", "error");
-      //     setIsUploading(false);
-      //     return;
-      //   }
-      //   const uploadImageCloudinary = await useUploadImage(file);
-      //   setImages([...images, uploadImageCloudinary.url]);
-      // } catch (error) {
-      //   console.error("Error uploading image:", error);
-      // } finally {
-      //   setIsUploading(false);
-      //   setLoading(false);
-      // }
     };
+
     // Delete uploaded images
     const handleDeleteImage = (img) => {
       const filterImages = images.filter(image => image !== img);
@@ -100,7 +86,6 @@ const CreateProduct = ({isOpen,onClose}) => {
     
     // Hnadle Submit
     const handleSubmit = async() => {
-      // console.log({name, brandName, category, subCategory, sizes, color, material, stock, price, discount, description, images});
       if (name == "" || brandName == "" || category == "" || subCategory == "" || sizes == "" || color == "" || material == "" || price == 0 || description == "" || images == "") {
         showToast("Error", "Fields is require", "error");
         return;  

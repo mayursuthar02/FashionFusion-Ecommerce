@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useNavigate, Navigate } from 'react-router-dom';
 import HomePage from '../pages/HomePage';
 import LoginPage from '../pages/LoginPage';
 import SignupPage from '../pages/SignupPage';
@@ -17,25 +17,29 @@ import MyOrders from '../pages/MyOrders';
 import OrderDetailsPage from '../pages/OrderDetailsPage';
 import VendorOrderDetailsPage from '../pages/VendorOrderDetailsPage';
 import SearchProduct from '../pages/SearchProduct';
+import { useRecoilValue } from 'recoil';
+import userAtom from '../atoms/userAtom';
 
 const Routers = () => {
+  const user = useRecoilValue(userAtom);
+  
   return (
     <Routes>
         <Route path='/' element={<HomePage/>}/>
-        <Route path='/login' element={<LoginPage/>}/>
-        <Route path='/signup' element={<SignupPage/>}/>
+        <Route path='/login' element={!user ? <LoginPage/> : <Navigate to={"/"}/>}/>
+        <Route path='/signup' element={!user ? <SignupPage/> : <Navigate to={"/"}/>}/>
         <Route path='/wishlist' element={<WishlistPage/>}/>
         <Route path='/:category/:subCategory/:name/:productId' element={<ProductDetails/>}/>
         <Route path='/:category' element={<ProductsPage/>}/>
         <Route path='/:category/:subCategory' element={<ProductsPage/>}/>
         <Route path='/order/success' element={<PaymentSuccess/>}/>
         <Route path='/order/cancelled' element={<PaymentCancle/>}/>
-        <Route path='/my-order' element={<MyOrders/>}/>
+        <Route path='/my-order' element={user ? <MyOrders/> : <Navigate to={"/login"}/>}/>
         <Route path='/my-order/:orderId' element={<OrderDetailsPage/>}/>
-        <Route path='/dashboard/orders/:orderId' element={<VendorOrderDetailsPage/>}/>
+        <Route path='/dashboard/orders/:orderId' element={user?.isBusinessAccount === true ? <VendorOrderDetailsPage/> : <Navigate to={"/"}/>}/>
         <Route path='/search' element={<SearchProduct/>}/>
 
-        <Route path='/dashboard/*' element={<DashboardPage/>}>
+        <Route path='/dashboard/*' element={user?.isBusinessAccount === true ? <DashboardPage/> : <Navigate to={"/"}/>} >
           <Route path=":name" element={<Dashboard/>}/>
           <Route path="profile" element={<ProfilePage/>}/>
           <Route path="products" element={<DashboardProductPage/>}/>

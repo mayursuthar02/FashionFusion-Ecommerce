@@ -26,7 +26,6 @@ import userAtom from "../atoms/userAtom";
 const CartDrawer = ({ isOpenCart, onCloseCart }) => {
   const [cartItems, setCartItems] = useRecoilState(cartAtom);
   const user = useRecoilValue(userAtom);
-  const [qty, setQty] = useState(0);
   const [loading, setLoading] = useState(false);
   const [removeLoading, setRemoveLoading] = useState(false);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
@@ -154,7 +153,7 @@ const CartDrawer = ({ isOpenCart, onCloseCart }) => {
       totalQuantity
     };
   };
-  const { colors, sizes, totalPrice, totalDiscount, totalQuantity } = processCartItems(cartItems);
+  const { colors, sizes, totalPrice, totalQuantity } = processCartItems(cartItems);
 
 
   const handleStripePayment = async() => {

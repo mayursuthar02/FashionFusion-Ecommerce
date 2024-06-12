@@ -66,7 +66,7 @@ const ProductDetails = () => {
 
   // Check if product add in whishlist or not and change icon
   useEffect(()=>{
-    if (user.wishlist.includes(productId)) {
+    if (user?.wishlist.includes(productId)) {
       setHeartIcon(<FaHeart fontSize={'20px'}/>);
     }else {
       setHeartIcon(<FaRegHeart fontSize={'20px'}/>);
