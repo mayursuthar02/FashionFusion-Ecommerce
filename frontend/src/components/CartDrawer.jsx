@@ -15,13 +15,17 @@ import {
   Spinner,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { MdOutlineDeleteOutline } from "react-icons/md";
-import useShowToast from "../hooks/useShowToast";
-import { useRecoilState, useRecoilValue } from "recoil";
-import cartAtom from "../atoms/cartAtom";
-import FetchCartItems from "../helpers/FetchCartItems";
 import {loadStripe} from '@stripe/stripe-js';
+
+import { MdOutlineDeleteOutline } from "react-icons/md";
+
+import cartAtom from "../atoms/cartAtom";
 import userAtom from "../atoms/userAtom";
+import { useRecoilState, useRecoilValue } from "recoil";
+
+import FetchCartItems from "../helpers/FetchCartItems";
+import useShowToast from "../hooks/useShowToast";
+
 
 const CartDrawer = ({ isOpenCart, onCloseCart }) => {
   const [cartItems, setCartItems] = useRecoilState(cartAtom);

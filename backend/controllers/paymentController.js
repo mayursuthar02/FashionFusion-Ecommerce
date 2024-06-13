@@ -15,7 +15,8 @@ let session_id = '';
 const stripeCheckout = async (req, res) => {
   try {
     const { products } = req.body;
-    
+    if(!products) return res.status(404).json({ error: "products not found" });
+
     // Store Data
     const currency = "inr";
     const lineItems = products.map((product) => {

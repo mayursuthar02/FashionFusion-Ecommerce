@@ -8,6 +8,7 @@ const SearchModel = ({isOpen, onClose}) => {
   const [searchResults, setSearchResults] = useState([]);
   const [loading, setLoading] = useState(false);
   
+  
   const handleSearch = async(e) => {
     const value = e.target.value;
     setSearchValue(value);
@@ -56,10 +57,9 @@ const SearchModel = ({isOpen, onClose}) => {
 
           {searchResults.length > 0 && (
           <Box px={6} pb={6} maxH={'420px'} overflowY={'scroll'} className="scroll-hide">
-            
-            
+                 
             {loading && [1,2,3,4].map((_,i) => (
-              <Link key={i}display={'flex'} justifyContent={'start'} alignItems={'center'} borderRadius={'md'} p={3} gap={5}>
+              <Link key={i} display={'flex'} justifyContent={'start'} alignItems={'center'} borderRadius={'md'} p={3} gap={5}>
                 <Skeleton w={'80px'} h={'80px'} borderRadius={'md'} />
                 <Box>
                   <Skeleton h={6} w={'400px'} borderRadius={'md'}/>

@@ -7,9 +7,10 @@ import { LuUploadCloud } from "react-icons/lu";
 import { IoIosCloseCircle } from "react-icons/io";
 import { SmallCloseIcon } from "@chakra-ui/icons";
 
-import useShowToast from "../hooks/useShowToast";
 import userAtom from '../atoms/userAtom';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import {useRecoilValue } from 'recoil';
+
+import useShowToast from "../hooks/useShowToast";
 import useUploadImage from "../hooks/useUploadImage";
 import FetchVenderProductsData from "../helpers/FetchVenderProductsData";
 import { beautySubCategories, categories, kidsSubCategories, menSubCategories, wommenSubCategories } from "../helpers/categories";
@@ -22,6 +23,7 @@ const CreateProduct = ({isOpen,onClose}) => {
     const [isUploading, setIsUploading] = useState(false);
     const [loading, setLoading] = useState(false);
     const [sizeInput, setSizeInput] = useState("");
+    
     // Input For backend
     const [name, setName] = useState("");
     const [brandName, setBrandName] = useState(user.brandName);
@@ -126,7 +128,15 @@ const CreateProduct = ({isOpen,onClose}) => {
       }
     }
     
-    
+    // Select menu items
+    const selectItems = [
+      {label: "men", categories: menSubCategories},
+      {label: "women", categories: wommenSubCategories},
+      {label: "kids", categories: kidsSubCategories},
+      {label: "beauty", categories: beautySubCategories},
+    ];
+
+
   return (
     <Modal closeOnOverlayClick={false} isOpen={isOpen} onClose={onClose} size={'6xl'} motionPreset='slideInBottom'>
       <ModalOverlay />
@@ -161,17 +171,12 @@ const CreateProduct = ({isOpen,onClose}) => {
                 <FormControl>
                   <FormLabel fontSize={'14px'} color={'#888'} fontWeight={'400'}>Sub Category</FormLabel>
                   <Select placeholder='Select sub category' value={subCategory} onChange={(e) => setSubCategory(e.target.value)}>
-                    {category === "men" && menSubCategories.map((category,i) => (
-                      <option key={i} value={category.value}>{category.title}</option>
-                    ))}
-                    {category === "women" && wommenSubCategories.map((category,i) => (
-                      <option key={i} value={category.value}>{category.title}</option>
-                    ))}
-                    {category === "kids" && kidsSubCategories.map((category,i) => (
-                      <option key={i} value={category.value}>{category.title}</option>
-                    ))}
-                    {category === "beauty" && beautySubCategories.map((category,i) => (
-                      <option key={i} value={category.value}>{category.title}</option>
+                    {selectItems.map((item) => (
+                      category === item.label && (
+                        item.categories.map((category,i) => (
+                          <option key={i} value={category.value}>{category.title}</option>
+                        ))
+                      )
                     ))}
                   </Select>
                 </FormControl>
@@ -185,8 +190,8 @@ const CreateProduct = ({isOpen,onClose}) => {
                   </FormControl>
                   <Flex alignItems={'center'} gap={2} flexWrap={'wrap'}>
                     {sizes.length > 0 && sizes.map((size,i) => (
-                      <Flex alignItems={'center'} gap={1} bgColor={'blue.500'} color={'white'} py={'5px'} px={2} borderRadius={'4px'}>
-                        <Text key={i} fontSize={'12px'}>{size}</Text>
+                      <Flex key={i} alignItems={'center'} gap={1} bgColor={'blue.500'} color={'white'} py={'5px'} px={2} borderRadius={'4px'}>
+                        <Text  fontSize={'12px'}>{size}</Text>
                         <IoIosCloseCircle color="white" cursor={'pointer'} onClick={() => handleInputSizeDelete(size)}/>
                       </Flex>
                     ))}

@@ -1,9 +1,11 @@
-import { AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, Badge, Box, Button, Flex, Image, Link, Text, useDisclosure } from "@chakra-ui/react";
-import UpdateProduct from "./UpdateProduct";
-import { Link as RouterLink } from "react-router-dom";
 import { useState } from "react";
+import { AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, Badge, Box, Button, Flex, Image, Link, Text, useDisclosure } from "@chakra-ui/react";
+import { Link as RouterLink } from "react-router-dom";
+
 import useShowToast from "../hooks/useShowToast";
 import FetchVenderProductsData from "../helpers/FetchVenderProductsData";
+
+import UpdateProduct from "./UpdateProduct";
 
 const DashboardProductCard = ({ product}) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -116,6 +118,7 @@ const DashboardProductCard = ({ product}) => {
           >
               DELETE
           </Button>
+
           <Button
             position={"absolute"}
             top={2}
@@ -127,7 +130,10 @@ const DashboardProductCard = ({ product}) => {
           >
               EDIT
           </Button>
+
         </Box>
+
+        
         {/* Details */}
         <Box mt={1} px={2}>
           <Text fontWeight={"600"} fontSize={"17px"} mb={1} mt={2}>

@@ -2,15 +2,15 @@ import {
     Box, Button, Flex, FormControl, FormLabel, HStack, Image, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, 
     ModalOverlay, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, Select, Text, Textarea } from "@chakra-ui/react";
   import { useEffect, useRef, useState } from "react";
+
   import { LuUploadCloud } from "react-icons/lu";
   import { IoIosCloseCircle } from "react-icons/io";
+  import { SmallCloseIcon } from "@chakra-ui/icons";
+
   import useShowToast from "../hooks/useShowToast";
   import useUploadImage from "../hooks/useUploadImage";
-  import { SmallCloseIcon } from "@chakra-ui/icons";
   import { beautySubCategories, categories, kidsSubCategories, menSubCategories, wommenSubCategories } from "../helpers/categories";
-  import { useRecoilState, useRecoilValue } from 'recoil';
-  import userAtom from '../atoms/userAtom';
-import FetchVenderProductsData from "../helpers/FetchVenderProductsData";
+  import FetchVenderProductsData from "../helpers/FetchVenderProductsData";
   
   const UpdateProduct = ({isOpen,onClose,product}) => {
       const fileRef = useRef();
@@ -78,6 +78,7 @@ import FetchVenderProductsData from "../helpers/FetchVenderProductsData";
           setLoading(false);
         }
       };
+
       // Delete uploaded images
       const handleDeleteImage = (img) => {
         const filterImages = images.filter(image => image !== img);
@@ -91,6 +92,7 @@ import FetchVenderProductsData from "../helpers/FetchVenderProductsData";
           setSizeInput('');
         }
       };
+      
       // Delete size from size list
       const handleInputSizeDelete = (size) => {
         const filterSizes = sizes.filter(s => s !== size);
@@ -140,7 +142,15 @@ import FetchVenderProductsData from "../helpers/FetchVenderProductsData";
         }
       }
       
-      
+    // Select menu items
+    const selectItems = [
+      {label: "men", categories: menSubCategories},
+      {label: "women", categories: wommenSubCategories},
+      {label: "kids", categories: kidsSubCategories},
+      {label: "beauty", categories: beautySubCategories},
+    ];
+
+
     return (
       <Modal closeOnOverlayClick={false} isOpen={isOpen} onClose={onClose} size={'6xl'} motionPreset='slideInBottom'>
         <ModalOverlay />
@@ -175,18 +185,13 @@ import FetchVenderProductsData from "../helpers/FetchVenderProductsData";
                   <FormControl>
                     <FormLabel fontSize={'14px'} color={'#888'} fontWeight={'400'}>Sub Category</FormLabel>
                     <Select placeholder='Select sub category' value={subCategory} onChange={(e) => setSubCategory(e.target.value)}>
-                      {category === "men" && menSubCategories.map((category,i) => (
-                        <option key={i} value={category.value}>{category.title}</option>
-                      ))}
-                      {category === "women" && wommenSubCategories.map((category,i) => (
-                        <option key={i} value={category.value}>{category.title}</option>
-                      ))}
-                      {category === "kids" && kidsSubCategories.map((category,i) => (
-                        <option key={i} value={category.value}>{category.title}</option>
-                      ))}
-                      {category === "beauty" && beautySubCategories.map((category,i) => (
-                        <option key={i} value={category.value}>{category.title}</option>
-                      ))}
+                    {selectItems.map((item) => (
+                      category === item.label && (
+                        item.categories.map((category,i) => (
+                          <option key={i} value={category.value}>{category.title}</option>
+                        ))
+                      )
+                    ))}
                     </Select>
                   </FormControl>
                 </HStack>

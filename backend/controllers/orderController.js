@@ -4,6 +4,7 @@ import OrderModel from "../models/OrderModel.js";
 const getVendorOrders = async(req,res) => {
     try {
         const vendorId = req.user._id;
+        if(!vendorId) return res.status(404).json({ error: "VendorId not found" });
         
         const orders = await OrderModel.aggregate([
             { $unwind: "$productDetails" },
@@ -58,10 +59,12 @@ const getVendorOrders = async(req,res) => {
     }
 }
 
+
 const getOrders = async(req,res) => {
     try {
         const userId = req.user._id;
-
+        if(!userId) return res.status(404).json({ error: "UserId not found" });
+        
         const order = await OrderModel.find({userId}).sort({createdAt: -1});
 
         if (!order) {
@@ -77,9 +80,11 @@ const getOrders = async(req,res) => {
     }
 }
 
+
 const getOrdersById = async(req,res) => {
     try {
         const {orderId} = req.params;
+        if(!orderId) return res.status(404).json({ error: "OrderId not found" });
 
         const order = await OrderModel.findById(orderId);
         if (!order) {
@@ -96,9 +101,11 @@ const getOrdersById = async(req,res) => {
     }
 }
 
+
 const getOrdersBySessionId = async(req,res) => {
     try {
         const {sessionId} = req.params;
+        if(!sessionId) return res.status(404).json({ error: "SessionId not found" });
 
         const order = await OrderModel.findOne({sessionId});
         if (!order) {
@@ -115,9 +122,11 @@ const getOrdersBySessionId = async(req,res) => {
     }
 }
 
+
 const getVenderOrderById = async(req,res) => {
     try {
         const {orderId} = req.params;
+        if(!orderId) return res.status(404).json({ error: "OrderId not found" });
 
         const order = await OrderModel.findById(orderId).populate({path: "userId", select: "_id fullName businessName profilePic"});
         if (!order) {
@@ -134,11 +143,15 @@ const getVenderOrderById = async(req,res) => {
     }
 }
 
+
 const updateStatus = async(req,res) => {
     try {
         const {orderId} = req.params;
         const {status} = req.body;
-
+        
+        if(!orderId) return res.status(404).json({ error: "OrderId not found" });
+        if(!status) return res.status(404).json({ error: "Status not found" });
+        
         const updateOrder = await OrderModel.findById(orderId);
         if (!updateOrder) {
             return res.status(404).json({error: "Order not found"});
@@ -155,6 +168,7 @@ const updateStatus = async(req,res) => {
           .json({ error: "Error in update order status " + error.message });
     }
 }
+
 
 export { 
     getOrders,

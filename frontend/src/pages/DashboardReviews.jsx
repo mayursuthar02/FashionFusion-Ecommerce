@@ -161,7 +161,7 @@ const DashboardReviews = () => {
               <Text mb={5} fontSize={'15px'} color={'gray.500'}>{review.text}</Text>
             </Box>
 
-            <Box>
+            <Box w={'500px'}>
               <Flex align={'center'} gap={3}>
                 <Avatar src={review.productId.images[0]} borderRadius={'4px'}/>
                 <Text fontSize={'17px'} fontWeight={'500'}>{review.productId.name}</Text>

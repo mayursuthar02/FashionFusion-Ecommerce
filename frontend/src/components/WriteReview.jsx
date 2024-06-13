@@ -6,7 +6,6 @@ import userAtom from '../atoms/userAtom';
 import {useRecoilValue} from 'recoil';
 
 const WriteReview = ({isOpen, onClose, product, setCallBackFunction}) => {
-    const user = useRecoilValue(userAtom); 
     const [rating, setRating] = useState(0);
     const [text, setText] = useState("");
     const [loading, setLoading] = useState(false);
