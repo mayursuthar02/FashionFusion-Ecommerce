@@ -24,7 +24,6 @@ const DashboardOrders = () => {
           showToast("Error", data.error, "error");
           return;
         }
-        console.log(data);
         setOrdersData(data);
       } catch (error) {
         console.log(error);
