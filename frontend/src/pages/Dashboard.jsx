@@ -69,10 +69,10 @@ const Dashboard = () => {
   },[showToast]);
 
   return (
-    <Box px={10} py={3}>
-      <Text fontSize={'20px'} fontWeight={'600'} letterSpacing={1} textTransform={'uppercase'}>Analytics</Text>
+    <Box py={3}>
+      <Text fontSize={'20px'} fontWeight={'600'} letterSpacing={1} textTransform={'uppercase'} px={5}>Analytics</Text>
 
-      <Grid templateColumns={'repeat(3,1fr)'} h={'100px'} gap={10} mt={10}>
+      <Grid templateColumns={'repeat(3,1fr)'} h={'100px'} gap={10} mt={10} px={5}>
         <Flex align={'center'} borderRadius={'md'} border={'1px solid'} borderColor={'gray.100'} p={3} gap={4}>
           <Flex align={'center'} justify={'center'} borderRadius={'md'} bg={'gray.100'} w={'90px'} h={'full'} color={'#222'}>
             <RiMoneyRupeeCircleLine fontSize={'30px'}/>
