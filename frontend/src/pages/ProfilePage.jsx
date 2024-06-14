@@ -1,6 +1,5 @@
 import React, { useRef, useState } from "react";
 import {
-  HStack,
   Box,
   FormControl,
   FormLabel,
@@ -11,14 +10,16 @@ import {
   AvatarBadge,
   Button,
   IconButton,
-  Textarea,
   Grid,
   Flex,
 } from "@chakra-ui/react";
+
 import { SmallCloseIcon } from "@chakra-ui/icons";
 import { FiEdit } from "react-icons/fi";
+
 import {useRecoilState} from 'recoil';
 import userAtom from '../atoms/userAtom'
+
 import usePriviewImg from '../hooks/usePriviewImg';
 import useShowToast from "../hooks/useShowToast";
 
@@ -38,6 +39,7 @@ const ProfilePage = () => {
   const showToast = useShowToast();
   const disable = !user.isBusinessAccount;
 
+  // Handle update
   const handleUpdate = async() => {
     try {
       setLoading(true);
@@ -55,7 +57,6 @@ const ProfilePage = () => {
       localStorage.setItem('user-details', JSON.stringify(data));
       setUser(data);
       setLoading(false);
-      console.log(data);
     } catch (error) {
       showToast('Error', error.message, "error");
       console.log(error.message);
@@ -88,7 +89,7 @@ const ProfilePage = () => {
           </Stack>
         </FormControl>
 
-        <Box display={"grid"} gridTemplateColumns={"1fr 1fr 1fr"} gap={10} mt={10}>
+        <Box display={"grid"} gridTemplateColumns={"repeat(3,1fr)"} gap={10} mt={10}>
           <Box>
             <FormControl id="fullName">
               <FormLabel>Full Name</FormLabel>
@@ -121,7 +122,7 @@ const ProfilePage = () => {
           </Box>
         </Box>
 
-        <Grid templateColumns={'1fr 1fr 1fr'} mt={10} gap={10}>
+        <Grid templateColumns={'repeat(3,1fr)'} mt={10} gap={10}>
           <Box>
             <FormControl id="line1">
               <FormLabel>Address line 1</FormLabel>

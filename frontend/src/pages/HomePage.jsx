@@ -29,27 +29,27 @@ const HomePage = () => {
       gap={5} 
       px={'80px'} 
       mt={10}>
-        <GridItem bg={'gray.200'} colSpan={2} rowSpan={2} overflow={'hidden'}>
+        <GridItem bg={'gray.200'} colSpan={2} rowSpan={2} overflow={'hidden'} borderRadius={'sm'}>
           <Link as={RouterLink} to={'/men/tshirt/The-Evolve-Relaxed-Fit-T-shirt-Ultra-Soft/665c8788359337eaff0eb96c'} h={'full'} position={'relative'}>
             <Image src={img4} w={'full'} h={'full'} objectFit={'cover'} transition="transform 0.3s ease" _hover={{ transform: 'scale(1.05)' }}/>
           </Link>
         </GridItem>
 
-        <GridItem bg={'gray.200'} overflow={'hidden'}>
+        <GridItem bg={'gray.200'} overflow={'hidden'} borderRadius={'sm'}>
           <Link as={RouterLink} to={'/men'} h={'full'} position={'relative'}>
             <Image src={img1} w={'full'} h={'full'} objectFit={'cover'} transition="transform 0.3s ease" _hover={{ transform: 'scale(1.05)' }}/>
             <Box pos={'absolute'} top={'40%'} left={'39%'} bgColor={'white'} px={5} py={2} letterSpacing={2}>MEN</Box>
           </Link>
         </GridItem>
         
-        <GridItem bg={'gray.200'} overflow={'hidden'}>
+        <GridItem bg={'gray.200'} overflow={'hidden'} borderRadius={'sm'}>
           <Link as={RouterLink} to={'/women'} h={'full'} position={'relative'}>
             <Image src={img2} w={'full'} h={'full'} objectFit={'cover'} transition="transform 0.3s ease" _hover={{ transform: 'scale(1.05)' }}/>
             <Box pos={'absolute'} top={'40%'} left={'35%'} bgColor={'white'} px={5} py={2} letterSpacing={2}>WOMEN</Box>
           </Link>
         </GridItem>
         
-        <GridItem bg={'gray.200'} colSpan={2} overflow={'hidden'}>
+        <GridItem bg={'gray.200'} colSpan={2} overflow={'hidden'} borderRadius={'sm'}>
           <Link as={RouterLink} to={'/men/tshirt'} h={'full'} position={'relative'}>
             <Image src={img3} w={'full'} h={'full'} objectFit={'cover'} transition="transform 0.3s ease" _hover={{ transform: 'scale(1.05)' }}/>
           </Link>

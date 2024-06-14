@@ -1,18 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { Link  as RouterLink, useLocation, useNavigate } from 'react-router-dom'
-import FetchCartItems from '../helpers/FetchCartItems';
-import useShowToast from '../hooks/useShowToast';
 import cartAtom from '../atoms/cartAtom';
 import { useRecoilState } from 'recoil';
-import { Box, Button, Divider, Flex, Grid, Image, Spinner, Text, Link } from '@chakra-ui/react';
+import { Box, Button, Divider, Flex, Spinner, Text } from '@chakra-ui/react';
 import { MdOutlineCheck } from "react-icons/md";
-import {format} from 'date-fns';
-import { RiVisaLine } from "react-icons/ri";
 
 const PaymentSuccess = () => {
   const query = useLocation();
   const sessionId = new URLSearchParams(query.search).get('session_id');
-  const showToast = useShowToast();
   const navigate = useNavigate();
 
   const [cartItems, setCartItems] = useRecoilState(cartAtom);
@@ -108,8 +103,8 @@ const PaymentSuccess = () => {
 
           <Divider borderColor={'gray.300'} my={5}/>
           
-          {orderData.productDetails.map(product => (
-            <Flex align={'center'} justify={'space-between'} mb={3}>
+          {orderData.productDetails.map((product,i) => (
+            <Flex align={'center'} justify={'space-between'} mb={3} key={i}>
               <Text fontSize={'15px'} color={'gray.500'}>{product.name} x {product.quantity}</Text>
               <Text fontSize={'15px'} fontWeight={'600'}>Rs. {(product.price * product.quantity).toFixed(2)}</Text>
             </Flex>

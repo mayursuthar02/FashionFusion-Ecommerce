@@ -1,7 +1,7 @@
-import { Avatar, Box, Divider, Flex, Link, Text } from "@chakra-ui/react"
+import { Avatar, Box, Divider, Flex, Text } from "@chakra-ui/react"
 import { useRecoilValue } from "recoil"
 import userAtom from "../atoms/userAtom"
-import { NavLink, Outlet, Route, Link as RouterLink, Routes } from "react-router-dom";
+import { NavLink, Outlet} from "react-router-dom";
 import { RxDashboard } from "react-icons/rx";
 import { LuUser2 } from "react-icons/lu";
 import { BsHandbag } from "react-icons/bs";
@@ -18,9 +18,11 @@ const DashboardPage = () => {
         { title: "Reviews", link: "reviews", icon: <BiMessageDetail/>, isBusinessAcc: user.isBusinessAccount },
     ]
 
+    // Scroll top
     useEffect(() => {
         window.scrollTo(0, 0); // Scroll to the top when component mounts or updates
     }, []);
+    
     
   return (
     <Flex minH={'100vh'} display={'grid'} gridTemplateColumns={'.26fr 1fr'} gap={5} p={2}>
@@ -29,6 +31,7 @@ const DashboardPage = () => {
                 <Avatar src={user?.profilePic ? user?.profilePic : ""} size={'lg'}/>
                 <Text fontSize={'20px'} fontWeight={'500'} >{user?.businessName ? user?.businessName : user?.fullName}</Text>
             </Flex>
+
             <Divider borderColor={'#e5e5e5'} mt={5} mb={5}/>
             
             <Flex flexDir={'column'} gap={2}>
@@ -54,6 +57,7 @@ const DashboardPage = () => {
                         </Box>
                     )}
                 </NavLink>
+
                 {dashBoardLink.map((el,i) =>(
                     el.isBusinessAcc && (
                     <NavLink 

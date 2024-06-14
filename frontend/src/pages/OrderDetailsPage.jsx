@@ -31,13 +31,14 @@ const OrderDetailsPage = () => {
       'out of delivery': 4,
       'delivered': 5,
   };
-  
   const stepIndex = statusToIndex[order?.status] || 0;
   
+//   Scroll Top
   useEffect(() => {
         window.scrollTo(0, 0); // Scroll to the top when component mounts or updates
   }, []);
 
+//   Fetch order
   useEffect(() => {
     const fetchOrder = async () => {
         setLoading(true);
@@ -48,7 +49,6 @@ const OrderDetailsPage = () => {
           showToast("Error", data.error, "error");
           return;
         }
-        console.log(data);
         setOrder(data);
       } catch (error) {
         console.log(error);
@@ -172,8 +172,8 @@ const OrderDetailsPage = () => {
                             </Tr>
                         </Thead>
                         <Tbody>
-                            {order.productDetails.map(product => (
-                                <Tr>
+                            {order.productDetails.map((product,i) => (
+                                <Tr key={i}>
                                     <Td>
                                         <Flex align={'center'} gap={5}>
                                             <Box w={'60px'} h={'60px'} borderRadius={'md'} overflow={'hidden'} bgColor={'gray.100'}>

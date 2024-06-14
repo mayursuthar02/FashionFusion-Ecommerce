@@ -61,7 +61,7 @@ const stripeCheckout = async (req, res) => {
       },
       line_items: lineItems,
       success_url: `${process.env.FRONTEND_URL}/order/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.FRONTEND_URL}/order/cancelled`,
+      cancel_url: `${process.env.FRONTEND_URL}/order/cancelled?cancle`,
       shipping_address_collection: {
         allowed_countries: ["IN"], // Allow only India for shipping
       },

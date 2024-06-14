@@ -71,7 +71,7 @@ const DashboardOrders = () => {
         <Stat p={5}>
           <StatLabel fontSize={'20px'} fontWeight={'600'} mb={3}>Total Revenue</StatLabel>
           <Flex align={'center'} gap={5}>
-            <StatNumber>{totalAmountAllOrders}</StatNumber>
+            <StatNumber>{totalAmountAllOrders.toFixed(2)}</StatNumber>
             <StatHelpText>
               <StatArrow type='increase' />
               0%

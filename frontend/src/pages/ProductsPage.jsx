@@ -29,7 +29,8 @@ const ProductsPage = () => {
     const [sizes, setSizes] = useState([]);
     const [brandNames, setBrandNames] = useState([]);
     const [colors, setColors] = useState([]);
-        
+    
+    // Scroll top
     useEffect(() => {
         window.scrollTo(0, 0); // Scroll to the top when component mounts or updates
     }, []);

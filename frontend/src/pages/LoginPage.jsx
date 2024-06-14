@@ -5,22 +5,22 @@ import {
   FormLabel,
   Input,
   InputGroup,
-  HStack,
   InputRightElement,
   Stack,
   Button,
   Heading,
   Text,
-  useColorModeValue,
   Link,
-  Checkbox,
 } from "@chakra-ui/react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useState } from "react";
+
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
-import useShowToast from "../hooks/useShowToast";
+
 import { useRecoilState } from "recoil";
 import userAtom from "../atoms/userAtom";
+
+import useShowToast from "../hooks/useShowToast";
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -30,6 +30,7 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const [,setUser] = useRecoilState(userAtom);
 
+  // Handle login
   const handleSubmit = async() => {
     if (!email || !password) {
       showToast('Error', "email and password field is required", "error");

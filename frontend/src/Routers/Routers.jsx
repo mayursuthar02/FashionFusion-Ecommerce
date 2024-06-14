@@ -39,12 +39,12 @@ const Routers = () => {
         <Route path='/dashboard/orders/:orderId' element={user?.isBusinessAccount === true ? <VendorOrderDetailsPage/> : <Navigate to={"/"}/>}/>
         <Route path='/search' element={<SearchProduct/>}/>
 
-        <Route path='/dashboard/*' element={user?.isBusinessAccount === true ? <DashboardPage/> : <Navigate to={"/"}/>} >
-          <Route path=":name" element={<Dashboard/>}/>
+        <Route path='/dashboard/*' element={<DashboardPage/>} >
+          <Route path=":name" element={user?.isBusinessAccount === true ? <Dashboard/> : <Navigate to={"/"}/>}/>
           <Route path="profile" element={<ProfilePage/>}/>
-          <Route path="products" element={<DashboardProductPage/>}/>
-          <Route path="orders" element={<DashboardOrders/>}/>
-          <Route path="reviews" element={<DashboardReviews/>}/>
+          <Route path="products" element={user?.isBusinessAccount === true ? <DashboardProductPage/> : <Navigate to={"/"}/>}/>
+          <Route path="orders" element={user?.isBusinessAccount === true ? <DashboardOrders/> : <Navigate to={"/"}/>}/>
+          <Route path="reviews" element={user?.isBusinessAccount === true ? <DashboardReviews/> : <Navigate to={"/"}/>}/>
         </Route>
 
     </Routes>

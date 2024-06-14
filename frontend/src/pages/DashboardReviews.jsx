@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { Avatar, Badge, Box, Button, Divider, Flex, Grid, Stat, StatArrow, StatHelpText, StatLabel, StatNumber, Text } from '@chakra-ui/react';
+import { Avatar, Badge, Box, Button, Flex, Grid, Stat, StatArrow, StatHelpText, StatLabel, StatNumber, Text } from '@chakra-ui/react';
+import { format } from 'date-fns';
+
 import { FaStar } from "react-icons/fa6";
 import { MdDelete } from "react-icons/md";
+
 import useShowToast from '../hooks/useShowToast';
-import { format } from 'date-fns';
 
 const DashboardReviews = () => {
   const [reviews, setReviews] = useState([]);
@@ -12,6 +14,8 @@ const DashboardReviews = () => {
   const [reviewToDelete, setReviewToDelete] = useState(null);
   const showToast = useShowToast();
   
+
+  // Fetch reviews
   const fetchReviews = async() => {
     try {
       const res = await fetch('/api/reviews/get-vender-product-reviews');       
@@ -38,29 +42,27 @@ const DashboardReviews = () => {
       console.log(error);
     }
   };
-
   useEffect(()=>{
     fetchReviews();
   },[]);
 
-  const $5Star = reviews.filter((review) => review.rating === 5);
-  const $4Star = reviews.filter((review) => review.rating === 4);
-  const $3Star = reviews.filter((review) => review.rating === 3);
-  const $2Star = reviews.filter((review) => review.rating === 2);
-  const $1Star = reviews.filter((review) => review.rating === 1);
-  const avg5Star = ($5Star.length * 100) / reviews?.length || 0;
-  const avg4Star = ($4Star.length * 100) / reviews?.length || 0;
-  const avg3Star = ($3Star.length * 100) / reviews?.length || 0;
-  const avg2Star = ($2Star.length * 100) / reviews?.length || 0;
-  const avg1Star = ($1Star.length * 100) / reviews?.length || 0;
+
+  const starCounts = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };  
+  reviews.forEach(review => {
+  starCounts[review.rating]++;
+  });
+  
+  const totalReviews = reviews.length;
   const avgPerStar = [
-    { avgStar: avg5Star, peoples: $5Star.length, color: '#39baa0'},
-    { avgStar: avg4Star, peoples: $4Star.length, color: '#dc7eff'},
-    { avgStar: avg3Star, peoples: $3Star.length, color: '#f6bd3c'},
-    { avgStar: avg2Star, peoples: $2Star.length, color: '#35c1f2'},
-    { avgStar: avg1Star, peoples: $1Star.length, color: '#f47e1e'},
+  { avgStar: (starCounts[5] * 100) / totalReviews || 0, peoples: starCounts[5], color: '#39baa0' },
+  { avgStar: (starCounts[4] * 100) / totalReviews || 0, peoples: starCounts[4], color: '#dc7eff' },
+  { avgStar: (starCounts[3] * 100) / totalReviews || 0, peoples: starCounts[3], color: '#f6bd3c' },
+  { avgStar: (starCounts[2] * 100) / totalReviews || 0, peoples: starCounts[2], color: '#35c1f2' },
+  { avgStar: (starCounts[1] * 100) / totalReviews || 0, peoples: starCounts[1], color: '#f47e1e' },
   ];
 
+
+  // Handle delete revies
   const handleDeleteReview = async(reviewId, productId) => {
     setDeleteLoading(true);
     try {

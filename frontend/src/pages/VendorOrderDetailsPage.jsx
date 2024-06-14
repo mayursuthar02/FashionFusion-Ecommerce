@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import useShowToast from "../hooks/useShowToast";
-import { Avatar, Badge, Box, Button, Divider, Flex, Grid, Image, Select, Spinner, Table, TableContainer, Tbody, Td, Text, Tfoot, Th, Thead, Tr } from "@chakra-ui/react";
-import { MdOutlinePayments } from "react-icons/md";
+import { Avatar, Badge, Box, Divider, Flex, Grid, Image, Select, Spinner, Table, TableContainer, Tbody, Td, Text, Tfoot, Th, Thead, Tr } from "@chakra-ui/react";
 import { format } from "date-fns";
+
+import { MdOutlinePayments } from "react-icons/md";
+
+import useShowToast from "../hooks/useShowToast";
 
 const VendorOrderDetailsPage = () => {
     const { orderId } = useParams();
@@ -13,6 +15,7 @@ const VendorOrderDetailsPage = () => {
     const [updateStatusLoading, setUpdateStatusLoading] = useState(false);
     const showToast = useShowToast();
 
+    // Status object
     const statusObj = [
         { title: 'Pending', value: 'pending'},
         { title: 'Received', value: 'received'},
@@ -22,10 +25,12 @@ const VendorOrderDetailsPage = () => {
         { title: 'Delivered', value: 'delivered'},
     ]
     
+    // Scroll top
     useEffect(() => {
         window.scrollTo(0, 0); // Scroll to the top when component mounts or updates
     }, []);
     
+    // Fetch order data
     useEffect(() => {
         const fetchOrder = async () => {
             setLoading(true);
@@ -36,7 +41,6 @@ const VendorOrderDetailsPage = () => {
               showToast("Error", data.error, "error");
               return;
             }
-            console.log(data);
             setOrder(data);
             setStatus(data.status);
           } catch (error) {
@@ -49,6 +53,7 @@ const VendorOrderDetailsPage = () => {
         fetchOrder();
     }, [status]);
 
+    // Handle Order status
     const handleOrderStatus = async(e) => {
         const value = e.target.value;
         setUpdateStatusLoading(true);
@@ -72,20 +77,26 @@ const VendorOrderDetailsPage = () => {
             setUpdateStatusLoading(false);
             setStatus(value);
         }
-    }  
+    }
+    
+    // Order status
+    const orderStatus = [
+        {status: 'pending', color: 'yellow'},
+        {status: 'received', color: 'orange'},
+        {status: 'at depot', color: 'red'},
+        {status: 'in transit', color: 'purple'},
+        {status: 'out of delivery', color: 'blue'},
+        {status: 'delivered', color: 'green'},
+    ];
     
   return (
     <>
-        {loading && (
+        {loading || !order && (
             <Flex align={'center'} justify={'center'} minH={'90vh'} bgColor={'gray.100'}>
                 <Spinner color="gray.300" size={'xl'}/>
             </Flex>
         )}
-        {!order && (
-            <Flex align={'center'} justify={'center'} minH={'90vh'} bgColor={'gray.100'}>
-                <Spinner color="gray.300" size={'xl'}/>
-            </Flex>
-        )}
+
         {order && !loading && (
             <Box px={10} py={10} minH={'100vh'}>
                 <Flex align={'center'} justify={'space-between'}> 
@@ -93,13 +104,10 @@ const VendorOrderDetailsPage = () => {
                       <Avatar src={order.userId.profilePic}/>
                       <Text fontSize={'20px'} fontWeight={'500'}>{order.userId.fullName ? order.userId.fullName : order.userId.businessName}</Text>
                     </Flex>
-
-                    {order.status === 'pending' && <Badge colorScheme={'yellow'} fontSize={'15px'}>{order.status}</Badge>}
-                    {order.status === 'received' && <Badge colorScheme={'orange'} fontSize={'15px'}>{order.status}</Badge>}
-                    {order.status === 'at depot' && <Badge colorScheme={'red'} fontSize={'15px'}>{order.status}</Badge>}
-                    {order.status === 'in transit' && <Badge colorScheme={'purple'} fontSize={'15px'}>{order.status}</Badge>}
-                    {order.status === 'out of delivery' && <Badge colorScheme={'blue'} fontSize={'15px'}>{order.status}</Badge>}
-                    {order.status === 'delivered' && <Badge colorScheme={'green'} fontSize={'15px'}>{order.status}</Badge>}
+                    
+                    {orderStatus.map((orderS) => (
+                        order.status === orderS.status && <Badge key={orderS.status} colorScheme={orderS.color} fontSize={'15px'}>{order.status}</Badge>
+                    ))}
                 </Flex>
 
                 <Divider borderColor={'gray.200'} my={6}/>
@@ -226,8 +234,8 @@ const VendorOrderDetailsPage = () => {
                             </Tr>
                         </Thead>
                         <Tbody>
-                            {order.productDetails.map(product => (
-                                <Tr>
+                            {order.productDetails.map((product,i) => (
+                                <Tr key={i}>
                                     <Td>
                                         <Flex align={'center'} gap={5}>
                                             <Box w={'60px'} h={'60px'} borderRadius={'md'} overflow={'hidden'} bgColor={'gray.100'}>

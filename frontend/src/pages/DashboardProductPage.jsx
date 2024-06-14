@@ -1,11 +1,15 @@
-import {Badge, Box, Button, Divider, Flex, IconButton, Image, Input, Skeleton, Text, grid, useDisclosure} from '@chakra-ui/react';
+import { useEffect, useState } from 'react';
+import { Box, Button, Divider, Flex, IconButton, Input, Skeleton, Text, useDisclosure} from '@chakra-ui/react';
+
 import {Search2Icon} from '@chakra-ui/icons';
 import { FiPlusSquare } from "react-icons/fi";
-import CreateProduct from '../components/CreateProduct';
-import { useEffect, useState } from 'react';
+
 import useShowToast from '../hooks/useShowToast';
-import DashboardProductCard from '../components/DashboardProductCard';
 import FetchVenderProductsData from '../helpers/FetchVenderProductsData';
+
+import CreateProduct from '../components/CreateProduct';
+import DashboardProductCard from '../components/DashboardProductCard';
+
 import venderProductAtom from '../atoms/venderProductAtom';
 import { useRecoilState } from 'recoil';
 
@@ -17,7 +21,7 @@ const DashboardProductPage = () => {
   const loadingList = new Array(8).fill(null);
   const [loading, setLoading] = useState(false);
 
-
+  // Fetch vendor products
   useEffect(()=>{
     setLoading(true);
     try {

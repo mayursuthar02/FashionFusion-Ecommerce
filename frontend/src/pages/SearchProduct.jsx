@@ -1,4 +1,4 @@
-import { Badge, Box, Flex, Grid, Skeleton, Text } from "@chakra-ui/react";
+import {Box, Flex, Grid, Skeleton, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import ProductCard from "../components/ProductCard";

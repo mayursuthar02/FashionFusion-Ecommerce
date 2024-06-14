@@ -306,6 +306,7 @@ const ProductDetails = () => {
       </Box>
 
       <Box display={'grid'} gridTemplateColumns={'1fr 1fr'} gap={1} minH={'100vh'} px={'50px'}>
+
         {/* Images */}
         <Box padding={10}>
           <Flex gap={5}>
@@ -340,6 +341,7 @@ const ProductDetails = () => {
             
           </Flex>
         </Box>
+    
     
         {/* Details */}
         <Box py={10}>

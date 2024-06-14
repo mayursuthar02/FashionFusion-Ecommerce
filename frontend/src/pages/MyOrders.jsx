@@ -11,10 +11,12 @@ const MyOrders = () => {
     const [orderData, setOrderData] = useState([]);
     const [loading, setLoading] = useState(false);
 
+    // Scroll Top
     useEffect(() => {
         window.scrollTo(0, 0); // Scroll to the top when component mounts or updates
     }, []);
     
+    // Fetch my order
     useEffect(()=>{
         const fetchOrders = async() => {
             setLoading(true);
@@ -36,6 +38,16 @@ const MyOrders = () => {
         fetchOrders();
     },[]);
     
+    // Order status
+    const orderStatus = [
+        {status: 'pending', color: 'yellow.400'},
+        {status: 'received', color: 'orange.400'},
+        {status: 'at depot', color: 'red.400'},
+        {status: 'in transit', color: 'purple.400'},
+        {status: 'out of delivery', color: 'blue.400'},
+        {status: 'delivered', color: 'green.400'},
+    ];
+
   return (
     <>
     <Box p={10} bgColor={'gray.50'}>
@@ -55,8 +67,8 @@ const MyOrders = () => {
         
         {orderData.length > 0 && (
             <Grid templateColumns={'1fr 1fr'} gap={10} maxH={'400vh'} overflowY={'scroll'} className="order-list">
-                {orderData.map((order) => (
-                    <Box key={order._id} bg={'white'} height={'fit-content'} boxShadow={'sm'} p={7} borderRadius={'md'}>
+                {orderData.map((order,i) => (
+                    <Box key={i} bg={'white'} height={'fit-content'} boxShadow={'sm'} p={7} borderRadius={'md'}>
                         <Flex align={'center'} justify={'space-between'}>
                             <Flex align={'center'} gap={5}>
                                 <Flex align={'center'} gap={2} fontSize={'16px'} fontWeight={'500'} bgColor={'gray.100'} py={2} px={4} borderRadius={'full'}>
@@ -74,13 +86,9 @@ const MyOrders = () => {
                         </Flex>
                         <Flex gap={2} fontSize={'14px'} color={'gray.500'} ml={4} mt={2} align={'center'}>
                             Status: 
-                            {order.status === 'pending' && <Text color={'yellow.400'} fontWeight={'600'}>{order.status}</Text>}
-                            {order.status === 'received' && <Text color={'orange.400'} fontWeight={'600'}>{order.status}</Text>}
-                            {order.status === 'at depot' && <Text color={'red.400'} fontWeight={'600'}>{order.status}</Text>}
-                            {order.status === 'in transit' && <Text color={'purple.400'} fontWeight={'600'}>{order.status}</Text>}
-                            {order.status === 'out of delivery' && <Text color={'blue.400'} fontWeight={'600'}>{order.status}</Text>}
-                            {order.status === 'delivered' && <Text color={'green.400'} fontWeight={'600'}>{order.status}</Text>}
-                            {order.status === 'delivered' && <Box color="green.500" fontSize={'15px'}><IoCheckbox/></Box>}
+                            {orderStatus.map((orderS) => (
+                                order.status === orderS.status && <Text key={orderS.status} color={orderS.color} fontWeight={'600'}>{order.status}</Text>
+                            ))}
                         </Flex>
 
                         <Text fontSize={'14px'} color={'gray.500'} ml={4} my={2}>Item : {order.productDetails.length}</Text>
