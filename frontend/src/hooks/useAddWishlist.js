@@ -17,6 +17,7 @@ const useAddWishlist = () => {
             const data = await res.json();
             if (data.error) {
                 showToast("Error", data.error, "error");
+                console.log(data.error)
                 return;
             };
             localStorage.setItem('user-details', JSON.stringify(data));

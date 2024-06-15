@@ -31,11 +31,8 @@ const UserSchema = new mongoose.Schema({
         default: ""
     },
     address: {
-        line1 : { type: String, default: "" },
-        line2 : { type: String, default: "" },
-        city : { type: String, default: "" },
-        pinCode : { type: String, default: "" },
-        state : { type: String, default: "" },
+        type: String,
+        default: ""
     },
     phone: {
         type: String,
