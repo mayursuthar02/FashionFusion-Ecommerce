@@ -1,12 +1,20 @@
 import Stripe from "stripe";
 import OrderModel from "../models/OrderModel.js";
-const stripe = new Stripe(
-  "sk_test_51PLPFeSHDy8obYAWHyJYv5erKFcXiOwcFAesWbLgpkB2HD7SiWbQakVgrKBXk7OWHTvH5JVmXv0ZvXifjynFtv9700MNUsyWqe"
-);
+import dotenv from 'dotenv';
+dotenv.config();
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+if (!stripe) {
+  throw new Error("The STRIPE_SECRET_KEY environment variable is not set.");
+}
 
 // This is your Stripe CLI webhook secret for testing your endpoint locally.
-const endpointSecret =
-  "whsec_e7488f89d44e2fd423b0419ac83d5ae5bec1c680a47dee266f789659dde0b4b0";
+const endpointSecret = process.env.STRIPE_END_POINT_SECRET;
+
+if (!endpointSecret) {
+  throw new Error("The STRIPE_END_POINT_SECRET environment variable is not set.");
+}
+
 
 // Variable for sessionID store
 let session_id = '';
