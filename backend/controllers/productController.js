@@ -132,7 +132,7 @@ const getProductByName = async(req,res) => {
         }
         
         res.status(200).json(product);
-
+        
     } catch (error) {
         console.log(error.message);
         res.status(500).json({error: "Error in get product "+error.message});

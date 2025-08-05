@@ -75,6 +75,8 @@ const stripeCheckout = async (req, res) => {
       },
     });
 
+    console.log({session})
+
     // Store session id 
     if(!session.id) {
       console.log("Error Session id not found");
@@ -82,7 +84,7 @@ const stripeCheckout = async (req, res) => {
     }
     session_id += session.id;
 
-
+    console.log({session_id});
     res.status(200).json({ id: session.id });
   } catch (error) {
     console.log(error.message);
@@ -137,6 +139,7 @@ const stripeWebhook = async (req, res) => {
 
     // Convert req.body in string
     const payloadString = JSON.stringify(req.body);
+    console.log({payloadString})
     
     // Set header
     const header = stripe.webhooks.generateTestHeaderString({
@@ -147,7 +150,7 @@ const stripeWebhook = async (req, res) => {
     let event;
 
     try {
-      event = stripe.webhooks.constructEvent(payloadString, header, endpointSecret);
+      event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
     } catch (err) {
       console.error('Webhook signature verification failed:', err.message);
       return res.status(400).send(`Webhook Error: ${err.message}`);
@@ -179,7 +182,7 @@ const stripeWebhook = async (req, res) => {
                 ...s,
                 shipping_amount : s.shipping_amount / 100
               }
-            }),
+            }) || [],
             totalAmount: session.amount_total / 100,
             sessionId : session_id,
             billing_details : {},
