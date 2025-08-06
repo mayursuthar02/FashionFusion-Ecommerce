@@ -135,7 +135,7 @@ const getLineItems = async(lineItems) => {
 // Stripe Webhook
 const stripeWebhook = async (req, res) => {
   try {
-    const sig = req.headers["stripe-signature"];
+    const sig = req.headers['stripe-signature'];
 
     // Convert req.body in string
     const payloadString = JSON.stringify(req.body);
@@ -150,7 +150,7 @@ const stripeWebhook = async (req, res) => {
     let event;
 
     try {
-      event = stripe.webhooks.constructEvent(payloadString, sig, endpointSecret);
+      event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
     } catch (err) {
       console.error('Webhook signature verification failed:', err.message);
       return res.status(400).send(`Webhook Error: ${err.message}`);
