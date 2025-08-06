@@ -138,23 +138,27 @@ const stripeWebhook = async (req, res) => {
     const sig = req.headers['stripe-signature'];
 
     // Convert req.body in string
-    const payloadString = JSON.stringify(req.body);
+    // const payloadString = JSON.stringify(req.body);
     // console.log({payloadString})
     
     // Set header
-    const header = stripe.webhooks.generateTestHeaderString({
-      payload: payloadString,
-      secret: endpointSecret,
-    });
+    // const header = stripe.webhooks.generateTestHeaderString({
+    //   payload: payloadString,
+    //   secret: endpointSecret,
+    // });
     
     let event;
 
-    try {
-      event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
-    } catch (err) {
-      console.error('Webhook signature verification failed:', err.message);
-      return res.status(400).send(`Webhook Error: ${err.message}`);
-    }
+  try {
+    // ✅ req.body is a Buffer, as required by Stripe
+    event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+  } catch (err) {
+    console.error('Webhook signature verification failed:', err.message);
+    return res.status(400).send(`Webhook Error: ${err.message}`);
+  }
+
+    // ✅ Your existing event handling logic goes here
+  console.log('✅ Webhook verified:', event.type);
 
     // Handle the event
     switch (event.type) {

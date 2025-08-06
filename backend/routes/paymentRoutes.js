@@ -5,6 +5,10 @@ import { stripeCheckout, stripeWebhook } from '../controllers/paymentController.
 const router = express.Router();
 
 router.post('/stripe/checkout', protectRoute, stripeCheckout);
-router.post('/stripe/webhook', bodyParser.raw({ type: 'application/json' }), stripeWebhook);
+router.post(
+  '/stripe/webhook',
+  bodyParser.raw({ type: 'application/json' }), // ✅ keep this!
+  stripeWebhook
+);
 
 export default router;
