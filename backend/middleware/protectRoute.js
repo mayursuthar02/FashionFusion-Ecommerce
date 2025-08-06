@@ -11,8 +11,8 @@ const protectRoute = async(req,res,next) => {
         req.user = user;
         next();
     } catch (error) {
-        res.status(500).json({error: err.message});
-        console.log("Unexpected error: ", err.message);
+        res.status(500).json({error: error.message});
+        console.log("Unexpected error: ", error.message);
     }
 }
 
