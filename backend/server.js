@@ -27,6 +27,8 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET,
 })
 
+app.use('/api/payments', paymentRoutes);
+
 // Middleware
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
@@ -39,7 +41,6 @@ app.use('/api/users', userRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/carts', cartRoutes);
-app.use('/api/payments', paymentRoutes);
 app.use('/api/orders', orderRoutes);
 
 
