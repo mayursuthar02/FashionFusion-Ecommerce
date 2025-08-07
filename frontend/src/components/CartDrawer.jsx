@@ -49,7 +49,7 @@ const CartDrawer = ({ isOpenCart, onCloseCart }) => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [user]);
 
   // Update Qty
   const updateQty = async (cartId, quantity) => {
@@ -176,7 +176,7 @@ const CartDrawer = ({ isOpenCart, onCloseCart }) => {
         console.log(session.error);
         return;
       };
-      console.log(session)
+      console.log({session})
       
       const result = stripe.redirectToCheckout({
         sessionId: session.id
@@ -188,7 +188,7 @@ const CartDrawer = ({ isOpenCart, onCloseCart }) => {
       }
       console.log(session)
     } catch (error) {
-      console.log(error);
+      console.log({error});
     } finally {
       setCheckoutLoading(false);
     }

@@ -31,7 +31,7 @@ const Routers = () => {
         <Route path='/wishlist' element={<WishlistPage/>}/>
         <Route path='/:category/:subCategory/:name/:productId' element={<ProductDetails/>}/>
         <Route path='/:category' element={<ProductsPage/>}/>
-        <Route path='/:category/:subCategory' element={<ProductsPage/>}/>
+        <Route path='/:category/:subCategory' element={<ProductsPage/>}/> 
         <Route path='/order/success' element={<PaymentSuccess/>}/>
         <Route path='/order/cancelled' element={<PaymentCancle/>}/>
         <Route path='/my-order' element={user ? <MyOrders/> : <Navigate to={"/login"}/>}/>

@@ -52,12 +52,12 @@ const CreateProduct = ({isOpen,onClose}) => {
       setLoading(true);
 
       try {
-        for (const file of files) {
-          const uploadImageCloudinary = await useUploadImage(file);
+        for (const file of files) { 
           newImages.push(uploadImageCloudinary.url);
         }
-    
+        
         setImages([...images, ...newImages]);
+        console.log(images)
       } catch (error) {
         console.error("Error uploading image:", error);
         showToast("Error", "Failed to upload one or more images", "error");

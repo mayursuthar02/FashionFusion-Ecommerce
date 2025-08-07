@@ -11,7 +11,11 @@ const useUploadImage = async(image) => {
             method: "POST",
             body: formData
         });
-        return dataResponse.json();
+
+        const json = await dataResponse.json(); // ✅ Read only once
+        console.log(json);                      // ✅ Log it
+        return json;                            // ✅ Return it
+        
     } catch (error) {
         console.log(error);
     }
