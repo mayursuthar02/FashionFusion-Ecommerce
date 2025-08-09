@@ -5,7 +5,7 @@ const verifyBusinessAccount = async(req,res,next) => {
         const userId = req.user._id;
         const user = await userModel.findById(userId);
         if (!user) {
-            return res.status(401).json({error: "Unauthorized"});
+            return res.status(401).json({error: "Unauthorized User"});
         }
         if (!user.isBusinessAccount) {
             return res.status(400).json({error: "This feature requires a business account."});
