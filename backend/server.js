@@ -33,7 +33,7 @@ app.use('/api/payments', paymentRoutes);
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 app.use(cors({
-  origin: 'https://fashion-fusion-ecommerce-beta.vercel.app/'
+  origin: 'https://fashion-fusion-ecommerce-ten.vercel.app/'
 }));
 app.use(cookieParser());
 
