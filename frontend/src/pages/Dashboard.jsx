@@ -11,7 +11,7 @@ import FetchVenderProductsData from '../helpers/FetchVenderProductsData';
 import { format } from 'date-fns';
 import { Link as RouterLink } from 'react-router-dom';
 
-import BASEURL from "../config/baseURL";
+import { baseURL as BASEURL } from "../config/baseURL";
 
 const Dashboard = () => {
   const [ordersData, setOrdersData] = useState([]);

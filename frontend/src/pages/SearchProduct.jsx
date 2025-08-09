@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import ProductCard from "../components/ProductCard";
 
-import BASEURL from "../config/baseURL";
+import { baseURL as BASEURL } from "../config/baseURL";
 
 const SearchProduct = () => {
   const query = useLocation();

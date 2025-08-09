@@ -7,7 +7,7 @@ import { MdOutlinePayments } from "react-icons/md";
 
 import useShowToast from "../hooks/useShowToast";
 
-import BASEURL from "../config/baseURL";
+import { baseURL as BASEURL } from "../config/baseURL";
 
 const VendorOrderDetailsPage = () => {
     const { orderId } = useParams();

@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import useAddWishlist from "../hooks/useAddWishlist";
 import {useRecoilValue} from 'recoil';
 import userAtom from '../atoms/userAtom';
-import BASEURL from "../config/baseURL";
+import { baseURL as BASEURL } from "../config/baseURL";
 
 const ProductCard = ({ product }) => {
   const [heartIcon, setHeartIcon] = useState(<FaRegHeart/>);

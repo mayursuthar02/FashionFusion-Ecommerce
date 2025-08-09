@@ -10,7 +10,7 @@ import userAtom from "../atoms/userAtom";
 import useShowToast from '../hooks/useShowToast';
 import ProductCard from "../components/ProductCard";
 
-import BASEURL from "../config/baseURL";
+import { baseURL as BASEURL } from "../config/baseURL";
 
 const WishlistPage = () => {
   const user = useRecoilValue(userAtom);

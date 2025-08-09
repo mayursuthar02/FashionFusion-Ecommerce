@@ -1,7 +1,7 @@
 import { useRecoilState } from "recoil";
 import cartAtom from "../atoms/cartAtom";
 import useShowToast from '../hooks/useShowToast';
-import BASEURL from "../config/baseURL";
+import { baseURL as BASEURL } from "../config/baseURL";
 
 const FetchCartItems = () => {
    const [cartItems, setCartItems] = useRecoilState(cartAtom); 

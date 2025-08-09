@@ -19,7 +19,7 @@ import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 
 import useShowToast from "../hooks/useShowToast";
 
-import BASEURL from "../config/baseURL";
+import { baseURL as BASEURL } from "../config/baseURL";
 
 
 const SignupPage = () => {

@@ -5,7 +5,7 @@ import { useRecoilState } from 'recoil';
 import { Box, Button, Divider, Flex, Spinner, Text } from '@chakra-ui/react';
 import { MdOutlineCheck } from "react-icons/md";
 
-import BASEURL from "../config/baseURL";
+import { baseURL as BASEURL } from "../config/baseURL";
 
 const PaymentSuccess = () => {
   const query = useLocation();

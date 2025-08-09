@@ -7,7 +7,7 @@ import FetchVenderProductsData from "../helpers/FetchVenderProductsData";
 
 import UpdateProduct from "./UpdateProduct";
 
-import BASEURL from "../config/baseURL";
+import { baseURL as BASEURL } from "../config/baseURL";
 
 const DashboardProductCard = ({ product}) => {
   const { isOpen, onOpen, onClose } = useDisclosure();

@@ -15,7 +15,7 @@ import useUploadImage from "../hooks/useUploadImage";
 import FetchVenderProductsData from "../helpers/FetchVenderProductsData";
 import { beautySubCategories, categories, kidsSubCategories, menSubCategories, wommenSubCategories } from "../helpers/categories";
 
-import BASEURL from "../config/baseURL";
+import { baseURL as BASEURL } from "../config/baseURL";
 
 const CreateProduct = ({isOpen,onClose}) => {
     const user = useRecoilValue(userAtom);

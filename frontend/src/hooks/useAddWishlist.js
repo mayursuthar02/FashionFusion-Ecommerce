@@ -2,7 +2,8 @@ import React from 'react'
 import useShowToast from './useShowToast';
 import { useRecoilState } from 'recoil';
 import userAtom from '../atoms/userAtom';
-import BASEURL from "../config/baseURL";
+
+import { baseURL as BASEURL } from "../config/baseURL";
 
 const useAddWishlist = () => {
     const showToast = useShowToast();

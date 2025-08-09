@@ -23,7 +23,7 @@ import userAtom from '../atoms/userAtom'
 import usePriviewImg from '../hooks/usePriviewImg';
 import useShowToast from "../hooks/useShowToast";
 
-import BASEURL from "../config/baseURL";
+import { baseURL as BASEURL } from "../config/baseURL";
 
 const ProfilePage = () => {
   const [user,setUser] = useRecoilState(userAtom);

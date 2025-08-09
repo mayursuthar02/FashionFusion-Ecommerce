@@ -27,7 +27,7 @@ import FetchCartItems from "../helpers/FetchCartItems";
 import useShowToast from "../hooks/useShowToast";
 
 // BASEURL
-import BASEURL from "../config/baseURL";
+import { baseURL as BASEURL } from "../config/baseURL";
 
 
 const CartDrawer = ({ isOpenCart, onCloseCart }) => {

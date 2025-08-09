@@ -6,7 +6,7 @@ import { Link as RouterLink } from "react-router-dom";
 import { format } from "date-fns";
 import { IoCheckbox } from "react-icons/io5";
 
-import BASEURL from "../config/baseURL";
+import { baseURL as BASEURL } from "../config/baseURL";
 
 const MyOrders = () => {
     const showToast = useShowToast();

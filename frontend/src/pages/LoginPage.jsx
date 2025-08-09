@@ -22,7 +22,7 @@ import userAtom from "../atoms/userAtom";
 
 import useShowToast from "../hooks/useShowToast";
 
-import BASEURL from "../config/baseURL";
+import { baseURL as BASEURL } from "../config/baseURL";
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);

@@ -35,7 +35,7 @@ import img6 from '../assets/Logo Payment Method/6.png'
 import img7 from '../assets/Logo Payment Method/7.png'
 import img8 from '../assets/Logo Payment Method/8.png'
 
-import BASEURL from "../config/baseURL";
+import { baseURL as BASEURL } from "../config/baseURL";
 
 const paymentImg = [img1, img2, img3, img4, img5, img6, img7, img8];
 

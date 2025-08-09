@@ -1,7 +1,7 @@
 import React from 'react'
 import { useRecoilState } from 'recoil';
 import venderProductAtom from '../atoms/venderProductAtom';
-import BASEURL from "../config/baseURL";
+import { baseURL as BASEURL } from "../config/baseURL";
 
 const FetchVenderProductsData = () => {
     const [products, setProducts] = useRecoilState(venderProductAtom);

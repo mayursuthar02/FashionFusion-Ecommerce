@@ -10,7 +10,7 @@ import { MdKeyboardArrowDown } from "react-icons/md";
 import useShowToast from "../hooks/useShowToast";
 import ProductCard from "../components/ProductCard";
 
-import BASEURL from "../config/baseURL";
+import { baseURL as BASEURL } from "../config/baseURL";
 
 const PRODUCTS_PER_PAGE = 25;
 

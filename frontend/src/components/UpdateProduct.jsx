@@ -12,7 +12,7 @@ import {
   import { beautySubCategories, categories, kidsSubCategories, menSubCategories, wommenSubCategories } from "../helpers/categories";
   import FetchVenderProductsData from "../helpers/FetchVenderProductsData";
 
-  import BASEURL from "../config/baseURL";
+  import { baseURL as BASEURL } from "../config/baseURL";
   
   const UpdateProduct = ({isOpen,onClose,product}) => {
       const fileRef = useRef();

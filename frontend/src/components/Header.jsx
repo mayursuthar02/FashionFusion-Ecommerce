@@ -18,7 +18,7 @@ import { beautySubCategories, kidsSubCategories, menSubCategories, wommenSubCate
 import Logo from './Logo';
 import useShowToast from '../hooks/useShowToast';
 
-import BASEURL from "../config/baseURL";
+import { baseURL as BASEURL } from "../config/baseURL";
 
 
 const Header = () => {

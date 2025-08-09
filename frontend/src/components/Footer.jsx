@@ -16,7 +16,7 @@ import { HiOutlineMail } from "react-icons/hi";
 
 import Logo from './Logo';
 
-import BASEURL from "../config/baseURL";
+import { baseURL as BASEURL } from "../config/baseURL";
 
 
 const Footer = () => {  

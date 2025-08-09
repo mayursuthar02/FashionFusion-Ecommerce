@@ -4,7 +4,7 @@ import { FaStar } from "react-icons/fa6";
 import useShowToast from "../hooks/useShowToast";
 import userAtom from '../atoms/userAtom';
 import {useRecoilValue} from 'recoil';
-import BASEURL from "../config/baseURL";
+import { baseURL as BASEURL } from "../config/baseURL";
 
 const WriteReview = ({isOpen, onClose, product, setCallBackFunction}) => {
     const [rating, setRating] = useState(0);

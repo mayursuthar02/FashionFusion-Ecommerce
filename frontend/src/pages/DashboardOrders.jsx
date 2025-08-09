@@ -4,7 +4,7 @@ import { Box, Flex, Grid, Stat, StatArrow, StatHelpText, StatLabel, StatNumber, 
 import { format } from 'date-fns';
 import {Link as RouterLink} from 'react-router-dom';
 import { TiLocationArrow } from "react-icons/ti";
-import BASEURL from "../config/baseURL";
+import { baseURL as BASEURL } from "../config/baseURL";
 
 const DashboardOrders = () => {
   const showToast = useShowToast();

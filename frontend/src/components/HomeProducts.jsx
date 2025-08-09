@@ -6,7 +6,7 @@ import useShowToast from "../hooks/useShowToast";
 
 import ProductCard from "./ProductCard";
 
-import BASEURL from "../config/baseURL";
+import { baseURL as BASEURL } from "../config/baseURL";
 
 
 const HomeProducts = ({title, category, subCategory}) => {
