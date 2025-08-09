@@ -51,10 +51,18 @@ const loginUser = async(req,res) => {
             expiresIn: '15d'
         });
 
+        // res.cookie("token", token, {
+        //     httpOnly: true, //more secure
+        //     maxAge: 15 * 24 * 60 * 60 * 1000, //15 days
+        //     sameSite: "strict" // CSRF
+        // });
+
         res.cookie("token", token, {
-            httpOnly: true, //more secure
-            maxAge: 15 * 24 * 60 * 60 * 1000, //15 days
-            sameSite: "strict" // CSRF
+          httpOnly: true,
+          maxAge: 15 * 24 * 60 * 60 * 1000, // 15 days
+          secure: true,                      // must be true on HTTPS for cross-site cookies
+          sameSite: "none",                  // allows cross-site cookie sharing in browsers
+          path: "/",                        // accessible on all paths
         });
         
         res.status(200).json({
