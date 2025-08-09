@@ -57,6 +57,8 @@ const loginUser = async(req,res) => {
             sameSite: "none" // CSRF
         });
 
+        console.log(req.cookies.token);
+        
         // res.cookie("token", token, {
         //   httpOnly: true,
         //   maxAge: 15 * 24 * 60 * 60 * 1000, // 15 days
