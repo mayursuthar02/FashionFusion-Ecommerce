@@ -7,7 +7,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { RecoilRoot } from 'recoil'
 
 const config = {
-  initialColorMode: "dark",
+  initialColorMode: "light",
   useSystemColorMode: false
 };
 
