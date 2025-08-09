@@ -24,7 +24,9 @@ const WishlistPage = () => {
     const getWishlist = async() => {
       setLoading(true);
       try {
-        const res = await fetch(`${BASEURL}/api/users/get-wishlist`);
+        const res = await fetch(`${BASEURL}/api/users/get-wishlist`, {
+          credentials: 'include',
+        });
         const data = await res.json();
         if (data.error) {
           showToast("Error", data.error, "error");

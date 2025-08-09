@@ -32,7 +32,8 @@ const DashboardProductCard = ({ product}) => {
     setLoading(true);
     try {
       const res = await fetch(`${BASEURL}/api/products/delete/${id}`, {
-        method: "DELETE"
+        method: "DELETE",
+        credentials: 'include',
       });
       const data = await res.json();
       if (data.error) {

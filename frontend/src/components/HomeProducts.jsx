@@ -20,7 +20,9 @@ const HomeProducts = ({title, category, subCategory}) => {
       const fetchAllProducts = async() => {
         setLoading(true);
         try {
-          const res = await fetch(`${BASEURL}/api/products/get-all-product`);
+          const res = await fetch(`${BASEURL}/api/products/get-all-product`, {
+            credentials: 'include',
+          });
           const data = await res.json();
           if (data.error) {
             showToast("Error", data.error, "error");

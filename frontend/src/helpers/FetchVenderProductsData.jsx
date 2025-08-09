@@ -8,7 +8,9 @@ const FetchVenderProductsData = () => {
     
     const fetchVenderProducts = async() => {
         try {
-          const res = await fetch(`${BASEURL}/api/products/vendor`);
+          const res = await fetch(`${BASEURL}/api/products/vendor`, {
+            credentials: 'include',
+          });
           const data = await res.json();
           if (data.error) {
             showToast("Error", data.error, "error");

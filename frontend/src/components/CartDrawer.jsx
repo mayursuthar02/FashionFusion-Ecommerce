@@ -60,6 +60,7 @@ const CartDrawer = ({ isOpenCart, onCloseCart }) => {
       const res = await fetch(`${BASEURL}/api/carts/update-quantity`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
+        credentials: 'include',
         body: JSON.stringify({ cartId, quantity }),
       });
       const data = await res.json();
@@ -117,6 +118,7 @@ const CartDrawer = ({ isOpenCart, onCloseCart }) => {
       const res = await fetch(`${BASEURL}/api/carts/delete-cart`, {
         method: "DELETE",
         headers: {"Content-Type":"application/json"},
+        credentials: 'include',
         body: JSON.stringify({cartId})
       });
       const data = await res.json();
@@ -171,6 +173,7 @@ const CartDrawer = ({ isOpenCart, onCloseCart }) => {
       const res = await fetch(`${BASEURL}/api/payments/stripe/checkout`, {
         method: 'POST',
         headers: { "Content-Type": "application/json" },
+        credentials: 'include',
         body: JSON.stringify({products: cartItems})
       });
       const session = await res.json();

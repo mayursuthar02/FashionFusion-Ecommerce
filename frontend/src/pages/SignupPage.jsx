@@ -50,6 +50,7 @@ const SignupPage = () => {
       const res = await fetch(`${BASEURL}/api/users/signup`, {
         method: "POST",
         headers: {"Content-Type":"application/json"},
+        credentials: 'include',
         body: JSON.stringify({fullName, businessName, brandName, email, password, isBusinessAccount})
       });
 

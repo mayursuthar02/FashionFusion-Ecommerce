@@ -20,7 +20,9 @@ const DashboardReviews = () => {
   // Fetch reviews
   const fetchReviews = async() => {
     try {
-      const res = await fetch(`${BASEURL}/api/reviews/get-vender-product-reviews`);       
+      const res = await fetch(`${BASEURL}/api/reviews/get-vender-product-reviews`, {
+        credentials: 'include',
+      });       
       const data = await res.json();
       if (data.error) {
         showToast("Error", data.error, "error");

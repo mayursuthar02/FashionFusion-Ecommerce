@@ -25,7 +25,9 @@ const Dashboard = () => {
     const fetchOrders = async() => {
       setLoading(true);
       try {
-        const res = await fetch(`${BASEURL}/api/orders/vendor-orders`);
+        const res = await fetch(`${BASEURL}/api/orders/vendor-orders`, {
+          credentials: 'include',
+        });
         const data = await res.json();
         if (data.error) {
           showToast("Error", data.error, "error");

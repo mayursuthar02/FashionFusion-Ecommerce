@@ -14,6 +14,7 @@ const useAddWishlist = () => {
             const res = await fetch(`${BASEURL}/api/users/add-wishlist`, {
                 method: "POST",
                 headers: {"Content-Type":"application/json"},
+                credentials: 'include',
                 body: JSON.stringify({productId: id})
             });
             const data = await res.json();

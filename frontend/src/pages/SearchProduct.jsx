@@ -20,7 +20,9 @@ const SearchProduct = () => {
 
     const getSearchProduct = async () => {
       try {
-        const res = await fetch(`${BASEURL}/api/products/v2/search`+query.search);
+        const res = await fetch(`${BASEURL}/api/products/v2/search`+query.search, {
+          credentials: 'include',
+        });
         const data = await res.json();
         if (data.error) {
           console.log(data.error);

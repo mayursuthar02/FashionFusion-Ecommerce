@@ -24,6 +24,7 @@ const WriteReview = ({isOpen, onClose, product, setCallBackFunction}) => {
             const res = await fetch(`${BASEURL}/api/reviews/create`, {
                 method: "POST",
                 headers: {"Content-Type":"application/json"},
+                credentials: 'include',
                 body: JSON.stringify({productId: product._id, rating, text, vendorId: product.vendorId })
             });
             const data = await res.json();

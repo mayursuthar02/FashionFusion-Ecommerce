@@ -39,7 +39,9 @@ const ProductsPage = () => {
     // Fetch filter properties
     useEffect(()=> {
         const fetchFilterProperties = async() => {
-            const res = await fetch(`${BASEURL}/api/products/filter-properties`);
+            const res = await fetch(`${BASEURL}/api/products/filter-properties`, {
+                credentials: 'include',
+            });
             const data = await res.json();
             if (data.error) {
                 showToast("Error", data.error, "error");
@@ -59,6 +61,7 @@ const ProductsPage = () => {
                 const res = await fetch(`${BASEURL}/api/products/get-filter-product`, {
                     method: "POST",
                     headers: {"Content-Type":"application/json"},
+                    credentials: 'include',
                     body: JSON.stringify({category, subCategory, sizes, minPrice: priceRange[0], maxPrice: priceRange[1], brandNames, colors})
                 });
                 const data = await res.json();

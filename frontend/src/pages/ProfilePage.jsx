@@ -46,6 +46,7 @@ const ProfilePage = () => {
       const res = await fetch(`${BASEURL}/api/users/update-profile`, {
         method: "PUT",
         headers: {"Content-Type":"application/json"},
+        credentials: 'include',
         body: JSON.stringify({fullName, businessName, brandName, email, address, phone, profilePic: imgUrl})
       });
       const data = await res.json();

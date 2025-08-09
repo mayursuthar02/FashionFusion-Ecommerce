@@ -45,7 +45,9 @@ const OrderDetailsPage = () => {
     const fetchOrder = async () => {
         setLoading(true);
       try {
-        const res = await fetch(`${BASEURL}/api/orders/${orderId}`);
+        const res = await fetch(`${BASEURL}/api/orders/${orderId}`, {
+            credentials: 'include',
+        });
         const data = await res.json();
         if (data.error) {
           showToast("Error", data.error, "error");

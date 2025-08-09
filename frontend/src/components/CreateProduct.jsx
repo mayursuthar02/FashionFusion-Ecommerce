@@ -99,6 +99,7 @@ const CreateProduct = ({isOpen,onClose}) => {
         const res = await fetch(`${BASEURL}/api/products/create`, {
           method: "POST",
           headers: {"Content-Type":"application/json"},
+          credentials: 'include',
           body: JSON.stringify({name, brandName, category, subCategory, sizes, color, material, stock, price, discount, description, images})
         });
         const data = await res.json();

@@ -37,7 +37,9 @@ const VendorOrderDetailsPage = () => {
         const fetchOrder = async () => {
             setLoading(true);
           try {
-            const res = await fetch(`${BASEURL}/api/orders/vendor/${orderId}`);
+            const res = await fetch(`${BASEURL}/api/orders/vendor/${orderId}`, {
+                credentials: 'include',
+            });
             const data = await res.json();
             if (data.error) {
               showToast("Error", data.error, "error");
@@ -64,6 +66,7 @@ const VendorOrderDetailsPage = () => {
             const res = await fetch(`${BASEURL}/api/orders/update-status/${orderId}`, {
                 method: "PUT",
                 headers: {"Content-Type":"application/json"},
+                credentials: 'include',
                 body: JSON.stringify({status: value})
             });
             const data = await res.json();

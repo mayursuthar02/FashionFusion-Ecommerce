@@ -9,7 +9,9 @@ const FetchCartItems = () => {
     
    const fetchCartItemsFunc = async() => {
     try {
-      const res = await fetch(`${BASEURL}/api/carts/get-cart-items`);
+      const res = await fetch(`${BASEURL}/api/carts/get-cart-items`, {
+        credentials: 'include',
+      });
       const data = await res.json();
       if (data.error) {
         showToast("Error", data.error, "error");

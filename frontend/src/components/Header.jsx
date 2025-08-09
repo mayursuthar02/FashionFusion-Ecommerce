@@ -59,6 +59,7 @@ const Header = () => {
       const res = await fetch(`${BASEURL}/api/users/logout`, {
         method: "POST",
         headers: {"Content-Type":"application/json"},
+        credentials: 'include',
       });
 
       const data = await res.json();
@@ -71,7 +72,7 @@ const Header = () => {
       setUser(null);
       navigate('/login');
     } catch (error) {
-      
+      console.log({error})
     }
   }
 
