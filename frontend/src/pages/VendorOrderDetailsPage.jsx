@@ -7,6 +7,8 @@ import { MdOutlinePayments } from "react-icons/md";
 
 import useShowToast from "../hooks/useShowToast";
 
+import BASEURL from "../config/baseURL";
+
 const VendorOrderDetailsPage = () => {
     const { orderId } = useParams();
     const [order, setOrder] = useState(null);
@@ -35,7 +37,7 @@ const VendorOrderDetailsPage = () => {
         const fetchOrder = async () => {
             setLoading(true);
           try {
-            const res = await fetch(`/api/orders/vendor/${orderId}`);
+            const res = await fetch(`${BASEURL}/api/orders/vendor/${orderId}`);
             const data = await res.json();
             if (data.error) {
               showToast("Error", data.error, "error");
@@ -59,7 +61,7 @@ const VendorOrderDetailsPage = () => {
         setUpdateStatusLoading(true);
         
         try {
-            const res = await fetch(`/api/orders/update-status/${orderId}`, {
+            const res = await fetch(`${BASEURL}/api/orders/update-status/${orderId}`, {
                 method: "PUT",
                 headers: {"Content-Type":"application/json"},
                 body: JSON.stringify({status: value})

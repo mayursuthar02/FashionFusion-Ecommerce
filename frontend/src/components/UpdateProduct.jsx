@@ -11,6 +11,8 @@ import {
   import useUploadImage from "../hooks/useUploadImage";
   import { beautySubCategories, categories, kidsSubCategories, menSubCategories, wommenSubCategories } from "../helpers/categories";
   import FetchVenderProductsData from "../helpers/FetchVenderProductsData";
+
+  import BASEURL from "../config/baseURL";
   
   const UpdateProduct = ({isOpen,onClose,product}) => {
       const fileRef = useRef();
@@ -107,7 +109,7 @@ import {
         }
         setLoading(true);
         try {
-          const res = await fetch(`/api/products/update/${product._id}`, {
+          const res = await fetch(`${BASEURL}/api/products/update/${product._id}`, {
             method: "PUT",
             headers: {"Content-Type":"application/json"},
             body: JSON.stringify({name, brandName, category, subCategory, sizes, color, material, stock, price, discount, description, images})

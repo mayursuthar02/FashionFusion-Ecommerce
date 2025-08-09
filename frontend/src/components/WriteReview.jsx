@@ -4,6 +4,7 @@ import { FaStar } from "react-icons/fa6";
 import useShowToast from "../hooks/useShowToast";
 import userAtom from '../atoms/userAtom';
 import {useRecoilValue} from 'recoil';
+import BASEURL from "../config/baseURL";
 
 const WriteReview = ({isOpen, onClose, product, setCallBackFunction}) => {
     const [rating, setRating] = useState(0);
@@ -20,7 +21,7 @@ const WriteReview = ({isOpen, onClose, product, setCallBackFunction}) => {
         
         setLoading(true);
         try {
-            const res = await fetch('/api/reviews/create', {
+            const res = await fetch(`${BASEURL}/api/reviews/create`, {
                 method: "POST",
                 headers: {"Content-Type":"application/json"},
                 body: JSON.stringify({productId: product._id, rating, text, vendorId: product.vendorId })

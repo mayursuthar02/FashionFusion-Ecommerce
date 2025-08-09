@@ -6,6 +6,8 @@ import useShowToast from "../hooks/useShowToast";
 
 import ProductCard from "./ProductCard";
 
+import BASEURL from "../config/baseURL";
+
 
 const HomeProducts = ({title, category, subCategory}) => {
     const [products, setProducts] = useState([]);
@@ -18,7 +20,7 @@ const HomeProducts = ({title, category, subCategory}) => {
       const fetchAllProducts = async() => {
         setLoading(true);
         try {
-          const res = await fetch('/api/products/get-all-product');
+          const res = await fetch(`${BASEURL}/api/products/get-all-product`);
           const data = await res.json();
           if (data.error) {
             showToast("Error", data.error, "error");

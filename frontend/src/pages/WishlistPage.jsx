@@ -10,6 +10,8 @@ import userAtom from "../atoms/userAtom";
 import useShowToast from '../hooks/useShowToast';
 import ProductCard from "../components/ProductCard";
 
+import BASEURL from "../config/baseURL";
+
 const WishlistPage = () => {
   const user = useRecoilValue(userAtom);
   const [products, setProducts] = useState([]);
@@ -22,7 +24,7 @@ const WishlistPage = () => {
     const getWishlist = async() => {
       setLoading(true);
       try {
-        const res = await fetch('/api/users/get-wishlist');
+        const res = await fetch(`${BASEURL}/api/users/get-wishlist`);
         const data = await res.json();
         if (data.error) {
           showToast("Error", data.error, "error");

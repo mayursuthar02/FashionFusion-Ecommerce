@@ -35,6 +35,8 @@ import img6 from '../assets/Logo Payment Method/6.png'
 import img7 from '../assets/Logo Payment Method/7.png'
 import img8 from '../assets/Logo Payment Method/8.png'
 
+import BASEURL from "../config/baseURL";
+
 const paymentImg = [img1, img2, img3, img4, img5, img6, img7, img8];
 
 const ProductDetails = () => {
@@ -78,7 +80,7 @@ const ProductDetails = () => {
     const getProductDetails = async () => {
       setLoading(true);
       try {
-        const res = await fetch(`/api/products/get-product-details/${productId}`);
+        const res = await fetch(`${BASEURL}/api/products/get-product-details/${productId}`);
         const data = await res.json();
         if (data.error) {
           showToast("Error", data.error, "error");
@@ -102,7 +104,7 @@ const ProductDetails = () => {
     const getProductsByName = async () => {
       if (!product) return; // Ensure product is loaded first
       try {
-        const res = await fetch(`/api/products/get-product/${product.name}`);
+        const res = await fetch(`${BASEURL}/api/products/get-product/${product.name}`);
         const data = await res.json();
         if (data.error) {
           showToast("Error", data.error, "error");
@@ -122,7 +124,7 @@ const ProductDetails = () => {
   useEffect(() => {
     const getAllProductReviews = async () => {
       try {
-        const res = await fetch(`/api/reviews/by-product/${productId}`);
+        const res = await fetch(`${BASEURL}/api/reviews/by-product/${productId}`);
         const data = await res.json();
         if (data.error) {
           showToast("Error", data.error, "error");
@@ -165,7 +167,7 @@ const ProductDetails = () => {
 
     setAddToCartLoading(true);    
     try {
-      const res = await fetch('/api/carts/add-to-cart', {
+      const res = await fetch(`${BASEURL}/api/carts/add-to-cart`, {
         method: 'POST',
         headers: {"Content-Type":"application/json"},
         body: JSON.stringify({productId,size})

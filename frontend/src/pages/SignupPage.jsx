@@ -19,6 +19,8 @@ import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 
 import useShowToast from "../hooks/useShowToast";
 
+import BASEURL from "../config/baseURL";
+
 
 const SignupPage = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -45,7 +47,7 @@ const SignupPage = () => {
     };
     
     try {
-      const res = await fetch('/api/users/signup', {
+      const res = await fetch(`${BASEURL}/api/users/signup`, {
         method: "POST",
         headers: {"Content-Type":"application/json"},
         body: JSON.stringify({fullName, businessName, brandName, email, password, isBusinessAccount})

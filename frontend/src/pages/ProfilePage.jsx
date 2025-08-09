@@ -23,6 +23,8 @@ import userAtom from '../atoms/userAtom'
 import usePriviewImg from '../hooks/usePriviewImg';
 import useShowToast from "../hooks/useShowToast";
 
+import BASEURL from "../config/baseURL";
+
 const ProfilePage = () => {
   const [user,setUser] = useRecoilState(userAtom);
   const [fullName, setFullName] = useState(user.fullName);
@@ -41,7 +43,7 @@ const ProfilePage = () => {
   const handleUpdate = async() => {
     try {
       setLoading(true);
-      const res = await fetch('/api/users/update-profile', {
+      const res = await fetch(`${BASEURL}/api/users/update-profile`, {
         method: "PUT",
         headers: {"Content-Type":"application/json"},
         body: JSON.stringify({fullName, businessName, brandName, email, address, phone, profilePic: imgUrl})

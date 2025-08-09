@@ -5,6 +5,8 @@ import { useRecoilState } from 'recoil';
 import { Box, Button, Divider, Flex, Spinner, Text } from '@chakra-ui/react';
 import { MdOutlineCheck } from "react-icons/md";
 
+import BASEURL from "../config/baseURL";
+
 const PaymentSuccess = () => {
   const query = useLocation();
   const sessionId = new URLSearchParams(query.search).get('session_id');
@@ -22,7 +24,7 @@ const PaymentSuccess = () => {
   // Delete cart items
   const deleteCartItems = async() => {
     try {
-      const res = await fetch('/api/carts/delete-user-carts', {
+      const res = await fetch(`${BASEURL}/api/carts/delete-user-carts`, {
         method: "DELETE",
         headers: {"Content-Type":"application/json"},
       });
@@ -41,7 +43,7 @@ const PaymentSuccess = () => {
   useEffect(()=>{
     const fetchOrder = async() => {
       try {
-        const res = await fetch(`/api/orders/sessionId/${sessionId}`);
+        const res = await fetch(`${BASEURL}/api/orders/sessionId/${sessionId}`);
         const data = await res.json();
         if (data.error) {
           console.log(data.error);

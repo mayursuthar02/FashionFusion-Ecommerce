@@ -7,6 +7,8 @@ import { format } from "date-fns";
 import { useRecoilValue } from "recoil";
 import userAtom from "../atoms/userAtom";
 
+import BASEURL from "../config/baseURL";
+
 const steps = [
     { title: 'received'},
     { title: 'at depot'},
@@ -43,7 +45,7 @@ const OrderDetailsPage = () => {
     const fetchOrder = async () => {
         setLoading(true);
       try {
-        const res = await fetch(`/api/orders/${orderId}`);
+        const res = await fetch(`${BASEURL}/api/orders/${orderId}`);
         const data = await res.json();
         if (data.error) {
           showToast("Error", data.error, "error");

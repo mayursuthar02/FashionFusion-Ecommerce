@@ -26,6 +26,9 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import FetchCartItems from "../helpers/FetchCartItems";
 import useShowToast from "../hooks/useShowToast";
 
+// BASEURL
+import BASEURL from "../config/baseURL";
+
 
 const CartDrawer = ({ isOpenCart, onCloseCart }) => {
   const [cartItems, setCartItems] = useRecoilState(cartAtom);
@@ -54,7 +57,7 @@ const CartDrawer = ({ isOpenCart, onCloseCart }) => {
   // Update Qty
   const updateQty = async (cartId, quantity) => {
     try {
-      const res = await fetch("/api/carts/update-quantity", {
+      const res = await fetch(`${BASEURL}/api/carts/update-quantity`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ cartId, quantity }),
@@ -111,7 +114,7 @@ const CartDrawer = ({ isOpenCart, onCloseCart }) => {
   const RemoveCartItem = async(cartId) => {
     setRemoveLoading(true);
     try {
-      const res = await fetch('/api/carts/delete-cart', {
+      const res = await fetch(`${BASEURL}/api/carts/delete-cart`, {
         method: "DELETE",
         headers: {"Content-Type":"application/json"},
         body: JSON.stringify({cartId})
@@ -165,7 +168,7 @@ const CartDrawer = ({ isOpenCart, onCloseCart }) => {
     const stripe = await loadStripe(publishableKey);
     setCheckoutLoading(true);
     try {
-      const res = await fetch('/api/payments/stripe/checkout', {
+      const res = await fetch(`${BASEURL}/api/payments/stripe/checkout`, {
         method: 'POST',
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({products: cartItems})

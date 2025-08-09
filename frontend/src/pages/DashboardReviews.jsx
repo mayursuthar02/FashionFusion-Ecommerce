@@ -7,6 +7,8 @@ import { MdDelete } from "react-icons/md";
 
 import useShowToast from '../hooks/useShowToast';
 
+import BASEURL from "../config/baseURL";
+
 const DashboardReviews = () => {
   const [reviews, setReviews] = useState([]);
   const [averageRating, setAverageRating] = useState(null);
@@ -18,7 +20,7 @@ const DashboardReviews = () => {
   // Fetch reviews
   const fetchReviews = async() => {
     try {
-      const res = await fetch('/api/reviews/get-vender-product-reviews');       
+      const res = await fetch(`${BASEURL}/api/reviews/get-vender-product-reviews`);       
       const data = await res.json();
       if (data.error) {
         showToast("Error", data.error, "error");
@@ -66,7 +68,7 @@ const DashboardReviews = () => {
   const handleDeleteReview = async(reviewId, productId) => {
     setDeleteLoading(true);
     try {
-      const res = await fetch('/api/reviews/delete', {
+      const res = await fetch(`${BASEURL}/api/reviews/delete`, {
         method: "POST",
         headers: {"Content-Type":"application/json"},
         body: JSON.stringify({reviewId, productId})

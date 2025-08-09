@@ -6,6 +6,8 @@ import { Link as RouterLink } from "react-router-dom";
 import { format } from "date-fns";
 import { IoCheckbox } from "react-icons/io5";
 
+import BASEURL from "../config/baseURL";
+
 const MyOrders = () => {
     const showToast = useShowToast();
     const [orderData, setOrderData] = useState([]);
@@ -21,7 +23,7 @@ const MyOrders = () => {
         const fetchOrders = async() => {
             setLoading(true);
             try {
-                const res = await fetch('/api/orders/get-orders');
+                const res = await fetch(`${BASEURL}/api/orders/get-orders`);
                 const data = await res.json();
                 if (data.error) {
                     showToast("Error", data.error, "error");
@@ -95,8 +97,8 @@ const MyOrders = () => {
 
                         <Divider borderColor={'gray.200'}/>
 
-                        {order.productDetails.map((product) => (
-                            <Flex justify={'space-between'} borderBottom={'1px solid '} borderColor={'gray.200'} py={5} gap={5}>
+                        {order.productDetails.map((product, i) => (
+                            <Flex key={i} justify={'space-between'} borderBottom={'1px solid '} borderColor={'gray.200'} py={5} gap={5}>
                                 <Box bg={'gray.200'} w={'80px'} height={'115px'} overflow={'hidden'} borderRadius={'md'}>
                                     <Image src={product.image} w={'full'} h={'full'} objectFit={'cover'}/>
                                 </Box>

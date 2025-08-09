@@ -4,6 +4,7 @@ import { Box, Flex, Grid, Stat, StatArrow, StatHelpText, StatLabel, StatNumber, 
 import { format } from 'date-fns';
 import {Link as RouterLink} from 'react-router-dom';
 import { TiLocationArrow } from "react-icons/ti";
+import BASEURL from "../config/baseURL";
 
 const DashboardOrders = () => {
   const showToast = useShowToast();
@@ -18,7 +19,7 @@ const DashboardOrders = () => {
     const fetchOrders = async() => {
       setLoading(true);
       try {
-        const res = await fetch('/api/orders/vendor-orders');
+        const res = await fetch(`${BASEURL}/api/orders/vendor-orders`);
         const data = await res.json();
         if (data.error) {
           showToast("Error", data.error, "error");
@@ -122,8 +123,8 @@ const DashboardOrders = () => {
 
                 <Divider borderColor={'gray.200'}/>
 
-                {order.productDetails.map((product) => (
-                    <Flex justify={'space-between'} borderBottom={'1px solid '} borderColor={'gray.200'} py={5} gap={5}>
+                {order.productDetails.map((product, i) => (
+                    <Flex key={i} justify={'space-between'} borderBottom={'1px solid '} borderColor={'gray.200'} py={5} gap={5}>
                         <Box bg={'gray.200'} w={'80px'} height={'115px'} overflow={'hidden'} borderRadius={'md'}>
                             <Image src={product.image} w={'full'} h={'full'} objectFit={'cover'}/>
                         </Box>

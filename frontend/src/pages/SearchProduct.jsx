@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import ProductCard from "../components/ProductCard";
 
+import BASEURL from "../config/baseURL";
+
 const SearchProduct = () => {
   const query = useLocation();
 
@@ -18,7 +20,7 @@ const SearchProduct = () => {
 
     const getSearchProduct = async () => {
       try {
-        const res = await fetch(`/api/products/v2/search`+query.search);
+        const res = await fetch(`${BASEURL}/api/products/v2/search`+query.search);
         const data = await res.json();
         if (data.error) {
           console.log(data.error);

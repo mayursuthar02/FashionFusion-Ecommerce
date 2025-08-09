@@ -1,6 +1,7 @@
 import { useRecoilState } from "recoil";
 import cartAtom from "../atoms/cartAtom";
 import useShowToast from '../hooks/useShowToast';
+import BASEURL from "../config/baseURL";
 
 const FetchCartItems = () => {
    const [cartItems, setCartItems] = useRecoilState(cartAtom); 
@@ -8,7 +9,7 @@ const FetchCartItems = () => {
     
    const fetchCartItemsFunc = async() => {
     try {
-      const res = await fetch('/api/carts/get-cart-items');
+      const res = await fetch(`${BASEURL}/api/carts/get-cart-items`);
       const data = await res.json();
       if (data.error) {
         showToast("Error", data.error, "error");

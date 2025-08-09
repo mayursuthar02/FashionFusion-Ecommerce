@@ -7,6 +7,8 @@ import FetchVenderProductsData from "../helpers/FetchVenderProductsData";
 
 import UpdateProduct from "./UpdateProduct";
 
+import BASEURL from "../config/baseURL";
+
 const DashboardProductCard = ({ product}) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { isOpen: isOpenAlert, onOpen: onOpenAlert, onClose: onCloseAlert } = useDisclosure();
@@ -29,7 +31,7 @@ const DashboardProductCard = ({ product}) => {
   const handleProductDelete = async(id) => {
     setLoading(true);
     try {
-      const res = await fetch(`/api/products/delete/${id}`, {
+      const res = await fetch(`${BASEURL}/api/products/delete/${id}`, {
         method: "DELETE"
       });
       const data = await res.json();

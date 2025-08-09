@@ -15,6 +15,8 @@ import useUploadImage from "../hooks/useUploadImage";
 import FetchVenderProductsData from "../helpers/FetchVenderProductsData";
 import { beautySubCategories, categories, kidsSubCategories, menSubCategories, wommenSubCategories } from "../helpers/categories";
 
+import BASEURL from "../config/baseURL";
+
 const CreateProduct = ({isOpen,onClose}) => {
     const user = useRecoilValue(userAtom);
     const fileRef = useRef();
@@ -94,7 +96,7 @@ const CreateProduct = ({isOpen,onClose}) => {
       }
       setLoading(true);
       try {
-        const res = await fetch('/api/products/create', {
+        const res = await fetch(`${BASEURL}/api/products/create`, {
           method: "POST",
           headers: {"Content-Type":"application/json"},
           body: JSON.stringify({name, brandName, category, subCategory, sizes, color, material, stock, price, discount, description, images})

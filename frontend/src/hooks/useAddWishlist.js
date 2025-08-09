@@ -2,6 +2,7 @@ import React from 'react'
 import useShowToast from './useShowToast';
 import { useRecoilState } from 'recoil';
 import userAtom from '../atoms/userAtom';
+import BASEURL from "../config/baseURL";
 
 const useAddWishlist = () => {
     const showToast = useShowToast();
@@ -9,7 +10,7 @@ const useAddWishlist = () => {
     
     const addWishlist = async(id) => {
         try {
-            const res = await fetch('/api/users/add-wishlist', {
+            const res = await fetch(`${BASEURL}/api/users/add-wishlist`, {
                 method: "POST",
                 headers: {"Content-Type":"application/json"},
                 body: JSON.stringify({productId: id})

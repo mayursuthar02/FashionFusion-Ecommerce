@@ -22,6 +22,8 @@ import userAtom from "../atoms/userAtom";
 
 import useShowToast from "../hooks/useShowToast";
 
+import BASEURL from "../config/baseURL";
+
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
@@ -38,7 +40,7 @@ const LoginPage = () => {
     }
 
     try {
-      const res = await fetch('/api/users/login', {
+      const res = await fetch(`${BASEURL}/api/users/login`, {
         method: "POST",
         headers: {"Content-Type":"application/json"},
         body: JSON.stringify({email, password})

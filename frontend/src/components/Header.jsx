@@ -18,6 +18,8 @@ import { beautySubCategories, kidsSubCategories, menSubCategories, wommenSubCate
 import Logo from './Logo';
 import useShowToast from '../hooks/useShowToast';
 
+import BASEURL from "../config/baseURL";
+
 
 const Header = () => {
   const [user,setUser] = useRecoilState(userAtom);
@@ -54,7 +56,7 @@ const Header = () => {
   // Handle User Logout
   const handleLogout = async() => {
     try {
-      const res = await fetch('/api/users/logout', {
+      const res = await fetch(`${BASEURL}/api/users/logout`, {
         method: "POST",
         headers: {"Content-Type":"application/json"},
       });

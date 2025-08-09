@@ -11,6 +11,8 @@ import FetchVenderProductsData from '../helpers/FetchVenderProductsData';
 import { format } from 'date-fns';
 import { Link as RouterLink } from 'react-router-dom';
 
+import BASEURL from "../config/baseURL";
+
 const Dashboard = () => {
   const [ordersData, setOrdersData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -23,7 +25,7 @@ const Dashboard = () => {
     const fetchOrders = async() => {
       setLoading(true);
       try {
-        const res = await fetch('/api/orders/vendor-orders');
+        const res = await fetch(`${BASEURL}/api/orders/vendor-orders`);
         const data = await res.json();
         if (data.error) {
           showToast("Error", data.error, "error");

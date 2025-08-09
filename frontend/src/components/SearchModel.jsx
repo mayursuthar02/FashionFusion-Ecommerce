@@ -2,6 +2,7 @@ import { SearchIcon } from "@chakra-ui/icons";
 import { Box, Button, Flex, FormControl, IconButton, Image, Input, Link, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Skeleton, Text } from "@chakra-ui/react"
 import { useState } from "react";
 import {Link as RouterLink} from 'react-router-dom';
+import BASEURL from "../config/baseURL";
 
 const SearchModel = ({isOpen, onClose}) => {
   const [searchValue, setSearchValue] = useState('');
@@ -15,7 +16,7 @@ const SearchModel = ({isOpen, onClose}) => {
     setLoading(true);
     if (value) {
       try {
-        const res = await fetch(`/api/products/v1/search/${value}`);
+        const res = await fetch(`${BASEURL}/api/products/v1/search/${value}`);
         const data = await res.json();
         if (data.error) {
           console.log(data.error);

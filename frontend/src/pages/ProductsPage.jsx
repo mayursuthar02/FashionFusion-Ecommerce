@@ -10,6 +10,7 @@ import { MdKeyboardArrowDown } from "react-icons/md";
 import useShowToast from "../hooks/useShowToast";
 import ProductCard from "../components/ProductCard";
 
+import BASEURL from "../config/baseURL";
 
 const PRODUCTS_PER_PAGE = 25;
 
@@ -38,7 +39,7 @@ const ProductsPage = () => {
     // Fetch filter properties
     useEffect(()=> {
         const fetchFilterProperties = async() => {
-            const res = await fetch('/api/products/filter-properties');
+            const res = await fetch(`${BASEURL}/api/products/filter-properties`);
             const data = await res.json();
             if (data.error) {
                 showToast("Error", data.error, "error");
@@ -55,7 +56,7 @@ const ProductsPage = () => {
         const fetchProductAndFilter = async () => {
             setLoading(true);
             try {
-                const res = await fetch('/api/products/get-filter-product', {
+                const res = await fetch(`${BASEURL}/api/products/get-filter-product`, {
                     method: "POST",
                     headers: {"Content-Type":"application/json"},
                     body: JSON.stringify({category, subCategory, sizes, minPrice: priceRange[0], maxPrice: priceRange[1], brandNames, colors})
