@@ -11,7 +11,7 @@ import userAtom from '../atoms/userAtom';
 import {useRecoilValue } from 'recoil';
 
 import useShowToast from "../hooks/useShowToast";
-import useUploadImage from "../hooks/useUploadImage";
+import useUploadImage from "../hooks/useUploadImage"
 import FetchVenderProductsData from "../helpers/FetchVenderProductsData";
 import { beautySubCategories, categories, kidsSubCategories, menSubCategories, wommenSubCategories } from "../helpers/categories";
 
@@ -45,7 +45,7 @@ const CreateProduct = ({isOpen,onClose}) => {
       const files = Array.from(e.target.files);
       const newImages = [];
       
-      if (images.length > 9) {
+      if (images.length + files.length > 9) {
         showToast("Error", "You can use up to 9 images", "error");
         return;
       }
@@ -55,11 +55,12 @@ const CreateProduct = ({isOpen,onClose}) => {
 
       try {
         for (const file of files) { 
-          newImages.push(useUploadImage?.url);
+          const uploadImageCloudinary = await useUploadImage(file); // <-- Call and await here!
+          newImages.push(uploadImageCloudinary.url);
         }
-        
+            
         setImages([...images, ...newImages]);
-        console.log(images)
+        // console.log(images)
       } catch (error) {
         console.error("Error uploading image:", error);
         showToast("Error", "Failed to upload one or more images", "error");
@@ -267,10 +268,10 @@ const CreateProduct = ({isOpen,onClose}) => {
                           </Box>
                         ))
                     }
-                    <Button width={'100px'} height={'100px'} border={'1px solid'} bg={'transparent'} borderColor={'gray.200'} display={'flex'} alignItems={'center'} justifyContent={'center'} borderRadius={'md'} cursor={'pointer'} _hover={{bgColor: 'gray.50'}} onClick={() => fileRef.current.click()} isLoading={isUploading}>
+                    {images.length < 9 && <Button width={'100px'} height={'100px'} border={'1px solid'} bg={'transparent'} borderColor={'gray.200'} display={'flex'} alignItems={'center'} justifyContent={'center'} borderRadius={'md'} cursor={'pointer'} _hover={{bgColor: 'gray.50'}} onClick={() => fileRef.current.click()} isLoading={isUploading}>
                         <LuUploadCloud fontSize={'25px'} color="gray" opacity={.7}/>
                         <Input type="file" ref={fileRef} hidden onChange={handleUploadProductImages} multiple/>
-                    </Button>
+                    </Button>}
                 </Box>
 
                 <Text fontSize={'14px'} color={'#888'} fontWeight={'400'} mb={2}>Description</Text>
