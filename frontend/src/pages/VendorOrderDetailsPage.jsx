@@ -204,23 +204,23 @@ const VendorOrderDetailsPage = () => {
                             </Flex>
                             <Flex w={'350px'} align={'center'} justify={'space-between'} mb={2}>
                                 <Text fontSize={'16px'} fontWeight={'500'}>Address Line 1</Text>
-                                <Text fontSize={'16px'} color={'gray.500'}>{order.billing_details.address?.line1}</Text>
+                                <Text fontSize={'16px'} color={'gray.500'}>{order.billing_details?.address?.line1 || ""}</Text>
                             </Flex>
                             <Flex w={'350px'} align={'center'} justify={'space-between'} mb={2}>
                                 <Text fontSize={'16px'} fontWeight={'500'}>Address Line 2</Text>
-                                <Text fontSize={'16px'} color={'gray.500'}>{order.billing_details.address?.line2}</Text>
+                                <Text fontSize={'16px'} color={'gray.500'}>{order.billing_details?.address?.line2 || ""}</Text>
                             </Flex>
                             <Flex w={'350px'} align={'center'} justify={'space-between'} mb={2}>
                                 <Text fontSize={'16px'} fontWeight={'500'}>City</Text>
-                                <Text fontSize={'16px'} color={'gray.500'}>{order.billing_details.address?.city}</Text>
+                                <Text fontSize={'16px'} color={'gray.500'}>{order.billing_details?.address?.city || ""}</Text>
                             </Flex>
                             <Flex w={'350px'} align={'center'} justify={'space-between'} mb={2}>
                                 <Text fontSize={'16px'} fontWeight={'500'}>State</Text>
-                                <Text fontSize={'16px'} color={'gray.500'}>{order.billing_details.address?.state}</Text>
+                                <Text fontSize={'16px'} color={'gray.500'}>{order.billing_details?.address?.state || ""}</Text>
                             </Flex>
                             <Flex w={'350px'} align={'center'} justify={'space-between'} mb={2}>
                                 <Text fontSize={'16px'} fontWeight={'500'}>PinCode</Text>
-                                <Text fontSize={'16px'} color={'gray.500'}>{order.billing_details.address?.postal_code}</Text>
+                                <Text fontSize={'16px'} color={'gray.500'}>{order.billing_details?.address?.postal_code || ""}</Text>
                             </Flex>
                         </Box>
                     </Box>
