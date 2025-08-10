@@ -27,7 +27,7 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET,
 })
 
-app.use('/api/payments', paymentRoutes);
+
 
 const corsOptions = {
   origin: 'https://fashion-fusion-ecommerce-ten.vercel.app',
@@ -35,15 +35,18 @@ const corsOptions = {
 };
 
 // Middleware
+app.use(cors(corsOptions));
+app.use(cookieParser());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
-app.use(cors(corsOptions));
-app.options('/api/payments/stripe/checkout', cors(corsOptions));
-app.use(cookieParser());
 app.set('trust proxy', 1);
 
+app.options('/api/payments/stripe/checkout', cors(corsOptions), (req, res) => {
+  res.sendStatus(200);
+});
 
 // Routes
+app.use('/api/payments', paymentRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/reviews', reviewRoutes);
