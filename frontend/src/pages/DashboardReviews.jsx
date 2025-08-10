@@ -73,6 +73,7 @@ const DashboardReviews = () => {
       const res = await fetch(`${BASEURL}/api/reviews/delete`, {
         method: "POST",
         headers: {"Content-Type":"application/json"},
+        credentials: "include",
         body: JSON.stringify({reviewId, productId})
       });
       const data = await res.json();

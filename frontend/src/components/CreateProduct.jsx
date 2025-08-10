@@ -55,7 +55,7 @@ const CreateProduct = ({isOpen,onClose}) => {
 
       try {
         for (const file of files) { 
-          newImages.push(uploadImageCloudinary.url);
+          newImages.push(useUploadImage?.url);
         }
         
         setImages([...images, ...newImages]);

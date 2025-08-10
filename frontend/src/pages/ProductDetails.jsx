@@ -169,6 +169,7 @@ const ProductDetails = () => {
     try {
       const res = await fetch(`${BASEURL}/api/carts/add-to-cart`, {
         method: 'POST',
+        credentials: "include",
         headers: {"Content-Type":"application/json"},
         body: JSON.stringify({productId,size})
       });
