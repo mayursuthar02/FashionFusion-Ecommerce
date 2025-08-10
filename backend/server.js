@@ -12,6 +12,7 @@ import orderRoutes from './routes/orderRoutes.js';
 
 import connectDB from './db/connectDB.js';
 import {v2 as cloudinary} from 'cloudinary';
+import { stripeWebhook } from './controllers/paymentController.js';
 
 dotenv.config();
 
@@ -37,9 +38,18 @@ const corsOptions = {
 // Middleware
 app.use(cors(corsOptions));
 app.use(cookieParser());
+app.set('trust proxy', 1);
+
+// 2. Mount the STRIPE WEBHOOK route BEFORE express.json
+app.post(
+  '/api/payments/stripe/webhook',
+  bodyParser.raw({ type: 'application/json' }),
+  stripeWebhook
+);
+
+
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
-app.set('trust proxy', 1);
 
 app.options('/api/payments/stripe/checkout', cors(corsOptions), (req, res) => {
   res.sendStatus(200);
