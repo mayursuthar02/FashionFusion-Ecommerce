@@ -29,14 +29,16 @@ cloudinary.config({
 
 app.use('/api/payments', paymentRoutes);
 
+const corsOptions = {
+  origin: 'https://fashion-fusion-ecommerce-ten.vercel.app',
+  credentials: true,
+};
+
 // Middleware
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
-app.use(cors({
-  origin: 'https://fashion-fusion-ecommerce-ten.vercel.app',
-  // origin: 'http://localhost:5173',
-  credentials: true
-}));
+app.use(cors(corsOptions));
+app.options('/api/payments/stripe/checkout', cors(corsOptions));
 app.use(cookieParser());
 app.set('trust proxy', 1);
 
