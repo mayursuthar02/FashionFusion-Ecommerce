@@ -13,6 +13,7 @@ import orderRoutes from './routes/orderRoutes.js';
 import connectDB from './db/connectDB.js';
 import {v2 as cloudinary} from 'cloudinary';
 import { stripeWebhook } from './controllers/paymentController.js';
+import bodyParser from 'body-parser';
 
 dotenv.config();
 
