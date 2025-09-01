@@ -67,6 +67,23 @@ app.use('/api/carts', cartRoutes);
 app.use('/api/orders', orderRoutes);
 
 
+// ----------------------------
+// 🔹 Serve React frontend
+// ----------------------------
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+if (process.env.NODE_ENV === 'production') {
+  const clientPath = path.join(__dirname, 'client/build');
+  app.use(express.static(clientPath));
+
+  // For any route not handled by APIs → serve index.html
+  app.get('*', (req, res) => {
+    res.sendFile(path.resolve(clientPath, 'index.html'));
+  });
+}
+
+
 // Server Listen
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, ()=> {

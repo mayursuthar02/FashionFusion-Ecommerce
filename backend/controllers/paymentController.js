@@ -188,7 +188,7 @@ const stripeWebhook = async (req, res) => {
               }
             }) || [],
             totalAmount: session.amount_total / 100,
-            sessionId : session_id,
+            sessionId : session.id,
             billing_details : {},
           };
 
@@ -218,7 +218,7 @@ const stripeWebhook = async (req, res) => {
         }
         
         // Update the order || receipt and billing details
-        const updateOrder = await OrderModel.findOne({sessionId: session_id});
+        const updateOrder = await OrderModel.findOne({ sessionId: session_id });
         if (!updateOrder) {
           console.error('Order not found with sessionId:', session_id);
           return res.status(404).json({ error: 'Order not found' });
