@@ -41,12 +41,12 @@ app.use(cors(corsOptions));
 app.use(cookieParser());
 app.set('trust proxy', 1);
 
-// 2. Mount the STRIPE WEBHOOK route BEFORE express.json
-app.post(
-  '/api/payments/stripe/webhook',
-  bodyParser.raw({ type: 'application/json' }),
-  stripeWebhook
-);
+// // 2. Mount the STRIPE WEBHOOK route BEFORE express.json
+// app.post(
+//   '/api/payments/stripe/webhook',
+//   bodyParser.raw({ type: 'application/json' }),
+//   stripeWebhook
+// );
 
 app.use('/api/payments', paymentRoutes);
 
