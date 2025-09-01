@@ -11,15 +11,9 @@ if (!stripe) {
 // This is your Stripe CLI webhook secret for testing your endpoint locally.
 const endpointSecret = process.env.STRIPE_END_POINT_SECRET;
 
-if (!endpointSecret) {
-  throw new Error("The STRIPE_END_POINT_SECRET environment variable is not set.");
+if (!endpointSecret || endpointSecret.trim() === '') {
+  throw new Error("The STRIPE_END_POINT_SECRET environment variable is not set or is empty.");
 }
-
-export const config = {
-  api: {
-    bodyParser: false, // ⛔ important for Vercel
-  },
-};
 
 
 // Variable for sessionID store
@@ -141,10 +135,6 @@ const getLineItems = async(lineItems) => {
 // Stripe Webhook
 const stripeWebhook = async (req, res) => {
   try {
-    if (req.method !== 'POST') {
-      return res.status(405).end();
-    }
-
     const sig = req.headers['stripe-signature'];
 
     // Convert req.body in string
@@ -161,8 +151,7 @@ const stripeWebhook = async (req, res) => {
 
   try {
     // ✅ req.body is a Buffer, as required by Stripe
-    const rawBody = await buffer(req);
-    event = stripe.webhooks.constructEvent(rawBody, sig, endpointSecret);
+    event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
   } catch (err) {
     console.error('Webhook signature verification failed:', err.message);
     return res.status(400).send(`Webhook Error: ${err.message}`);
@@ -257,14 +246,6 @@ const stripeWebhook = async (req, res) => {
     res.status(400).send(`Webhook Error: ${error.message}`);
   }
 };
-
-async function buffer(readable) {
-  const chunks = [];
-  for await (const chunk of readable) {
-    chunks.push(typeof chunk === 'string' ? Buffer.from(chunk) : chunk);
-  }
-  return Buffer.concat(chunks);
-}
 
 
 export { stripeCheckout, stripeWebhook };

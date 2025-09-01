@@ -48,6 +48,7 @@ app.post(
   stripeWebhook
 );
 
+app.use('/api/payments', paymentRoutes);
 
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
@@ -57,7 +58,7 @@ app.options('/api/payments/stripe/checkout', cors(corsOptions), (req, res) => {
 });
 
 // Routes
-app.use('/api/payments', paymentRoutes);
+
 app.use('/api/users', userRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/reviews', reviewRoutes);
