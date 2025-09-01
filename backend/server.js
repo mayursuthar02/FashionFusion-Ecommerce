@@ -33,6 +33,7 @@ cloudinary.config({
 
 const corsOptions = {
   origin: 'https://fashion-fusion-ecommerce-ten.vercel.app',
+  // origin: 'http://localhost:5173',
   credentials: true,
 };
 

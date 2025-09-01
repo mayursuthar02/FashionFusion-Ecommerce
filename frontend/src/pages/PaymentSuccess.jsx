@@ -27,6 +27,7 @@ const PaymentSuccess = () => {
       const res = await fetch(`${BASEURL}/api/carts/delete-user-carts`, {
         method: "DELETE",
         headers: {"Content-Type":"application/json"},
+        credentials: "include",
       });
       const data = await res.json();
       if (data.error) {
@@ -43,7 +44,9 @@ const PaymentSuccess = () => {
   useEffect(()=>{
     const fetchOrder = async() => {
       try {
-        const res = await fetch(`${BASEURL}/api/orders/sessionId/${sessionId}`);
+        const res = await fetch(`${BASEURL}/api/orders/sessionId/${sessionId}`, {
+          credentials: "include"
+        });
         const data = await res.json();
         if (data.error) {
           console.log(data.error);

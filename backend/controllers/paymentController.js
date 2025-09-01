@@ -68,7 +68,7 @@ const stripeCheckout = async (req, res) => {
         userId : req.user._id.toString(),
       },
       line_items: lineItems,
-      success_url: `${process.env.FRONTEND_URL}`,
+      success_url: `${process.env.FRONTEND_URL}/order/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.FRONTEND_URL}/order/cancelled?cancle`,
       shipping_address_collection: {
         allowed_countries: ["IN"], // Allow only India for shipping
@@ -170,8 +170,6 @@ const stripeWebhook = async (req, res) => {
 
           // Fetch product details from function create above
           const productDetails = await getLineItems(lineItems);
-
-          console.log({productDetails})
           
           // Store data for order create 
           const orderDetails = {
@@ -200,7 +198,7 @@ const stripeWebhook = async (req, res) => {
           await order.save();
 
           console.log({order})
-
+          
         } catch (err) {
           console.error('Error retrieving line items:', err.message);
         }
@@ -230,8 +228,6 @@ const stripeWebhook = async (req, res) => {
         updateOrder.paymentDetails.brand = charge.payment_method_details.card.brand || updateOrder.paymentDetails.brand;
         updateOrder.paymentDetails.last4Digit = charge.payment_method_details.card.last4 || updateOrder.paymentDetails.last4Digit;
         await updateOrder.save();
-
-        console.log({updateOrder})
 
         // Recet session ID
         session_id = '';  

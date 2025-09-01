@@ -4,11 +4,11 @@ import protectRoute from '../middleware/protectRoute.js'
 import { stripeCheckout, stripeWebhook } from '../controllers/paymentController.js';
 const router = express.Router();
 
-router.post('/stripe/checkout', protectRoute, express.json(), stripeCheckout);
 router.post(
   '/stripe/webhook',
-  bodyParser.raw({ type: 'application/json' }), // ✅ keep this!
+  express.raw({ type: 'application/json' }), // ✅ keep this!
   stripeWebhook
 );
+router.post('/stripe/checkout', protectRoute, express.json(), stripeCheckout);
 
 export default router;
