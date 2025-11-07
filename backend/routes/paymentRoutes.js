@@ -1,14 +1,10 @@
 import express from 'express';
-import bodyParser from "body-parser";
-import protectRoute from '../middleware/protectRoute.js'
-import { stripeCheckout, stripeWebhook } from '../controllers/paymentController.js';
+import protectRoute from '../middleware/protectRoute.js';
+import { stripeCheckout } from '../controllers/paymentController.js';
+
 const router = express.Router();
 
-router.post(
-  '/stripe/webhook',
-  express.raw({ type: 'application/json' }), // ✅ keep this!
-  stripeWebhook
-);
-router.post('/stripe/checkout', protectRoute, express.json(), stripeCheckout);
+// Webhook is mounted at app-level in server.js — DO NOT add it here
+router.post('/stripe/checkout', protectRoute, stripeCheckout);
 
 export default router;

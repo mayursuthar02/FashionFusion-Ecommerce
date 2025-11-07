@@ -107,7 +107,7 @@ export const stripeWebhook = async (req, res) => {
     return res.status(400).send(`Webhook signature error: ${error.message}`);
   }
 
-  console.log("✅ Stripe Event:", event.type);
+  console.log("EVENT RECEIVED:", event.type);
 
   try {
     switch (event.type) {

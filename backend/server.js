@@ -33,34 +33,41 @@ cloudinary.config({
 
 
 
+// CORS & cookies (safe before webhook; they don't parse body)
 const corsOptions = {
   origin: 'https://fashion-fusion-ecommerce-ten.vercel.app',
   // origin: 'http://localhost:5173',
   credentials: true,
 };
-
-// Middleware
 app.use(cors(corsOptions));
 app.use(cookieParser());
 app.set('trust proxy', 1);
 
-// // 2. Mount the STRIPE WEBHOOK route BEFORE express.json
-// app.post(
-//   '/api/payments/stripe/webhook',
-//   bodyParser.raw({ type: 'application/json' }),
-//   stripeWebhook
-// );
+/* ================================
+   1) STRIPE WEBHOOK — mount FIRST
+   Must use RAW body and BEFORE express.json()
+================================ */
+app.post(
+  '/api/payments/stripe/webhook',
+  express.raw({ type: 'application/json' }),
+  stripeWebhook
+);
 
-app.use('/api/payments', paymentRoutes);
-
+/* ================================
+   2) JSON parsers AFTER webhook
+================================ */
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
+/* ================================
+   3) Routes
+================================ */
 app.options('/api/payments/stripe/checkout', cors(corsOptions), (req, res) => {
   res.sendStatus(200);
 });
 
-// Routes
+// Payments router MUST NOT define webhook again
+app.use('/api/payments', paymentRoutes);
 
 app.use('/api/users', userRoutes);
 app.use('/api/products', productRoutes);
@@ -68,26 +75,19 @@ app.use('/api/reviews', reviewRoutes);
 app.use('/api/carts', cartRoutes);
 app.use('/api/orders', orderRoutes);
 
-
-// ----------------------------
-// 🔹 Serve React frontend
-// ----------------------------
+/* ================================
+   4) Serve frontend (optional)
+================================ */
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 if (process.env.NODE_ENV === 'production') {
   const clientPath = path.join(__dirname, 'client/build');
   app.use(express.static(clientPath));
-
-  // For any route not handled by APIs → serve index.html
-  app.get('*', (req, res) => {
+  app.get('*', (_req, res) => {
     res.sendFile(path.resolve(clientPath, 'index.html'));
   });
 }
 
-
-// Server Listen
 const PORT = process.env.PORT || 4000;
-app.listen(PORT, ()=> {
-    console.log(`Server listen on port : ${PORT}`);
-});
+app.listen(PORT, () => console.log(`Server listen on port : ${PORT}`));
