@@ -1,40 +1,34 @@
 import Stripe from "stripe";
 import OrderModel from "../models/OrderModel.js";
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
 dotenv.config();
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-if (!stripe) {
-  throw new Error("The STRIPE_SECRET_KEY environment variable is not set.");
-}
-
-// This is your Stripe CLI webhook secret for testing your endpoint locally.
 const endpointSecret = process.env.STRIPE_END_POINT_SECRET;
 
-if (!endpointSecret || endpointSecret.trim() === '') {
-  throw new Error("The STRIPE_END_POINT_SECRET environment variable is not set or is empty.");
+if (!endpointSecret) {
+  throw new Error("STRIPE_END_POINT_SECRET is missing");
 }
 
-
-// Variable for sessionID store
-let session_id = '';
- 
-// Stripe Checkout
-const stripeCheckout = async (req, res) => {
+/* ✅ Stripe Checkout */
+export const stripeCheckout = async (req, res) => {
   try {
     const { products } = req.body;
-    if(!products) return res.status(404).json({ error: "products not found" });
+    if (!products) {
+      return res.status(400).json({ error: "No products found" });
+    }
 
-    // Store Data
     const currency = "inr";
+
     const lineItems = products.map((product) => {
       const originalPrice = product.productId.price;
       const discount = product.productId.discount;
       const discountedPrice = originalPrice - originalPrice * (discount / 100);
       const unitAmount = Math.round(discountedPrice * 100);
+
       return {
         price_data: {
-          currency: currency,
+          currency,
           product_data: {
             name: product.productId.name,
             images: [product.productId.images[0]],
@@ -43,211 +37,165 @@ const stripeCheckout = async (req, res) => {
               vendorId: product.productId.vendorId.toString(),
               size: product.size,
               color: product.productId.color,
-              discount: product.productId.discount,
-              brandName: product.productId.brandName,
+              discount: product.productId.discount?.toString(),
+              brandName: product.productId.brandName || "",
             },
           },
           unit_amount: unitAmount,
-        },
-        adjustable_quantity: {
-          enabled: true,
-          minimum: 1,
         },
         quantity: product.quantity,
       };
     });
 
-    // Create session
+    // ✅ Create checkout session
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       mode: "payment",
       billing_address_collection: "required",
-      submit_type: "pay",
       customer_email: req.user.email,
       metadata: {
-        userId : req.user._id.toString(),
+        userId: req.user._id.toString(),
       },
-      line_items: lineItems,
       success_url: `${process.env.FRONTEND_URL}/order/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.FRONTEND_URL}/order/cancelled?cancle`,
+      cancel_url: `${process.env.FRONTEND_URL}/order/cancelled`,
+      line_items: lineItems,
       shipping_address_collection: {
-        allowed_countries: ["IN"], // Allow only India for shipping
+        allowed_countries: ["IN"],
       },
     });
 
-    console.log({session})
-
-    // Store session id 
-    if(!session.id) {
-      console.log("Error Session id not found");
-      return;   
-    }
-    session_id += session.id;
-
-    console.log({session_id});
-    res.status(200).json({ id: session.id });
+    return res.status(200).json({ id: session.id });
   } catch (error) {
-    console.log(error.message);
-    res
-      .status(500)
-      .json({ error: "Error in stripe checkout " + error.message });
+    console.error("Stripe Checkout Error:", error.message);
+    return res.status(500).json({ error: "Stripe checkout failed" });
   }
 };
 
+/* ✅ Helper to fetch product metadata from Stripe line items */
+const getLineItems = async (lineItems) => {
+  const items = [];
 
-// Function for get all product data from line items for to store in order model
-const getLineItems = async(lineItems) => {
-  let productItems = [];
+  for (const item of lineItems.data) {
+    const product = await stripe.products.retrieve(item.price.product);
 
-  if (lineItems?.data?.length) {
-    for (const item of lineItems.data) {
-      const product = await stripe.products.retrieve(item.price.product);
-      const productId = product.metadata.productId;
-      const vendorId = product.metadata.vendorId;
-      const size = product.metadata.size;
-      const color = product.metadata.color;
-      const discount = product.metadata.discount;
-      const brandName = product.metadata.brandName;
-
-      // Product Data
-      const productData = {
-        productId: productId,
-        vendorId: vendorId,
-        name: product.name,
-        price: item.price.unit_amount / 100,
-        quantity: item.quantity,
-        image: product.images,
-        size: size,
-        color: color,
-        discount: discount,
-        brandName: brandName,
-      }
-
-      // Push Data
-      productItems.push(productData);
-    }
+    items.push({
+      productId: product.metadata.productId,
+      vendorId: product.metadata.vendorId,
+      name: product.name,
+      price: item.price.unit_amount / 100,
+      quantity: item.quantity,
+      image: product.images,
+      size: product.metadata.size,
+      color: product.metadata.color,
+      discount: product.metadata.discount,
+      brandName: product.metadata.brandName,
+    });
   }
 
-  return productItems;
-}
+  return items;
+};
 
+/* ✅ Stripe Webhook */
+export const stripeWebhook = async (req, res) => {
+  let event;
 
-// Stripe Webhook
-const stripeWebhook = async (req, res) => {
+  // ✅ Verify Stripe Signature
   try {
-    const sig = req.headers['stripe-signature'];
-
-    // Convert req.body in string
-    // const payloadString = JSON.stringify(req.body);
-    // console.log({payloadString})
-    
-    // Set header
-    // const header = stripe.webhooks.generateTestHeaderString({
-    //   payload: payloadString,
-    //   secret: endpointSecret,
-    // });
-    
-    let event;
-
-  try {
-    // ✅ req.body is a Buffer, as required by Stripe
+    const sig = req.headers["stripe-signature"];
     event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
-  } catch (err) {
-    console.error('Webhook signature verification failed:', err.message);
-    return res.status(400).send(`Webhook Error: ${err.message}`);
+  } catch (error) {
+    console.error("Webhook Signature Error:", error.message);
+    return res.status(400).send(`Webhook signature error: ${error.message}`);
   }
 
-    // ✅ Your existing event handling logic goes here
-  console.log('✅ Webhook verified:', event.type);
+  console.log("✅ Stripe Event:", event.type);
 
-    // Handle the event
+  // ✅ Handle Events
+  try {
     switch (event.type) {
-      case 'checkout.session.completed':
+      case "checkout.session.completed": {
         const session = event.data.object;
 
-        try {
-          const lineItems = await stripe.checkout.sessions.listLineItems(session.id);
+        // ✅ Avoid duplicate order creation
+        const existingOrder = await OrderModel.findOne({
+          sessionId: session.id,
+        });
 
-          // Fetch product details from function create above
-          const productDetails = await getLineItems(lineItems);
-          
-          // Store data for order create 
-          const orderDetails = {
-            productDetails : productDetails,
-            email : session.customer_email,
-            userId : session.metadata.userId,
-            paymentDetails: {
-              paymentId: session.payment_intent,
-              payment_method_type: session.payment_method_types,
-              payment_status: session.payment_status,
-            },
-            shipping_options: session.shipping_options.map(s => {
-              return {
-                ...s,
-                shipping_amount : s.shipping_amount / 100
-              }
-            }) || [],
-            totalAmount: session.amount_total / 100,
-            sessionId : session.id,
-            billing_details : {},
-          };
-
-          // Create new Order
-          const order = new OrderModel(orderDetails);
-          // Save order
-          await order.save();
-
-          console.log({order})
-          
-        } catch (err) {
-          console.error('Error retrieving line items:', err.message);
+        if (existingOrder) {
+          console.log("⚠️ Order already exists. Skipping duplicate.");
+          break;
         }
+
+        const lineItems = await stripe.checkout.sessions.listLineItems(
+          session.id
+        );
+        const productDetails = await getLineItems(lineItems);
+
+        const order = new OrderModel({
+          productDetails,
+          email: session.customer_email,
+          userId: session.metadata.userId,
+          paymentDetails: {
+            paymentId: session.payment_intent,
+            payment_method_type: session.payment_method_types,
+            payment_status: session.payment_status,
+          },
+          totalAmount: session.amount_total / 100,
+          sessionId: session.id,
+          billing_details: {}, // updated later
+        });
+
+        await order.save();
+        console.log("✅ Order created:", order._id);
         break;
-
-      case 'charge.updated':
-      const charge = event.data.object;
-      try {
-        // fetch receipt url from charge
-        const receiptUrl = charge.receipt_url;
-        if (!receiptUrl) {
-          console.log("Error : Receipt url is null. ⛔");
-          }
-          
-          if (!session_id) {
-            console.log("Error : Session Id is null. ⛔");
-        }
-        
-        // Update the order || receipt and billing details
-        const updateOrder = await OrderModel.findOne({ sessionId: session_id });
-        if (!updateOrder) {
-          console.error('Order not found with sessionId:', session_id);
-          return res.status(404).json({ error: 'Order not found' });
-        }
-        updateOrder.receipt_url = receiptUrl || updateOrder.receipt_url;
-        updateOrder.billing_details = charge.billing_details || updateOrder.billing_details;
-        updateOrder.paymentDetails.brand = charge.payment_method_details.card.brand || updateOrder.paymentDetails.brand;
-        updateOrder.paymentDetails.last4Digit = charge.payment_method_details.card.last4 || updateOrder.paymentDetails.last4Digit;
-        await updateOrder.save();
-
-        // Recet session ID
-        session_id = '';  
-
-      } catch (err) {
-        console.error('Error updating order with receipt URL:', err.message);
       }
-      break;
+
+      case "charge.succeeded": {
+        const charge = event.data.object;
+
+        // ✅ Get Stripe session using payment_intent
+        const paymentIntentId = charge.payment_intent;
+
+        const sessions = await stripe.checkout.sessions.list({
+          payment_intent: paymentIntentId,
+        });
+
+        const session = sessions.data[0];
+        if (!session) {
+          console.log("⚠️ Session not found for charge");
+          break;
+        }
+
+        // ✅ Update order using sessionId
+        const order = await OrderModel.findOne({
+          sessionId: session.id,
+        });
+
+        if (!order) {
+          console.log("⚠️ Order not found for updating receipt");
+          break;
+        }
+
+        order.receipt_url = charge.receipt_url;
+        order.billing_details = charge.billing_details || {};
+        order.paymentDetails.brand =
+          charge.payment_method_details.card.brand || "";
+        order.paymentDetails.last4Digit =
+          charge.payment_method_details.card.last4 || "";
+
+        await order.save();
+
+        console.log("✅ Order updated:", order._id);
+        break;
+      }
 
       default:
-        console.log(`Unhandled event type ${event.type}`);
+        console.log("Unhandled event:", event.type);
     }
 
-    // Return a 200 response to acknowledge receipt of the event
-    res.status(200).send();
+    return res.status(200).send("Received");
   } catch (error) {
-    console.error('Webhook Error:', error.message);
-    res.status(400).send(`Webhook Error: ${error.message}`);
+    console.error("Webhook Error:", error.message);
+    return res.status(400).send(`Webhook error: ${error.message}`);
   }
 };
-
-
-export { stripeCheckout, stripeWebhook };
