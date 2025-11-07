@@ -95,11 +95,10 @@ const getLineItems = async (lineItems) => {
   return items;
 };
 
-/* ✅ Stripe Webhook */
 export const stripeWebhook = async (req, res) => {
   let event;
 
-  // ✅ Verify Stripe Signature
+  // Verify signature against RAW body.
   try {
     const sig = req.headers["stripe-signature"];
     event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
@@ -110,25 +109,19 @@ export const stripeWebhook = async (req, res) => {
 
   console.log("✅ Stripe Event:", event.type);
 
-  // ✅ Handle Events
   try {
     switch (event.type) {
+      /* 1) Create order once */
       case "checkout.session.completed": {
         const session = event.data.object;
 
-        // ✅ Avoid duplicate order creation
-        const existingOrder = await OrderModel.findOne({
-          sessionId: session.id,
-        });
-
+        const existingOrder = await OrderModel.findOne({ sessionId: session.id });
         if (existingOrder) {
           console.log("⚠️ Order already exists. Skipping duplicate.");
           break;
         }
 
-        const lineItems = await stripe.checkout.sessions.listLineItems(
-          session.id
-        );
+        const lineItems = await stripe.checkout.sessions.listLineItems(session.id);
         const productDetails = await getLineItems(lineItems);
 
         const order = new OrderModel({
@@ -136,13 +129,15 @@ export const stripeWebhook = async (req, res) => {
           email: session.customer_email,
           userId: session.metadata.userId,
           paymentDetails: {
-            paymentId: session.payment_intent,
+            paymentId: session.payment_intent,              // <— we'll use this to update later
             payment_method_type: session.payment_method_types,
             payment_status: session.payment_status,
           },
           totalAmount: session.amount_total / 100,
           sessionId: session.id,
-          billing_details: {}, // updated later
+          billing_details: {},                              // will be filled later
+          receipt_url: "",                                  // will be filled later
+          status: "pending",
         });
 
         await order.save();
@@ -150,42 +145,34 @@ export const stripeWebhook = async (req, res) => {
         break;
       }
 
-      case "charge.succeeded": {
-        const charge = event.data.object;
+      /* 2) Update brand/last4/billing/receipt using the intent's charge */
+      case "payment_intent.succeeded": {
+        const pi = event.data.object;                      // PaymentIntent
+        const paymentIntentId = pi.id;
 
-        // ✅ Get Stripe session using payment_intent
-        const paymentIntentId = charge.payment_intent;
+        // Get latest charge to read card + billing + receipt
+        const charge = await stripe.charges.retrieve(pi.latest_charge);
 
-        const sessions = await stripe.checkout.sessions.list({
-          payment_intent: paymentIntentId,
-        });
-
-        const session = sessions.data[0];
-        if (!session) {
-          console.log("⚠️ Session not found for charge");
-          break;
-        }
-
-        // ✅ Update order using sessionId
+        // Update the order found by the saved paymentIntent id
         const order = await OrderModel.findOne({
-          sessionId: session.id,
+          "paymentDetails.paymentId": paymentIntentId,
         });
 
         if (!order) {
-          console.log("⚠️ Order not found for updating receipt");
+          console.log("⚠️ Order not found for payment_intent:", paymentIntentId);
           break;
         }
 
-        order.receipt_url = charge.receipt_url;
-        order.billing_details = charge.billing_details || {};
-        order.paymentDetails.brand =
-          charge.payment_method_details.card.brand || "";
-        order.paymentDetails.last4Digit =
-          charge.payment_method_details.card.last4 || "";
+        // Defensive reads (not all fields always exist)
+        const pmCard = charge?.payment_method_details?.card || {};
+
+        order.receipt_url = charge?.receipt_url || order.receipt_url || "";
+        order.billing_details = charge?.billing_details || order.billing_details || {};
+        order.paymentDetails.brand = pmCard.brand || order.paymentDetails.brand || "";
+        order.paymentDetails.last4Digit = pmCard.last4 || order.paymentDetails.last4Digit || "";
 
         await order.save();
-
-        console.log("✅ Order updated:", order._id);
+        console.log("✅ Order updated with billing/receipt:", order._id);
         break;
       }
 
